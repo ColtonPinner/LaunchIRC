@@ -27,7 +27,7 @@ export default function Navbar() {
             </div>
             <div className="hidden sm:block">
               <span className="font-heading text-lg font-bold text-foreground leading-none block">
-                IRC Business
+                Launch IRC
               </span>
               <span className="text-[10px] uppercase tracking-[0.2em] text-muted-foreground font-medium">
                 Indian River County
@@ -76,7 +76,7 @@ export default function Navbar() {
                     <div className="w-9 h-9 rounded-lg bg-primary flex items-center justify-center">
                       <MapPin className="w-5 h-5 text-primary-foreground" />
                     </div>
-                    <span className="font-heading text-lg font-bold">IRC Business</span>
+                    <span className="font-heading text-lg font-bold">Launch IRC</span>
                   </div>
                 </div>
                 <div className="flex-1 p-4 space-y-1">

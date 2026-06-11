@@ -12,7 +12,7 @@ export default function Footer() {
               <div className="w-9 h-9 rounded-lg bg-accent flex items-center justify-center">
                 <MapPin className="w-5 h-5 text-white" />
               </div>
-              <span className="font-heading text-xl font-bold">IRC Business</span>
+              <span className="font-heading text-xl font-bold">Launch IRC</span>
             </div>
             <p className="text-primary-foreground/70 text-sm leading-relaxed">
               Your complete guide to starting and running a business in Indian River County, Florida.
@@ -72,7 +72,7 @@ export default function Footer() {
 
         <div className="mt-12 pt-8 border-t border-primary-foreground/10 flex flex-col sm:flex-row justify-between items-center gap-4">
           <p className="text-xs text-primary-foreground/40">
-            © {new Date().getFullYear()} IRC Business Guide. All rights reserved.
+            © {new Date().getFullYear()} Launch IRC. All rights reserved. A product of <span className="text-primary-foreground/60 font-medium">Launchpad</span>.
           </p>
           <div className="flex gap-6 text-xs text-primary-foreground/40">
             <span className="hover:text-primary-foreground/60 cursor-pointer">Privacy</span>
