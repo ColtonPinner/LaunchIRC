@@ -1,0 +1,46 @@
+{
+  "name": "ConciergeRequest",
+  "type": "object",
+  "properties": {
+    "name": {
+      "type": "string"
+    },
+    "email": {
+      "type": "string"
+    },
+    "phone": {
+      "type": "string"
+    },
+    "business_type": {
+      "type": "string"
+    },
+    "message": {
+      "type": "string"
+    },
+    "service_needed": {
+      "type": "string",
+      "enum": [
+        "full_concierge",
+        "property_search",
+        "permits_licensing",
+        "financial_guidance",
+        "legal_setup",
+        "other"
+      ]
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "new",
+        "contacted",
+        "in_progress",
+        "completed"
+      ],
+      "default": "new"
+    }
+  },
+  "required": [
+    "name",
+    "email"
+  ]
+}

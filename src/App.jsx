@@ -6,7 +6,21 @@ import PageNotFound from './lib/PageNotFound';
 import { AuthProvider, useAuth } from '@/lib/AuthContext';
 import UserNotRegisteredError from '@/components/UserNotRegisteredError';
 import ScrollToTop from './components/ScrollToTop';
-// Add page imports here
+import AppLayout from '@/components/layout/AppLayout';
+import Home from '@/pages/Home';
+import Survey from '@/pages/Survey';
+import Checklist from '@/pages/Checklist';
+import Guides from '@/pages/Guides';
+import Directory from '@/pages/Directory';
+import DirectoryJoin from '@/pages/DirectoryJoin';
+import Concierge from '@/pages/Concierge';
+import Sponsor from '@/pages/Sponsor';
+import Login from '@/pages/Login';
+import Register from '@/pages/Register';
+import ForgotPassword from '@/pages/ForgotPassword';
+import ResetPassword from '@/pages/ResetPassword';
+import ProtectedRoute from '@/components/ProtectedRoute';
+import { Navigate } from 'react-router-dom';
 
 const AuthenticatedApp = () => {
   const { isLoadingAuth, isLoadingPublicSettings, authError, navigateToLogin } = useAuth();
@@ -34,7 +48,22 @@ const AuthenticatedApp = () => {
   // Render the main app
   return (
     <Routes>
-      {/* Add your page Route elements here */}
+      <Route path="/login" element={<Login />} />
+      <Route path="/register" element={<Register />} />
+      <Route path="/forgot-password" element={<ForgotPassword />} />
+      <Route path="/reset-password" element={<ResetPassword />} />
+      <Route element={<AppLayout />}>
+        <Route path="/" element={<Home />} />
+        <Route path="/survey" element={<Survey />} />
+        <Route path="/guides" element={<Guides />} />
+        <Route path="/directory" element={<Directory />} />
+        <Route path="/directory/join" element={<DirectoryJoin />} />
+        <Route path="/concierge" element={<Concierge />} />
+        <Route path="/sponsor" element={<Sponsor />} />
+        <Route element={<ProtectedRoute unauthenticatedElement={<Navigate to="/login" replace />} />}>
+          <Route path="/checklist" element={<Checklist />} />
+        </Route>
+      </Route>
       <Route path="*" element={<PageNotFound />} />
     </Routes>
   );

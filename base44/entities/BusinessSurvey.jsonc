@@ -1,0 +1,118 @@
+{
+  "name": "BusinessSurvey",
+  "type": "object",
+  "properties": {
+    "business_stage": {
+      "type": "string",
+      "enum": [
+        "just_exploring",
+        "planning",
+        "ready_to_start",
+        "already_started"
+      ],
+      "description": "Where the user is in the process"
+    },
+    "has_property": {
+      "type": "string",
+      "enum": [
+        "no",
+        "looking",
+        "found_one",
+        "already_own"
+      ],
+      "description": "Property status"
+    },
+    "business_type": {
+      "type": "string",
+      "enum": [
+        "restaurant_food",
+        "retail",
+        "office_professional",
+        "medical_health",
+        "construction_trades",
+        "home_based",
+        "mobile_business",
+        "other"
+      ],
+      "description": "Type of business"
+    },
+    "business_structure": {
+      "type": "string",
+      "enum": [
+        "undecided",
+        "sole_proprietorship",
+        "llc",
+        "s_corp",
+        "c_corp",
+        "partnership"
+      ],
+      "description": "Planned business structure"
+    },
+    "funding_needs": {
+      "type": "string",
+      "enum": [
+        "self_funded",
+        "need_loan",
+        "seeking_investors",
+        "exploring_options"
+      ],
+      "description": "Funding situation"
+    },
+    "is_woman_owned": {
+      "type": "boolean",
+      "description": "Whether business is woman-owned"
+    },
+    "is_veteran_owned": {
+      "type": "boolean",
+      "description": "Whether business is veteran-owned"
+    },
+    "is_minority_owned": {
+      "type": "boolean",
+      "description": "Whether business is minority-owned"
+    },
+    "needs_construction": {
+      "type": "boolean",
+      "description": "Whether buildout or construction is needed"
+    },
+    "estimated_budget": {
+      "type": "string",
+      "enum": [
+        "under_10k",
+        "10k_50k",
+        "50k_150k",
+        "150k_500k",
+        "over_500k"
+      ],
+      "description": "Estimated startup budget"
+    },
+    "email": {
+      "type": "string",
+      "description": "Contact email"
+    },
+    "full_name": {
+      "type": "string",
+      "description": "Full name"
+    },
+    "phone": {
+      "type": "string",
+      "description": "Phone number"
+    },
+    "plan_type": {
+      "type": "string",
+      "enum": [
+        "free",
+        "premium"
+      ],
+      "default": "free",
+      "description": "Free or premium checklist"
+    },
+    "checklist_progress": {
+      "type": "object",
+      "description": "Tracks completion of checklist items"
+    }
+  },
+  "required": [
+    "business_stage",
+    "business_type"
+  ]
+}
