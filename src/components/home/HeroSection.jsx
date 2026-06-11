@@ -65,6 +65,9 @@ export default function HeroSection() {
                 </Button>
               </Link>
             </div>
+            <p className="text-xs text-muted-foreground mt-3">
+              ✓ All information verified by a local Indian River County expert*
+            </p>
           </motion.div>
 
           {/* Right Visual */}
