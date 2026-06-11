@@ -66,7 +66,7 @@ export default function HeroSection() {
               </Link>
             </div>
             <p className="text-xs text-muted-foreground mt-3">
-              ✓ All information verified by a local Indian River County expert*
+              ✓ All information verified by local Indian River County experts.
             </p>
           </motion.div>
 
