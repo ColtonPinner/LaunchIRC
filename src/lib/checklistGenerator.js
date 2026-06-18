@@ -9,18 +9,22 @@ export function generateChecklist(survey) {
     id: "plan_1",
     phase: "Planning & Legal Setup",
     title: "Write a Business Plan",
-    description: isPremium ? "Outline your business model, target market, financial projections, and competitive analysis. IRC's Economic Development office offers free consultations." : "Create a comprehensive business plan.",
+    description: isPremium
+      ? "Outline your business model, target market, financial projections, and competitive analysis. IRC's Economic Development office offers free consultations."
+      : "Create a comprehensive business plan.",
     category: "planning",
     tier: "free",
   });
 
   // Business Structure
-  if (survey.business_structure === "undecided" || !survey.business_structure) {
+  if (survey.business_structure === "no_reach_out" || survey.business_structure === "no_research_myself" || !survey.business_structure) {
     checklist.push({
       id: "legal_1",
       phase: "Planning & Legal Setup",
       title: "Choose a Business Structure",
-      description: isPremium ? "Compare LLC vs S-Corp vs Sole Proprietorship. An LLC protects personal assets; an S-Corp may save on self-employment taxes. Consult an attorney for your situation." : "Decide between LLC, S-Corp, sole proprietorship, or other structures.",
+      description: isPremium
+        ? "Compare LLC vs S-Corp vs Sole Proprietorship. An LLC protects personal assets; an S-Corp may save on self-employment taxes. Consult an attorney for your situation."
+        : "Decide between LLC, S-Corp, sole proprietorship, or other structures.",
       category: "legal",
       tier: "free",
     });
@@ -30,7 +34,9 @@ export function generateChecklist(survey) {
     id: "legal_2",
     phase: "Planning & Legal Setup",
     title: "Register with Florida Division of Corporations",
-    description: isPremium ? "File Articles of Organization (LLC) or Incorporation (Corp) at Sunbiz.org. Filing fee: $125 for LLC, $70 for Corp. Processing: 2-3 business days online." : "File your business formation documents with the state.",
+    description: isPremium
+      ? "File Articles of Organization (LLC) or Incorporation (Corp) at Sunbiz.org. Filing fee: $125 for LLC, $70 for Corp. Processing: 2-3 business days online."
+      : "File your business formation documents with the state.",
     category: "legal",
     tier: "free",
     link: isPremium ? "https://sunbiz.org" : undefined,
@@ -40,17 +46,23 @@ export function generateChecklist(survey) {
     id: "legal_3",
     phase: "Planning & Legal Setup",
     title: "Apply for Federal EIN (Tax ID Number)",
-    description: isPremium ? "Apply free online at IRS.gov. Instant approval for most applications. Required for opening a business bank account, hiring employees, and filing taxes." : "Get your federal employer identification number.",
+    description: isPremium
+      ? "Apply free online at IRS.gov. Instant approval for most applications. Required for opening a business bank account, hiring employees, and filing taxes."
+      : "Get your federal employer identification number.",
     category: "legal",
     tier: "free",
-    link: isPremium ? "https://www.irs.gov/businesses/small-businesses-self-employed/apply-for-an-employer-identification-number-ein-online" : undefined,
+    link: isPremium
+      ? "https://www.irs.gov/businesses/small-businesses-self-employed/apply-for-an-employer-identification-number-ein-online"
+      : undefined,
   });
 
   checklist.push({
     id: "legal_4",
     phase: "Planning & Legal Setup",
     title: "Register Fictitious Name (DBA) if Needed",
-    description: isPremium ? "If operating under a name different from your legal entity name, file a fictitious name registration with the FL Division of Corporations. Fee: $50." : "Register your DBA if using a trade name.",
+    description: isPremium
+      ? "If operating under a name different from your legal entity name, file a fictitious name registration with the FL Division of Corporations. Fee: $50."
+      : "Register your DBA if using a trade name.",
     category: "legal",
     tier: "free",
   });
@@ -80,13 +92,15 @@ export function generateChecklist(survey) {
   }
 
   // === PHASE 2: PROPERTY & LOCATION ===
-  if (survey.has_property !== "already_own") {
+  const needsPropertyHelp = survey.has_property !== "dont_need_property" && survey.has_property !== "secured";
+
+  if (needsPropertyHelp) {
     checklist.push({
       id: "prop_1",
       phase: "Property & Location",
       title: "Research Zoning Requirements",
       description: isPremium
-        ? `Check IRC's zoning map for your business type (${formatBusinessType(survey.business_type)}). Key zones: C-1 (Retail Commercial), C-2 (General Commercial), M-1 (Light Industrial). Contact IRC Planning Dept: (772) 226-1237.`
+        ? `Check IRC's zoning map for your business type. Key zones: C-1 (Retail Commercial), C-2 (General Commercial), M-1 (Light Industrial). Contact IRC Planning Dept: (772) 226-1237.`
         : "Verify the property zone allows your business type.",
       category: "property",
       tier: "free",
@@ -136,7 +150,7 @@ export function generateChecklist(survey) {
   }
 
   // === PHASE 3: FINANCING ===
-  if (survey.funding_needs !== "self_funded") {
+  if (survey.funding_needs !== "no") {
     checklist.push({
       id: "fin_1",
       phase: "Financing & Funding",
@@ -148,7 +162,8 @@ export function generateChecklist(survey) {
       tier: "free",
     });
 
-    if (survey.needs_construction) {
+    const needsConstructionFinancing = survey.needs_construction && survey.needs_construction !== "no" && survey.needs_construction !== "not_sure";
+    if (needsConstructionFinancing) {
       checklist.push({
         id: "fin_2",
         phase: "Financing & Funding",
@@ -219,7 +234,7 @@ export function generateChecklist(survey) {
   });
 
   // Business-type specific licenses
-  if (survey.business_type === "restaurant_food") {
+  if (survey.business_type === "eating_drinking") {
     checklist.push({
       id: "lic_food_1",
       phase: "Licenses & Permits",
@@ -254,7 +269,20 @@ export function generateChecklist(survey) {
     }
   }
 
-  if (survey.business_type === "medical_health") {
+  if (survey.business_type === "food_store") {
+    checklist.push({
+      id: "lic_food_1",
+      phase: "Licenses & Permits",
+      title: "Obtain DBPR Food Service License",
+      description: isPremium
+        ? "Apply through FL Dept of Business & Professional Regulation. Requires plan review, pre-opening inspection. Fee: $200-$400."
+        : "Get your Florida food license from DBPR.",
+      category: "licensing",
+      tier: "free",
+    });
+  }
+
+  if (survey.business_type === "medical") {
     checklist.push({
       id: "lic_med_1",
       phase: "Licenses & Permits",
@@ -267,21 +295,36 @@ export function generateChecklist(survey) {
     });
   }
 
-  if (survey.business_type === "construction_trades") {
+  if (survey.business_type === "hotel_boardinghouse") {
     checklist.push({
-      id: "lic_trade_1",
+      id: "lic_hotel_1",
       phase: "Licenses & Permits",
-      title: "Register Contractor's License with IRC",
+      title: "Obtain DBPR Hotel & Restaurant License",
       description: isPremium
-        ? "Florida licensed contractors must register with IRC Building Department. Provide proof of state license, insurance, and workers' comp. Local registration fee: $50-$100."
-        : "Register your contractor's license locally with Indian River County.",
+        ? "Apply through FL DBPR for transient lodging license. Health and safety inspections required. Tourist development tax registration with IRC Tax Collector."
+        : "Get your lodging license from Florida DBPR.",
+      category: "licensing",
+      tier: "free",
+    });
+  }
+
+  // Mobile businesses
+  if (survey.business_type && survey.business_type.startsWith("mobile_")) {
+    checklist.push({
+      id: "lic_mobile_1",
+      phase: "Licenses & Permits",
+      title: "Obtain Mobile Business Vendor Permit",
+      description: isPremium
+        ? "IRC requires mobile vendors to obtain a county permit in addition to state licenses. Check local ordinances for operating hours and location restrictions."
+        : "Get the required mobile vendor permits for Indian River County.",
       category: "licensing",
       tier: "free",
     });
   }
 
   // === PHASE 5: CONSTRUCTION & BUILD-OUT ===
-  if (survey.needs_construction) {
+  const needsConstruction = survey.needs_construction && survey.needs_construction !== "no";
+  if (needsConstruction) {
     checklist.push({
       id: "build_1",
       phase: "Construction & Build-Out",
@@ -447,14 +490,31 @@ export function generateChecklist(survey) {
 
 function formatBusinessType(type) {
   const map = {
-    restaurant_food: "Restaurant / Food Service",
-    retail: "Retail Store",
-    office_professional: "Office / Professional Services",
-    medical_health: "Medical / Healthcare",
-    construction_trades: "Construction / Trades",
-    home_based: "Home-Based Business",
-    mobile_business: "Mobile Business",
-    other: "Other",
+    agriculture: "Agriculture",
+    professional_services: "Professional Services",
+    retail: "Retail",
+    hotel_boardinghouse: "Hotel / Boardinghouse",
+    personal_services: "Personal Services",
+    business_services: "Business Services",
+    auto: "Auto",
+    misc_repair: "Misc Repair",
+    motion_pictures: "Motion Pictures",
+    amusement_recreation: "Amusement and Recreation",
+    medical: "Medical",
+    food_store: "Food Store",
+    auto_dealer: "Auto Dealer",
+    eating_drinking: "Eating and Drinking",
+    educational: "Educational",
+    institutional: "Institutional",
+    industrial: "Industrial",
+    transportation: "Transportation",
+    home_based: "Home-Based",
+    mobile_food_truck: "Mobile — Food Truck",
+    mobile_pop_up: "Mobile — Pop Up",
+    mobile_catering: "Mobile — Catering",
+    mobile_personal_services: "Mobile — Personal Services",
+    mobile_medical_services: "Mobile — Medical Services",
+    non_profit: "Non-Profit",
   };
   return map[type] || type;
 }

@@ -12,82 +12,124 @@ const surveySteps = [
   {
     key: "business_stage",
     question: "Where are you in the process?",
-    description: "This helps us tailor your checklist to your current stage.",
+    description: "This helps us understand where you are in your journey.",
     options: [
-      { value: "just_exploring", label: "Just Exploring", description: "I'm researching what it takes" },
-      { value: "planning", label: "Actively Planning", description: "I have a business idea and I'm getting organized" },
-      { value: "ready_to_start", label: "Ready to Launch", description: "I'm ready to file paperwork and move forward" },
-      { value: "already_started", label: "Already Operating", description: "My business is running but I need to catch up on compliance" },
-    ],
-  },
-  {
-    key: "business_type",
-    question: "What type of business?",
-    description: "Different business types have different licensing and permit requirements.",
-    options: [
-      { value: "restaurant_food", label: "Restaurant / Food Service" },
-      { value: "retail", label: "Retail Store" },
-      { value: "office_professional", label: "Office / Professional Services" },
-      { value: "medical_health", label: "Medical / Healthcare" },
-      { value: "construction_trades", label: "Construction / Trades" },
-      { value: "home_based", label: "Home-Based Business" },
-      { value: "mobile_business", label: "Mobile Business" },
-      { value: "other", label: "Something Else" },
+      { value: "exploring_idea", label: "Exploring an idea" },
+      { value: "actively_planning", label: "Actively planning" },
+      { value: "looking_for_property", label: "Looking for property" },
+      { value: "under_contract", label: "Under contract / lease negotiation" },
+      { value: "ready_to_open", label: "Ready to open soon" },
+      { value: "already_open", label: "Already open (need help staying compliant)" },
     ],
   },
   {
     key: "has_property",
-    question: "Have you found a property?",
+    question: "Do you have a property?",
     options: [
-      { value: "no", label: "Not Yet", description: "I haven't started looking" },
-      { value: "looking", label: "Currently Looking", description: "I'm searching for the right location" },
-      { value: "found_one", label: "Found One", description: "I've identified a property but haven't committed" },
-      { value: "already_own", label: "Already Have One", description: "I own or lease a property" },
+      { value: "looking_need_help", label: "No, I am looking and would like help" },
+      { value: "looking_no_help", label: "No, I am looking and do not want help" },
+      { value: "dont_need_property", label: "No, I do not need property (home based or mobile)" },
+      { value: "in_mind", label: "I have a property in mind" },
+      { value: "secured", label: "I have secured a property" },
+    ],
+  },
+  {
+    key: "needs_construction",
+    question: "Will you need construction or renovations?",
+    options: [
+      { value: "no", label: "No" },
+      { value: "minor", label: "Minor changes (interior)" },
+      { value: "major_renovation", label: "Major renovation (inside and out)" },
+      { value: "new_construction", label: "New construction" },
+      { value: "not_sure", label: "Not sure" },
+    ],
+  },
+  {
+    key: "business_type",
+    question: "What type of business are you starting?",
+    description: "Different business types have unique licensing and permit rules.",
+    options: [
+      { value: "agriculture", label: "Agriculture" },
+      { value: "professional_services", label: "Professional Services" },
+      { value: "retail", label: "Retail" },
+      { value: "hotel_boardinghouse", label: "Hotel / Boardinghouse" },
+      { value: "personal_services", label: "Personal Services (laundry, barber)" },
+      { value: "business_services", label: "Business Services" },
+      { value: "auto", label: "Auto" },
+      { value: "misc_repair", label: "Misc Repair" },
+      { value: "motion_pictures", label: "Motion Pictures" },
+      { value: "amusement_recreation", label: "Amusement and Recreation" },
+      { value: "medical", label: "Medical" },
+      { value: "food_store", label: "Food Store" },
+      { value: "auto_dealer", label: "Auto Dealer" },
+      { value: "eating_drinking", label: "Eating and Drinking" },
+      { value: "educational", label: "Educational" },
+      { value: "institutional", label: "Institutional (government, school, church)" },
+      { value: "industrial", label: "Industrial" },
+      { value: "transportation", label: "Transportation" },
+      { value: "home_based", label: "Home-Based" },
+      { value: "mobile_food_truck", label: "Mobile — Food Truck" },
+      { value: "mobile_pop_up", label: "Mobile — Pop Up" },
+      { value: "mobile_catering", label: "Mobile — Catering" },
+      { value: "mobile_personal_services", label: "Mobile — Personal Services" },
+      { value: "mobile_medical_services", label: "Mobile — Medical Services" },
+      { value: "non_profit", label: "Non-Profit" },
+    ],
+  },
+  {
+    key: "funding_needs",
+    question: "Do you need help with financing?",
+    options: [
+      { value: "no", label: "No" },
+      { value: "exploring_options", label: "Yes, exploring options" },
+      { value: "actively_applying", label: "Yes, actively applying" },
+    ],
+  },
+  {
+    key: "special_designations",
+    question: "Do any of these apply to you?",
+    description: "Select all that apply. This helps us surface relevant programs and incentives.",
+    multi: true,
+    options: [
+      { value: "is_woman_owned", label: "Woman-owned" },
+      { value: "is_minority_owned", label: "Minority-owned" },
+      { value: "is_veteran_owned", label: "Veteran-owned" },
+      { value: "is_first_time_owner", label: "First-time business owner" },
     ],
   },
   {
     key: "business_structure",
     question: "Have you decided on a business structure?",
     options: [
-      { value: "undecided", label: "Not Sure Yet", description: "I need guidance on what's best" },
-      { value: "sole_proprietorship", label: "Sole Proprietorship" },
-      { value: "llc", label: "LLC" },
-      { value: "s_corp", label: "S-Corporation" },
-      { value: "c_corp", label: "C-Corporation" },
+      { value: "no_reach_out", label: "No, I would like someone to reach out" },
+      { value: "no_research_myself", label: "No, I will research it myself" },
+      { value: "sole_proprietor", label: "Sole Proprietor" },
       { value: "partnership", label: "Partnership" },
+      { value: "llc", label: "LLC" },
+      { value: "c_corp", label: "Corporation (C Corp)" },
+      { value: "s_corp", label: "S Corp" },
+      { value: "nonprofit", label: "Nonprofit" },
+      { value: "other", label: "Other" },
     ],
   },
   {
-    key: "funding_needs",
-    question: "How are you planning to fund your business?",
+    key: "has_employees",
+    question: "Do you anticipate having employees?",
     options: [
-      { value: "self_funded", label: "Self-Funded", description: "Using personal savings or assets" },
-      { value: "need_loan", label: "Need a Loan", description: "Looking for SBA, bank, or construction loans" },
-      { value: "seeking_investors", label: "Seeking Investors" },
-      { value: "exploring_options", label: "Exploring All Options" },
+      { value: "no", label: "No" },
+      { value: "1_5", label: "Yes (1-5)" },
+      { value: "6_20", label: "Yes (6-20)" },
+      { value: "20_plus", label: "Yes (20+)" },
     ],
   },
   {
-    key: "special_designations",
-    question: "Do any of these apply to you?",
-    description: "Select all that apply. This unlocks special programs and incentives.",
-    multi: true,
+    key: "help_level",
+    question: "How much help do you want with this process?",
     options: [
-      { value: "is_woman_owned", label: "Woman-Owned Business" },
-      { value: "is_veteran_owned", label: "Veteran-Owned Business" },
-      { value: "is_minority_owned", label: "Minority-Owned Business" },
-      { value: "needs_construction", label: "I'll Need Construction / Build-Out" },
-    ],
-  },
-  {
-    key: "estimated_budget",
-    question: "What's your estimated startup budget?",
-    options: [
-      { value: "under_10k", label: "Under $10,000" },
-      { value: "10k_50k", label: "$10,000 – $50,000" },
-      { value: "50k_150k", label: "$50,000 – $150,000" },
-      { value: "150k_500k", label: "$150,000 – $500,000" },
-      { value: "over_500k", label: "$500,000+" },
+      { value: "free_checklist", label: "Just the free checklist" },
+      { value: "step_by_step", label: "Detailed step-by-step guide" },
+      { value: "review_situation", label: "Help reviewing my situation" },
+      { value: "full_concierge", label: "Full support / concierge" },
     ],
   },
 ];
@@ -101,7 +143,7 @@ export default function Survey() {
   const [saving, setSaving] = useState(false);
 
   const planType = searchParams.get("plan") === "premium" ? "premium" : "free";
-  const totalSteps = surveySteps.length + 1; // +1 for contact info
+  const totalSteps = surveySteps.length + 1;
   const progress = ((step + 1) / totalSteps) * 100;
   const isContactStep = step === surveySteps.length;
   const currentStep = surveySteps[step];
@@ -109,7 +151,7 @@ export default function Survey() {
   const canProceed = () => {
     if (isContactStep) return contactInfo.email.trim() !== "";
     const stepConfig = surveySteps[step];
-    if (stepConfig.multi) return true; // Multi-select is optional
+    if (stepConfig.multi) return true;
     return answers[stepConfig.key] !== undefined && answers[stepConfig.key] !== "";
   };
 
@@ -135,7 +177,7 @@ export default function Survey() {
       surveyData.is_woman_owned = answers.special_designations.includes("is_woman_owned");
       surveyData.is_veteran_owned = answers.special_designations.includes("is_veteran_owned");
       surveyData.is_minority_owned = answers.special_designations.includes("is_minority_owned");
-      surveyData.needs_construction = answers.special_designations.includes("needs_construction");
+      surveyData.is_first_time_owner = answers.special_designations.includes("is_first_time_owner");
     }
     delete surveyData.special_designations;
 

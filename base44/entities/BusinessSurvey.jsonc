@@ -5,56 +5,89 @@
     "business_stage": {
       "type": "string",
       "enum": [
-        "just_exploring",
-        "planning",
-        "ready_to_start",
-        "already_started"
+        "exploring_idea",
+        "actively_planning",
+        "looking_for_property",
+        "under_contract",
+        "ready_to_open",
+        "already_open"
       ],
       "description": "Where the user is in the process"
     },
     "has_property": {
       "type": "string",
       "enum": [
-        "no",
-        "looking",
-        "found_one",
-        "already_own"
+        "looking_need_help",
+        "looking_no_help",
+        "dont_need_property",
+        "in_mind",
+        "secured"
       ],
       "description": "Property status"
+    },
+    "needs_construction": {
+      "type": "string",
+      "enum": [
+        "no",
+        "minor",
+        "major_renovation",
+        "new_construction",
+        "not_sure"
+      ],
+      "description": "Whether construction or renovations are needed"
     },
     "business_type": {
       "type": "string",
       "enum": [
-        "restaurant_food",
+        "agriculture",
+        "professional_services",
         "retail",
-        "office_professional",
-        "medical_health",
-        "construction_trades",
+        "hotel_boardinghouse",
+        "personal_services",
+        "business_services",
+        "auto",
+        "misc_repair",
+        "motion_pictures",
+        "amusement_recreation",
+        "medical",
+        "food_store",
+        "auto_dealer",
+        "eating_drinking",
+        "educational",
+        "institutional",
+        "industrial",
+        "transportation",
         "home_based",
-        "mobile_business",
-        "other"
+        "mobile_food_truck",
+        "mobile_pop_up",
+        "mobile_catering",
+        "mobile_personal_services",
+        "mobile_medical_services",
+        "non_profit"
       ],
       "description": "Type of business"
     },
     "business_structure": {
       "type": "string",
       "enum": [
-        "undecided",
-        "sole_proprietorship",
+        "no_reach_out",
+        "no_research_myself",
+        "sole_proprietor",
+        "partnership",
         "llc",
-        "s_corp",
         "c_corp",
-        "partnership"
+        "s_corp",
+        "nonprofit",
+        "other"
       ],
       "description": "Planned business structure"
     },
     "funding_needs": {
       "type": "string",
       "enum": [
-        "self_funded",
-        "need_loan",
-        "seeking_investors",
-        "exploring_options"
+        "no",
+        "exploring_options",
+        "actively_applying"
       ],
       "description": "Funding situation"
     },
@@ -70,20 +103,29 @@
       "type": "boolean",
       "description": "Whether business is minority-owned"
     },
-    "needs_construction": {
+    "is_first_time_owner": {
       "type": "boolean",
-      "description": "Whether buildout or construction is needed"
+      "description": "Whether this is the user's first business"
     },
-    "estimated_budget": {
+    "has_employees": {
       "type": "string",
       "enum": [
-        "under_10k",
-        "10k_50k",
-        "50k_150k",
-        "150k_500k",
-        "over_500k"
+        "no",
+        "1_5",
+        "6_20",
+        "20_plus"
       ],
-      "description": "Estimated startup budget"
+      "description": "Anticipated number of employees"
+    },
+    "help_level": {
+      "type": "string",
+      "enum": [
+        "free_checklist",
+        "step_by_step",
+        "review_situation",
+        "full_concierge"
+      ],
+      "description": "Level of help desired"
     },
     "email": {
       "type": "string",
