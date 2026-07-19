@@ -9,9 +9,7 @@ export function generateChecklist(survey) {
     id: "plan_1",
     phase: "Planning & Legal Setup",
     title: "Write a Business Plan",
-    description: isPremium
-      ? "Outline your business model, target market, financial projections, and competitive analysis. IRC's Economic Development office offers free consultations."
-      : "Create a comprehensive business plan.",
+    description: "A business plan isn't necessary unless you are looking for funding or additional outside guidance, but it is recommended as a way to flush out the idea and see if it is financially viable.\n\nCheck out the SBA for resources to start your business plan: https://www.sba.gov/business-guide/plan-your-business/write-your-business-plan\n\nIf you would like free in-person guidance, contact the local SBDC chapter: https://floridasbdc.org/find/irsc/",
     category: "planning",
     tier: "free",
   });
@@ -55,7 +53,7 @@ export function generateChecklist(survey) {
       : "File your business formation documents with the state.",
     category: "legal",
     tier: "free",
-    link: isPremium ? "https://sunbiz.org" : undefined,
+    link: "https://dos.fl.gov/sunbiz/start-business/",
   });
 
   checklist.push({
@@ -67,20 +65,7 @@ export function generateChecklist(survey) {
       : "Get your federal employer identification number.",
     category: "legal",
     tier: "free",
-    link: isPremium
-      ? "https://www.irs.gov/businesses/small-businesses-self-employed/apply-for-an-employer-identification-number-ein-online"
-      : undefined,
-  });
-
-  checklist.push({
-    id: "legal_4",
-    phase: "Planning & Legal Setup",
-    title: "Register Fictitious Name (DBA) if Needed",
-    description: isPremium
-      ? "If operating under a name different from your legal entity name, file a fictitious name registration with the FL Division of Corporations. Fee: $50."
-      : "Register your DBA if using a trade name.",
-    category: "legal",
-    tier: "free",
+    link: "https://www.irs.gov/businesses/small-businesses-self-employed/get-an-employer-identification-number",
   });
 
   if (isPremium) {
@@ -361,10 +346,8 @@ export function generateChecklist(survey) {
   checklist.push({
     id: "lic_1",
     phase: "Licenses & Permits",
-    title: "Apply for IRC Local Business Tax Receipt",
-    description: isPremium
-      ? "Required for all businesses in Indian River County. Apply at IRC Tax Collector's Office. Fee varies by business type ($30–$200+). Renew annually by September 30."
-      : "Obtain your local business tax receipt (business license).",
+    title: "Apply for Local Business Tax Receipt",
+    description: "Depending on where you start your business, you will also need to register with that specific jurisdiction. The City of Vero Beach, City of Sebastian, Indian River County, etc. all have their own business licenses. Apply at the Tax Collector's Office for the jurisdiction where your business is located. Fee varies by business type ($30–$200+). Renew annually by September 30.",
     category: "licensing",
     tier: "free",
   });

@@ -80,9 +80,23 @@ export default function ChecklistItem({ item, isComplete, onToggle, isPremiumLoc
               animate={{ opacity: 1, height: "auto" }}
               className="mt-2"
             >
-              <p className="text-sm text-muted-foreground leading-relaxed">
-                {item.description}
-              </p>
+              <div className="text-sm text-muted-foreground leading-relaxed space-y-2">
+                {item.description.split("\n\n").map((para, i) => {
+                  const urlRegex = /(https?:\/\/[^\s]+)/g;
+                  const parts = para.split(urlRegex);
+                  return (
+                    <p key={i}>
+                      {parts.map((part, j) =>
+                        urlRegex.test(part) ? (
+                          <a key={j} href={part} target="_blank" rel="noopener noreferrer" className="text-accent hover:underline break-all">
+                            {part}
+                          </a>
+                        ) : part
+                      )}
+                    </p>
+                  );
+                })}
+              </div>
               {item.link && (
                 <a
                   href={item.link}
