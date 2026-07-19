@@ -4,6 +4,7 @@ import { base44 } from "@/api/base44Client";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { generateChecklist } from "@/lib/checklistGenerator";
 import ChecklistItem from "@/components/checklist/ChecklistItem";
+import GuidanceCard from "@/components/checklist/GuidanceCard";
 import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -34,7 +35,7 @@ export default function Checklist() {
 
   const progress = useMemo(() => {
     if (!checklist.length || !survey?.checklist_progress) return 0;
-    const completable = checklist.filter(i => survey.plan_type === "premium" || i.tier === "free");
+    const completable = checklist.filter(i => i.type !== "guidance" && (survey.plan_type === "premium" || i.tier === "free"));
     const completed = completable.filter(i => survey.checklist_progress[i.id]);
     return completable.length > 0 ? Math.round((completed.length / completable.length) * 100) : 0;
   }, [checklist, survey]);
@@ -93,7 +94,8 @@ export default function Checklist() {
     );
   }
 
-  const completedCount = checklist.filter(i => survey.checklist_progress?.[i.id]).length;
+  const actionItems = checklist.filter(i => i.type !== "guidance");
+  const completedCount = actionItems.filter(i => survey.checklist_progress?.[i.id]).length;
 
   return (
     <div className="min-h-screen bg-background">
@@ -123,7 +125,7 @@ export default function Checklist() {
           {/* Progress */}
           <div className="bg-card rounded-xl border p-6">
             <div className="flex items-center justify-between mb-3">
-              <span className="text-sm font-medium text-foreground">{completedCount} of {checklist.length} tasks</span>
+              <span className="text-sm font-medium text-foreground">{completedCount} of {actionItems.length} tasks</span>
               <span className="text-sm font-bold text-accent">{progress}%</span>
             </div>
             <Progress value={progress} className="h-3" />
@@ -162,15 +164,19 @@ export default function Checklist() {
                   {phase}
                 </h3>
                 <div className="space-y-3">
-                  {items.map((item) => (
-                    <ChecklistItem
-                      key={item.id}
-                      item={item}
-                      isComplete={!!survey.checklist_progress?.[item.id]}
-                      onToggle={() => toggleItem(item.id)}
-                      isPremiumLocked={item.tier === "premium" && survey.plan_type === "free"}
-                    />
-                  ))}
+                  {items.map((item) =>
+                    item.type === "guidance" ? (
+                      <GuidanceCard key={item.id} item={item} />
+                    ) : (
+                      <ChecklistItem
+                        key={item.id}
+                        item={item}
+                        isComplete={!!survey.checklist_progress?.[item.id]}
+                        onToggle={() => toggleItem(item.id)}
+                        isPremiumLocked={item.tier === "premium" && survey.plan_type === "free"}
+                      />
+                    )
+                  )}
                 </div>
               </div>
             );

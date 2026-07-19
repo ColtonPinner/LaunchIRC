@@ -16,6 +16,22 @@ export function generateChecklist(survey) {
     tier: "free",
   });
 
+  // Business structure guidance — always shown
+  checklist.push({
+    id: "guid_structure",
+    phase: "Planning & Legal Setup",
+    type: "guidance",
+    title: "Choosing a Business Structure in Florida",
+    guidance_paragraphs: [
+      "There are six corporate types in Florida: sole proprietorship, LLC, corporation, partnership, general partnership, and limited partnership.",
+      "It is best to discuss with an accountant to see what is best for tax benefits. An attorney will help you file the necessary paperwork if needed.",
+    ],
+    links: [
+      { url: "https://dos.fl.gov/sunbiz/start-business/corporate-structure/", label: "FL Division of Corporations — Corporate Structure Guide" },
+    ],
+    category: "legal",
+  });
+
   // Business Structure
   if (survey.business_structure === "no_reach_out" || survey.business_structure === "no_research_myself" || !survey.business_structure) {
     checklist.push({
@@ -92,6 +108,54 @@ export function generateChecklist(survey) {
   }
 
   // === PHASE 2: PROPERTY & LOCATION ===
+
+  // Property guidance based on answer
+  if (survey.has_property === "looking_need_help") {
+    checklist.push({
+      id: "guid_prop_help",
+      phase: "Property & Location",
+      type: "guidance",
+      title: "Finding the Right Property",
+      guidance_paragraphs: [
+        "Check out [Brian's Page — placeholder] or https://www.loopnet.com/ to search available commercial listings in Indian River County.",
+        "You can also contact our local featured expert: [FEATURED COMPANY — placeholder] who specializes in commercial real estate in IRC.",
+      ],
+      cta: "If you would like someone to reach out to you, click here. [placeholder link]",
+      category: "property",
+    });
+  }
+
+  if (survey.has_property === "looking_no_help") {
+    checklist.push({
+      id: "guid_prop_diy",
+      phase: "Property & Location",
+      type: "guidance",
+      title: "What to Watch for When Property Hunting",
+      guidance_paragraphs: [
+        "Make sure to check the jurisdiction's code when looking at a piece of property. Even though the listing might say what is allowed, they are not always correct.",
+        "There are several other factors people often overlook such as parking criteria, ADA compliance, and available utilities.",
+        "If you are buying a developed property but using it for a different use than was previously used, it is recommended to talk with the jurisdiction before purchasing. Sometimes it will trigger potential updates that may be required.",
+      ],
+      category: "property",
+    });
+  }
+
+  if (survey.has_property === "in_mind") {
+    checklist.push({
+      id: "guid_prop_in_mind",
+      phase: "Property & Location",
+      type: "guidance",
+      title: "Before You Commit to That Property",
+      guidance_paragraphs: [
+        "Make sure to check the jurisdiction's code when looking at a piece of property. Even though the listing might say what is allowed, they are not always correct.",
+        "There are several other factors people often overlook such as parking criteria, ADA compliance, and available utilities.",
+        "If you are buying a developed property but using it for a different use than was previously used, it is recommended to talk with the jurisdiction before purchasing. Sometimes it will trigger potential updates that may be required.",
+        "If you would like a more detailed list of what to check for, we recommend the paid checklist option or contacting us for help.",
+      ],
+      category: "property",
+    });
+  }
+
   const needsPropertyHelp = survey.has_property !== "dont_need_property" && survey.has_property !== "secured";
 
   if (needsPropertyHelp) {
@@ -149,7 +213,90 @@ export function generateChecklist(survey) {
     });
   }
 
+  // Construction guidance
+  if (survey.needs_construction === "minor") {
+    checklist.push({
+      id: "guid_build_minor",
+      phase: "Construction & Build-Out",
+      type: "guidance",
+      title: "Minor Interior Changes — What You Should Know",
+      guidance_paragraphs: [
+        "You may need a building permit depending on whether you are adding walls, plumbing, or a kitchen.",
+        "It is recommended to talk with an interior designer to understand the ADA compliance requirements for your space.",
+      ],
+      category: "codes",
+    });
+  }
+
+  if (survey.needs_construction === "major_renovation") {
+    checklist.push({
+      id: "guid_build_major",
+      phase: "Construction & Build-Out",
+      type: "guidance",
+      title: "Major Renovation — Permits You May Need",
+      guidance_paragraphs: [
+        "There are several permits that you may need: building permit, code compliance, and a minor site plan modification depending on what jurisdiction the property is in.",
+      ],
+      category: "codes",
+    });
+  }
+
+  if (survey.needs_construction === "new_construction") {
+    checklist.push({
+      id: "guid_build_new",
+      phase: "Construction & Build-Out",
+      type: "guidance",
+      title: "New Construction — Critical First Steps",
+      guidance_paragraphs: [
+        "You will need to hire a civil engineer to do the permitting. You will also need a boundary and topo survey (within 1 year old), environmental study (wetlands, endangered species), geotechnical engineering report, and possibly a traffic report down the line.",
+        "It is very important you hire a civil engineer prior to buying land.",
+      ],
+      category: "codes",
+    });
+  }
+
+  // General permits/licenses guidance — shown for all users
+  checklist.push({
+    id: "guid_other_permits",
+    phase: "Licenses & Permits",
+    type: "guidance",
+    title: "Other Permits & Licenses That May Apply",
+    guidance_paragraphs: [
+      "Depending on your industry, you may also need: professional licensing, firm registration, sales tax certificates, lodging license, motor vehicle repair registration, environmental permits, disposal permits, health permits, facility license, food establishment license, food service license, childcare licensing, home occupation permit, mobile food dispensing license, or event permits.",
+    ],
+    category: "licensing",
+  });
+
   // === PHASE 3: FINANCING ===
+  if (survey.funding_needs === "exploring_options") {
+    checklist.push({
+      id: "guid_fin_exploring",
+      phase: "Financing & Funding",
+      type: "guidance",
+      title: "Financing Options — What's Available",
+      guidance_paragraphs: [
+        "There are several different options including SBA loans, traditional bank loans, business loans, equipment financing, business line of credit, and self-funding or fundraising.",
+        "They each have their own pros and cons with how much down payment is required, how much effort is required (paperwork, business plan, profit projections), and how long the application process will take.",
+        "Depending on how much you have to invest and how much you can prove the business will be a success will determine what type of loan is most beneficial.",
+        "The Small Business Development Center (SBDC) has great resources to help with creating a business plan.",
+      ],
+      category: "financial",
+    });
+  }
+
+  if (survey.funding_needs === "actively_applying") {
+    checklist.push({
+      id: "guid_fin_applying",
+      phase: "Financing & Funding",
+      type: "guidance",
+      title: "Loan Contacts & Resources",
+      guidance_paragraphs: [
+        "If you would like help with a certain type of loan, these are the best contacts: [PLACEHOLDER — add loan contacts here]",
+      ],
+      category: "financial",
+    });
+  }
+
   if (survey.funding_needs !== "no") {
     checklist.push({
       id: "fin_1",
