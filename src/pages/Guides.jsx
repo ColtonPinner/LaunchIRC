@@ -26,16 +26,9 @@ Once you've figured out what the zoning is, you can read the jurisdiction's muni
       },
       {
         title: "Parking Requirements",
-        content: `IRC requires off-street parking based on your business type and building size:
+        content: `Each jurisdiction has their own parking requirements for different uses. Sometimes they are based on the square footage of a building, by the number of employees, or by the number of units. Each municipal code has a section on parking calculations.
 
-• **Retail stores**: 1 space per 200 sq ft of floor area
-• **Restaurants**: 1 space per 100 sq ft or 1 per 4 seats (whichever is greater)
-• **Office**: 1 space per 300 sq ft
-• **Medical/Dental**: 1 space per 175 sq ft
-• **Warehousing**: 1 space per 1,000 sq ft
-• **ADA accessible spaces**: Required per total parking count
-
-Insufficient parking can prevent occupancy approval. Consider shared parking agreements with adjacent businesses.`
+If you are buying a developed property, be sure to check if the new proposed use has the required number of parking spaces. It is possible that it doesn't have enough and you'll need to add more.`
       },
       {
         title: "Setback Requirements",
