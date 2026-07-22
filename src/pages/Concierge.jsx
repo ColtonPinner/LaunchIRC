@@ -115,9 +115,16 @@ export default function Concierge() {
         <div className="mb-16">
           <h2 className="font-heading text-2xl md:text-3xl font-bold text-center mb-8">Meet the Experts</h2>
           <div className="bg-card rounded-xl border p-6 md:p-8">
-            <div className="mb-1">
-              <h3 className="font-heading text-xl font-bold text-foreground">Elliese Shaughnessy, PE</h3>
-              <p className="text-sm text-muted-foreground font-medium">Vitter Engineering Group, LLC</p>
+            <div className="flex items-start gap-5 mb-1">
+              <img
+                src="https://media.base44.com/images/public/6a2a1e3d16adb81a0e2c26fb/7d274199b_Elliese-Headshot.jpg"
+                alt="Elliese Shaughnessy"
+                className="w-28 h-28 rounded-xl object-cover object-top flex-shrink-0"
+              />
+              <div className="pt-1">
+                <h3 className="font-heading text-xl font-bold text-foreground">Elliese Shaughnessy, PE</h3>
+                <p className="text-sm text-muted-foreground font-medium">Vitter Engineering Group, LLC</p>
+              </div>
             </div>
             <p className="text-sm text-muted-foreground leading-relaxed mt-4 mb-5">
               Elliese Shaughnessy is a Florida Professional Engineer, entrepreneur, and community leader with years of experience navigating zoning, permitting, and business development processes throughout Florida. As the founder of LaunchIRC, she is passionate about helping entrepreneurs turn ideas into successful businesses by providing clear guidance, trusted resources, and local expertise.
