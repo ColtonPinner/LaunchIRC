@@ -12,16 +12,17 @@ const guides = [
     color: "bg-blue-500/10 text-blue-600 border-blue-500/20",
     sections: [
       {
-        title: "Understanding IRC Zoning Classifications",
-        content: `Indian River County uses zoning districts to regulate what types of businesses can operate in different areas. Key commercial zones include:
+        title: "Understanding Zoning",
+        content: `Every piece of property has a zoning classification. Zoning is what planners planned out when the county was first being planned out. There are different zoning codes across Indian River County throughout the different cities and county but they are all similar. There are different tiers of residential, commercial, and industrial zoning. They determine what is allowed on the property, the density (how many units per acre), setbacks, impervious coverage, etc.
 
-• **C-1 (Retail Commercial)** — Retail stores, personal services, restaurants, offices
-• **C-2 (General Commercial)** — Broader commercial uses including auto services, entertainment
-• **C-3 (Highway Commercial)** — Along major corridors, allows larger commercial operations
-• **M-1 (Light Industrial)** — Manufacturing, warehousing, distribution
-• **M-2 (Heavy Industrial)** — Processing, heavy manufacturing
+You can find what the zoning is through each of the governing maps:
 
-Always verify the specific zoning of your desired property by calling IRC Planning Department at (772) 226-1237 or visiting their online zoning map.`
+• **City of Vero Beach**: https://covb.maps.arcgis.com/apps/instant/basic/index.html?appid=37f3f6a00a0e4184b8a3e314941566bf
+• **City of Sebastian**: https://www.arcgis.com/apps/mapviewer/index.html?webmap=ddca4e65cef745a0a73dabdca26aeb6d
+• **City of Fellsmere**: https://www.cityoffellsmere.org/media/15446
+• **Indian River County**: https://www.arcgis.com/apps/mapviewer/index.html?webmap=7d25d5abdf7248b684c8fbdaad6e40f7
+
+Once you've figured out what the zoning is, you can read the jurisdiction's municipal code to see what is allowed and what their development standards are.`
       },
       {
         title: "Parking Requirements",
@@ -399,7 +400,21 @@ export default function Guides() {
                             {section.content.split("\n").map((line, i) => (
                               <p key={i} className="mb-1 whitespace-pre-wrap text-sm leading-relaxed">
                                 {line.split("**").map((part, j) =>
-                                  j % 2 === 1 ? <strong key={j} className="text-foreground">{part}</strong> : part
+                                  j % 2 === 1 ? (
+                                    <strong key={j} className="text-foreground">
+                                      {part.split(/(https?:\/\/[^\s]+)/).map((chunk, k) =>
+                                        /^https?:\/\//.test(chunk) ? (
+                                          <a key={k} href={chunk} target="_blank" rel="noopener noreferrer" className="text-accent hover:underline break-all font-normal">{chunk}</a>
+                                        ) : chunk
+                                      )}
+                                    </strong>
+                                  ) : (
+                                    part.split(/(https?:\/\/[^\s]+)/).map((chunk, k) =>
+                                      /^https?:\/\//.test(chunk) ? (
+                                        <a key={k} href={chunk} target="_blank" rel="noopener noreferrer" className="text-accent hover:underline break-all">{chunk}</a>
+                                      ) : chunk
+                                    )
+                                  )
                                 )}
                               </p>
                             ))}
