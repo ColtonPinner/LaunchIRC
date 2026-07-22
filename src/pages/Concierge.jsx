@@ -111,6 +111,34 @@ export default function Concierge() {
           </div>
         </div>
 
+        {/* Meet the Experts */}
+        <div className="mb-16">
+          <h2 className="font-heading text-2xl md:text-3xl font-bold text-center mb-8">Meet the Experts</h2>
+          <div className="bg-card rounded-xl border p-6 md:p-8">
+            <div className="mb-1">
+              <h3 className="font-heading text-xl font-bold text-foreground">Elliese Shaughnessy, PE</h3>
+              <p className="text-sm text-muted-foreground font-medium">Vitter Engineering Group, LLC</p>
+            </div>
+            <p className="text-sm text-muted-foreground leading-relaxed mt-4 mb-5">
+              Elliese Shaughnessy is a Florida Professional Engineer, entrepreneur, and community leader with years of experience navigating zoning, permitting, and business development processes throughout Florida. As the founder of LaunchIRC, she is passionate about helping entrepreneurs turn ideas into successful businesses by providing clear guidance, trusted resources, and local expertise.
+            </p>
+            <ul className="space-y-2">
+              {[
+                "Licensed Professional Engineer",
+                "Served on the City of Vero Beach's Planning and Zoning Board for over 5 years",
+                "Serves on the Economic Development Committee and Young Professionals Network for the Indian River Chamber of Commerce",
+                "Awarded Young Professional of the Year in 2025 by the Chamber of Commerce",
+                "Started several nonprofits and businesses in Vero Beach",
+              ].map((item) => (
+                <li key={item} className="flex items-start gap-2 text-sm text-muted-foreground">
+                  <CheckCircle2 className="w-4 h-4 text-accent flex-shrink-0 mt-0.5" />
+                  {item}
+                </li>
+              ))}
+            </ul>
+          </div>
+        </div>
+
         {/* Contact Form */}
         <div className="max-w-2xl mx-auto" id="contact">
           {submitted ? (
