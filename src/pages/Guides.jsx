@@ -31,15 +31,12 @@ Once you've figured out what the zoning is, you can read the jurisdiction's muni
 If you are buying a developed property, be sure to check if the new proposed use has the required number of parking spaces. It is possible that it doesn't have enough and you'll need to add more.`
       },
       {
-        title: "Setback Requirements",
-        content: `Building setbacks define how far structures must be from property lines. These vary by zoning district:
+        title: "Utility Requirements",
+        content: `You'll need to get water and sewer to your property but unfortunately there are no readily available maps to check if a property has municipal water. You can contact each utility provider to see if there is water or sewer available.
 
-• **Front setback**: Typically 20-25 ft in commercial zones
-• **Side setback**: 0-10 ft depending on zone and adjacency to residential
-• **Rear setback**: 10-20 ft
-• **Landscaping buffers**: Required when commercial abuts residential zones
+It is possible that your site may have access to a sewer force main but no sewer gravity. If this is the case, you'll need to budget for a lift station. It is also possible that there is no sewer available and you'll need a septic tank and drainfield which is permitted through the Department of Health.
 
-Nonconforming properties may need variances from the Board of Adjustment.`
+If you are buying a developed property, be careful in thinking that your utilities are good to go! There are several spots in the County that aren't connected to a utility but there are lines close by. If you have to get any type of permit for your property, the utility department may get notified and require you to connect to water and sewer. I know several people that have bought a developed property thinking they could start using it right away only to find out that they need to extend a water or sewer line, bore it under a roadway, and connect it to their property which resulted in a lot of lost time, money, and headache.`
       },
       {
         title: "What to Look For in a Property",
