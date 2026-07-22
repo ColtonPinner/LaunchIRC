@@ -6,7 +6,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { motion } from "framer-motion";
-import { Crown, CheckCircle2, Phone, Mail, Clock, Shield, Loader2 } from "lucide-react";
+import { Crown, CheckCircle2, Phone, Mail, Clock, Shield, Loader2, ChevronDown, ChevronUp } from "lucide-react";
 
 const services = [
   {
@@ -42,6 +42,26 @@ export default function Concierge() {
   });
   const [saving, setSaving] = useState(false);
   const [submitted, setSubmitted] = useState(false);
+  const [openExperts, setOpenExperts] = useState({});
+
+  const toggleExpert = (id) => setOpenExperts(prev => ({ ...prev, [id]: !prev[id] }));
+
+  const experts = [
+    {
+      id: "elliese",
+      name: "Elliese Shaughnessy, PE",
+      company: "Vitter Engineering Group, LLC",
+      photo: "https://media.base44.com/images/public/6a2a1e3d16adb81a0e2c26fb/7d274199b_Elliese-Headshot.jpg",
+      bio: "Elliese Shaughnessy is a Florida Professional Engineer, entrepreneur, and community leader with years of experience navigating zoning, permitting, and business development processes throughout Florida. As the founder of LaunchIRC, she is passionate about helping entrepreneurs turn ideas into successful businesses by providing clear guidance, trusted resources, and local expertise.",
+      bullets: [
+        "Licensed Professional Engineer",
+        "Served on the City of Vero Beach's Planning and Zoning Board for over 5 years",
+        "Serves on the Economic Development Committee and Young Professionals Network for the Indian River Chamber of Commerce",
+        "Awarded Young Professional of the Year in 2025 by the Chamber of Commerce",
+        "Started several nonprofits and businesses in Vero Beach",
+      ],
+    },
+  ];
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -108,39 +128,6 @@ export default function Concierge() {
                 <p className="text-sm text-muted-foreground">{item.desc}</p>
               </div>
             ))}
-          </div>
-        </div>
-
-        {/* Meet the Experts */}
-        <div className="mb-16">
-          <h2 className="font-heading text-2xl md:text-3xl font-bold text-center mb-8">Meet the Experts</h2>
-          <div className="bg-card rounded-xl border p-6 md:p-8">
-            <img
-              src="https://media.base44.com/images/public/6a2a1e3d16adb81a0e2c26fb/7d274199b_Elliese-Headshot.jpg"
-              alt="Elliese Shaughnessy"
-              className="float-right ml-6 mb-4 w-36 h-36 rounded-xl object-cover object-top"
-            />
-            <div className="mb-1">
-              <h3 className="font-heading text-xl font-bold text-foreground">Elliese Shaughnessy, PE</h3>
-              <p className="text-sm text-muted-foreground font-medium">Vitter Engineering Group, LLC</p>
-            </div>
-            <p className="text-sm text-muted-foreground leading-relaxed mt-4 mb-5">
-              Elliese Shaughnessy is a Florida Professional Engineer, entrepreneur, and community leader with years of experience navigating zoning, permitting, and business development processes throughout Florida. As the founder of LaunchIRC, she is passionate about helping entrepreneurs turn ideas into successful businesses by providing clear guidance, trusted resources, and local expertise.
-            </p>
-            <ul className="space-y-2">
-              {[
-                "Licensed Professional Engineer",
-                "Served on the City of Vero Beach's Planning and Zoning Board for over 5 years",
-                "Serves on the Economic Development Committee and Young Professionals Network for the Indian River Chamber of Commerce",
-                "Awarded Young Professional of the Year in 2025 by the Chamber of Commerce",
-                "Started several nonprofits and businesses in Vero Beach",
-              ].map((item) => (
-                <li key={item} className="flex items-start gap-2 text-sm text-muted-foreground">
-                  <CheckCircle2 className="w-4 h-4 text-accent flex-shrink-0 mt-0.5" />
-                  {item}
-                </li>
-              ))}
-            </ul>
           </div>
         </div>
 
@@ -245,6 +232,47 @@ export default function Concierge() {
               </form>
             </>
           )}
+        </div>
+        {/* Meet the Experts */}
+        <div className="max-w-2xl mx-auto mt-16">
+          <h2 className="font-heading text-2xl md:text-3xl font-bold text-center mb-8">Meet the Experts</h2>
+          <div className="space-y-3">
+            {experts.map((expert) => {
+              const isOpen = openExperts[expert.id];
+              return (
+                <div key={expert.id} className="bg-card rounded-xl border overflow-hidden">
+                  <button
+                    onClick={() => toggleExpert(expert.id)}
+                    className="w-full flex items-center justify-between p-5 text-left hover:bg-muted/30 transition-colors"
+                  >
+                    <div>
+                      <p className="font-bold text-foreground">{expert.name}</p>
+                      <p className="text-sm text-muted-foreground">{expert.company}</p>
+                    </div>
+                    {isOpen ? <ChevronUp className="w-5 h-5 text-muted-foreground flex-shrink-0" /> : <ChevronDown className="w-5 h-5 text-muted-foreground flex-shrink-0" />}
+                  </button>
+                  {isOpen && (
+                    <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="px-5 pb-5">
+                      <img
+                        src={expert.photo}
+                        alt={expert.name}
+                        className="float-right ml-6 mb-4 w-36 h-36 rounded-xl object-cover object-top"
+                      />
+                      <p className="text-sm text-muted-foreground leading-relaxed mb-4">{expert.bio}</p>
+                      <ul className="space-y-2 clear-both">
+                        {expert.bullets.map((item) => (
+                          <li key={item} className="flex items-start gap-2 text-sm text-muted-foreground">
+                            <CheckCircle2 className="w-4 h-4 text-accent flex-shrink-0 mt-0.5" />
+                            {item}
+                          </li>
+                        ))}
+                      </ul>
+                    </motion.div>
+                  )}
+                </div>
+              );
+            })}
+          </div>
         </div>
       </div>
     </div>
