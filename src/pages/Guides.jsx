@@ -9,6 +9,7 @@ const guides = [
     id: "property",
     icon: Building2,
     title: "Property & Zoning",
+    expert: "Vitter Engineering Group, LLC",
     color: "bg-blue-500/10 text-blue-600 border-blue-500/20",
     sections: [
       {
@@ -57,6 +58,7 @@ If you are buying a developed property, be careful in thinking that your utiliti
     id: "financial",
     icon: DollarSign,
     title: "Financing & Incentives",
+    expert: "your company name here",
     color: "bg-emerald-500/10 text-emerald-600 border-emerald-500/20",
     sections: [
       {
@@ -118,6 +120,7 @@ Contact IRC Economic Development: (772) 226-1625`
     id: "legal",
     icon: Scale,
     title: "Legal & Business Structure",
+    expert: "your company name here",
     color: "bg-violet-500/10 text-violet-600 border-violet-500/20",
     sections: [
       {
@@ -163,6 +166,7 @@ Contact IRC Economic Development: (772) 226-1625`
     id: "licensing",
     icon: FileCheck,
     title: "Licenses & Permits",
+    expert: "your company name here",
     color: "bg-amber-500/10 text-amber-600 border-amber-500/20",
     sections: [
       {
@@ -210,6 +214,7 @@ If selling taxable goods/services:
     id: "codes",
     icon: ShieldCheck,
     title: "Codes & Compliance",
+    expert: "your company name here",
     color: "bg-rose-500/10 text-rose-600 border-rose-500/20",
     sections: [
       {
@@ -269,6 +274,7 @@ ADA violations can result in lawsuits — consult an ADA specialist.`
     id: "taxes",
     icon: Calculator,
     title: "Taxes & Reporting",
+    expert: "your company name here",
     color: "bg-cyan-500/10 text-cyan-600 border-cyan-500/20",
     sections: [
       {
@@ -381,12 +387,19 @@ export default function Guides() {
           {guides.map((guide) => (
             <section key={guide.id} id={guide.id} className="scroll-mt-36">
               <div className="flex items-center gap-3 mb-6">
-                <div className={`w-12 h-12 rounded-xl ${guide.color} border flex items-center justify-center`}>
+                <div className={`w-12 h-12 rounded-xl ${guide.color} border flex items-center justify-center flex-shrink-0`}>
                   <guide.icon className="w-6 h-6" />
                 </div>
-                <h2 className="font-heading text-2xl md:text-3xl font-bold text-foreground">
-                  {guide.title}
-                </h2>
+                <div>
+                  <h2 className="font-heading text-2xl md:text-3xl font-bold text-foreground">
+                    {guide.title}
+                  </h2>
+                  {guide.expert && (
+                    <p className="text-xs text-muted-foreground mt-0.5 italic">
+                      Guided by local experts <span className="font-medium not-italic">{guide.expert}</span>
+                    </p>
+                  )}
+                </div>
               </div>
 
               <div className="space-y-3">
