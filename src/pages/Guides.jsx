@@ -13,7 +13,7 @@ const guides = [
     sections: [
       {
         title: "Understanding Zoning",
-        content: `Every piece of property has a zoning classification. Zoning is what planners planned out when the county was first being planned out. There are different zoning codes across Indian River County throughout the different cities and county but they are all similar. There are different tiers of residential, commercial, and industrial zoning. They determine what is allowed on the property, the density (how many units per acre), setbacks, impervious coverage, etc.
+        content: `Every property has a zoning designation that determines how the land can be used and developed. Zoning is established by local governments to guide future growth and ensure compatible land uses throughout the community. Although zoning regulations differ slightly between Indian River County and its municipalities, most include various residential, commercial, and industrial districts. These regulations control things such as permitted uses, development density, building setbacks, lot coverage, building height, parking requirements, and other standards that affect what can be built on a property.
 
 You can find what the zoning is through each of the governing maps:
 
