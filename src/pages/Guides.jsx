@@ -37,7 +37,9 @@ If you are buying a developed property, be sure to check if the new proposed use
 
 It is possible that your site may have access to a sewer force main but no sewer gravity. If this is the case, you'll need to budget for a lift station. It is also possible that there is no sewer available and you'll need a septic tank and drainfield which is permitted through the Department of Health.
 
-If you are buying a developed property, be careful in thinking that your utilities are good to go! There are several spots in the County that aren't connected to a utility but there are lines close by. If you have to get any type of permit for your property, the utility department may get notified and require you to connect to water and sewer. I know several people that have bought a developed property thinking they could start using it right away only to find out that they need to extend a water or sewer line, bore it under a roadway, and connect it to their property which resulted in a lot of lost time, money, and headache.`
+If you are buying a developed property, be careful in thinking that your utilities are good to go! There are several spots in the County that aren't connected to a utility but there are lines close by. If you have to get any type of permit for your property, the utility department may get notified and require you to connect to water and sewer. I know several people that have bought a developed property thinking they could start using it right away only to find out that they need to extend a water or sewer line, bore it under a roadway, and connect it to their property which resulted in a lot of lost time, money, and headache.
+
+If you're looking at an existing building, several building components may be out of date, there may be new utilities available that you'll need to connect to, parking may not be enough for the proposed use, and much more. It is highly recommended to talk to an interior designer, architect, and civil engineer.`
       },
       {
         title: "What to Look For in a Property",
