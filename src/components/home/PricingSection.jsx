@@ -26,7 +26,7 @@ const plans = [
   },
   {
     name: "Premium Checklist",
-    price: "$49",
+    price: "$50",
     period: "one-time",
     description: "Everything you need for DIY success",
     icon: Crown,
