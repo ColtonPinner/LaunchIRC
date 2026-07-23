@@ -164,7 +164,7 @@ export default function DirectoryJoin() {
             <h3 className="font-semibold text-sm mb-2">Interested in Sponsorship?</h3>
             <p className="text-sm text-muted-foreground">
               Sponsor listings get priority placement, featured badges, and visibility across our guides. 
-              Contact us at <span className="text-accent font-medium">hello@ircbusiness.com</span> for sponsorship packages.
+              Contact us at <span className="text-accent font-medium">elliese@launchindianriver.com</span> for sponsorship packages.
             </p>
           </div>
 

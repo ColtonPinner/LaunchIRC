@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { base44 } from "@/api/base44Client";
 import { useQuery } from "@tanstack/react-query";
@@ -52,6 +52,14 @@ export default function Directory() {
     const sponsorOrder = { platinum: 0, gold: 1, silver: 2, bronze: 3, none: 4 };
     return (sponsorOrder[a.sponsor_level] || 4) - (sponsorOrder[b.sponsor_level] || 4);
   });
+
+  // Scroll to a specific listing card when arriving via a #hash link (e.g. from the checklist).
+  useEffect(() => {
+    if (isLoading || !window.location.hash) return;
+    const id = decodeURIComponent(window.location.hash.slice(1));
+    const el = document.getElementById(id);
+    if (el) setTimeout(() => el.scrollIntoView({ behavior: "smooth", block: "center" }), 100);
+  }, [isLoading, sorted]);
 
   return (
     <div className="min-h-screen bg-background">
@@ -117,6 +125,7 @@ export default function Directory() {
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: i * 0.05 }}
+                id={(listing.company_name || "").toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-+|-+$/g, "")}
                 className={`bg-card rounded-xl border p-6 hover:shadow-lg transition-all duration-200 ${
                   listing.is_sponsor ? "ring-2 ring-accent/20" : ""
                 }`}

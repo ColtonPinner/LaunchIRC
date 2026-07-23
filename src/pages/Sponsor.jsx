@@ -133,7 +133,7 @@ export default function Sponsor() {
             Contact us to discuss the best sponsorship package for your business. 
             Custom packages are also available.
           </p>
-          <a href="mailto:hello@ircbusiness.com">
+          <a href="mailto:elliese@launchindianriver.com">
             <Button className="bg-accent hover:bg-accent/90 text-white font-semibold gap-2 px-8" size="lg">
               <Mail className="w-5 h-5" />
               Contact Us

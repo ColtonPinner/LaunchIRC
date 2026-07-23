@@ -23,6 +23,7 @@ export function generateChecklist(survey) {
     guidance_paragraphs: [
       "There are six corporate types in Florida: sole proprietorship, LLC, corporation, partnership, general partnership, and limited partnership.",
       "It is best to discuss with an accountant to see what is best for tax benefits. An attorney will help you file the necessary paperwork if needed.",
+      "Contact local expert your company for assistance.",
     ],
     links: [
       { url: "https://dos.fl.gov/sunbiz/start-business/corporate-structure/", label: "FL Division of Corporations — Corporate Structure Guide" },
@@ -92,7 +93,97 @@ export function generateChecklist(survey) {
     });
   }
 
-  // === PHASE 2: PROPERTY & LOCATION ===
+  // === PHASE 2: FINANCING & FUNDING ===
+  if (survey.funding_needs === "exploring_options") {
+    checklist.push({
+      id: "guid_fin_exploring",
+      phase: "Financing & Funding",
+      type: "guidance",
+      title: "Financing Options — What's Available",
+      guidance_paragraphs: [
+        "There are several different options including SBA loans, traditional bank loans, business loans, equipment financing, business line of credit, and self-funding or fundraising.",
+        "They each have their own pros and cons with how much down payment is required, how much effort is required (paperwork, business plan, profit projections), and how long the application process will take.",
+        "Depending on how much you have to invest and how much you can prove the business will be a success will determine what type of loan is most beneficial.",
+        "The Small Business Development Center (SBDC) has great resources to help with creating a business plan.",
+      ],
+      category: "financial",
+    });
+  }
+
+  if (survey.funding_needs === "actively_applying") {
+    checklist.push({
+      id: "guid_fin_applying",
+      phase: "Financing & Funding",
+      type: "guidance",
+      title: "Loan Contacts & Resources",
+      guidance_paragraphs: [
+        "If you would like help with a certain type of loan, these are the best contacts: [PLACEHOLDER — add loan contacts here]",
+      ],
+      category: "financial",
+    });
+  }
+
+  if (survey.funding_needs !== "no") {
+    checklist.push({
+      id: "fin_1",
+      phase: "Financing & Funding",
+      title: "Explore SBA Loan Programs",
+      description: isPremium
+        ? "SBA 7(a) loans: up to $5M for working capital/equipment. SBA 504 loans: for real estate & heavy equipment. SBA Microloans: up to $50K. Contact IRC SCORE chapter for free mentoring."
+        : "Research SBA loan options for small businesses.",
+      category: "financial",
+      tier: "free",
+    });
+
+    const needsConstructionFinancing = survey.needs_construction && survey.needs_construction !== "no" && survey.needs_construction !== "not_sure";
+    if (needsConstructionFinancing) {
+      checklist.push({
+        id: "fin_2",
+        phase: "Financing & Funding",
+        title: "Research Construction Loan Options",
+        description: isPremium
+          ? "Construction-to-permanent loans combine build costs and mortgage. Compare local lenders: Marine Bank, Seacoast Banking Corp. SBA 504 can cover up to 40% of project costs."
+          : "Explore construction financing for your build-out.",
+        category: "financial",
+        tier: "free",
+      });
+    }
+
+    if (isPremium) {
+      checklist.push({
+        id: "fin_3",
+        phase: "Financing & Funding",
+        title: "Research IRC Economic Development Incentives",
+        description: "IRC offers tax abatements, impact fee deferrals, and infrastructure grants for qualifying businesses. Contact IRC Economic Development: (772) 226-1625.",
+        category: "financial",
+        tier: "premium",
+      });
+
+      if (survey.is_woman_owned) {
+        checklist.push({
+          id: "fin_4",
+          phase: "Financing & Funding",
+          title: "Apply for Women-Owned Business Programs",
+          description: "SBA Women's Business Centers offer free training. WOSB federal contracting program. Florida WBENC certification opens corporate contracts.",
+          category: "financial",
+          tier: "premium",
+        });
+      }
+
+      if (survey.is_veteran_owned) {
+        checklist.push({
+          id: "fin_5",
+          phase: "Financing & Funding",
+          title: "Apply for Veteran Business Programs",
+          description: "SBA Boots to Business program, Patriot Express loans, VA small business grants. Service-Disabled Veteran-Owned certification for government contracts.",
+          category: "financial",
+          tier: "premium",
+        });
+      }
+    }
+  }
+
+  // === PHASE 3: PROPERTY & LOCATION ===
 
   // Property guidance based on answer
   if (survey.has_property === "looking_need_help") {
@@ -102,10 +193,15 @@ export function generateChecklist(survey) {
       type: "guidance",
       title: "Finding the Right Property",
       guidance_paragraphs: [
-        "Check out [Brian's Page — placeholder] or https://www.loopnet.com/ to search available commercial listings in Indian River County.",
+        "Check out the [Indian River Economic Development property search](https://indianrivered.giswebtechguru.com/?sorting=featured&showpropertyonmap=true&activebasemap2d=World%20Navigation%20Map%20(Places)&mapextent=-8900619.003047831,3274269.5095533854,-9034383.802546825,3159766.8411822463&mapzoom=9) or [Loopnet](https://www.loopnet.com/) to search available commercial listings in Indian River County.",
         "You can also contact our local featured expert: [FEATURED COMPANY — placeholder] who specializes in commercial real estate in IRC.",
       ],
-      cta: "If you would like someone to reach out to you, click here. [placeholder link]",
+      cta: "If you would like someone to reach out to you, click the button below.",
+      ctaButton: {
+        label: "Request a Call",
+        email: "elliese@launchindianriver.com",
+        subject: "Launch IRC — Property help request",
+      },
       category: "property",
     });
   }
@@ -198,6 +294,26 @@ export function generateChecklist(survey) {
     });
   }
 
+  // Need Help? tile — shown for users still working through property
+  if (needsPropertyHelp) {
+    checklist.push({
+      id: "guid_prop_need_help",
+      phase: "Property & Location",
+      type: "guidance",
+      title: "Need Help?",
+      guidance_paragraphs: [
+        "You can find a step-by-step guide for each of these items by upgrading your site plan or contacting me below for concierge services. Eventually you will need the services of a civil engineer to design your site and permit it so if you think you have found the perfect spot, it's a good idea to get a civil engineer on board!",
+        "Contact me, your local expert, at [Vitter Engineering Group, LLC](/directory#vitter-engineering-group-llc).",
+      ],
+      contactInfo: {
+        phone: "772-766-6533",
+        email: "eshaughnessy@vitterengineeringgroup.com",
+        website: "https://vitterengineeringgroup.com",
+      },
+      category: "property",
+    });
+  }
+
   // Construction guidance
   if (survey.needs_construction === "minor") {
     checklist.push({
@@ -233,8 +349,19 @@ export function generateChecklist(survey) {
       type: "guidance",
       title: "New Construction — Critical First Steps",
       guidance_paragraphs: [
-        "You will need to hire a civil engineer to do the permitting. You will also need a boundary and topo survey (within 1 year old), environmental study (wetlands, endangered species), geotechnical engineering report, and possibly a traffic report down the line.",
-        "It is very important you hire a civil engineer prior to buying land.",
+        "You will need to hire a civil engineer to do the permitting. You will also need a boundary and topo survey (within 1 year old), environmental study (wetlands, endangered species), geotechnical engineering report, and landscape architect to design and stamp landscape plans, and possibly a traffic report down the line.",
+        "You will also need to hire an architect to design your building. In the beginning stages, you can hire an interior designer instead to begin the concept plans and test fits.",
+        "This process can take anywhere from 6 months to 2 years and you will need several permits from the City and/ or County that you're working in as well as permits from water management districts, FDEP, Department of Health, and more. It is very important you hire a civil engineer prior to buying land to ensure that it will work.",
+      ],
+      localExperts: [
+        { role: "Civil Engineer", company: "Vitter Engineering Group, LLC", slug: "vitter-engineering-group-llc" },
+        { role: "Surveyor", company: "Your company here" },
+        { role: "Environmental Scientist", company: "Your company here" },
+        { role: "Geotechnical Engineer", company: "Your company here" },
+        { role: "Traffic Engineer", company: "Your company here" },
+        { role: "Landscape Designer", company: "Your company here" },
+        { role: "Architect", company: "Your company here" },
+        { role: "Interior Designer", company: "Formation Interiors, LLC", slug: "formation-interiors-llc" },
       ],
       category: "codes",
     });
@@ -251,96 +378,6 @@ export function generateChecklist(survey) {
     ],
     category: "licensing",
   });
-
-  // === PHASE 3: FINANCING ===
-  if (survey.funding_needs === "exploring_options") {
-    checklist.push({
-      id: "guid_fin_exploring",
-      phase: "Financing & Funding",
-      type: "guidance",
-      title: "Financing Options — What's Available",
-      guidance_paragraphs: [
-        "There are several different options including SBA loans, traditional bank loans, business loans, equipment financing, business line of credit, and self-funding or fundraising.",
-        "They each have their own pros and cons with how much down payment is required, how much effort is required (paperwork, business plan, profit projections), and how long the application process will take.",
-        "Depending on how much you have to invest and how much you can prove the business will be a success will determine what type of loan is most beneficial.",
-        "The Small Business Development Center (SBDC) has great resources to help with creating a business plan.",
-      ],
-      category: "financial",
-    });
-  }
-
-  if (survey.funding_needs === "actively_applying") {
-    checklist.push({
-      id: "guid_fin_applying",
-      phase: "Financing & Funding",
-      type: "guidance",
-      title: "Loan Contacts & Resources",
-      guidance_paragraphs: [
-        "If you would like help with a certain type of loan, these are the best contacts: [PLACEHOLDER — add loan contacts here]",
-      ],
-      category: "financial",
-    });
-  }
-
-  if (survey.funding_needs !== "no") {
-    checklist.push({
-      id: "fin_1",
-      phase: "Financing & Funding",
-      title: "Explore SBA Loan Programs",
-      description: isPremium
-        ? "SBA 7(a) loans: up to $5M for working capital/equipment. SBA 504 loans: for real estate & heavy equipment. SBA Microloans: up to $50K. Contact IRC SCORE chapter for free mentoring."
-        : "Research SBA loan options for small businesses.",
-      category: "financial",
-      tier: "free",
-    });
-
-    const needsConstructionFinancing = survey.needs_construction && survey.needs_construction !== "no" && survey.needs_construction !== "not_sure";
-    if (needsConstructionFinancing) {
-      checklist.push({
-        id: "fin_2",
-        phase: "Financing & Funding",
-        title: "Research Construction Loan Options",
-        description: isPremium
-          ? "Construction-to-permanent loans combine build costs and mortgage. Compare local lenders: Marine Bank, Seacoast Banking Corp. SBA 504 can cover up to 40% of project costs."
-          : "Explore construction financing for your build-out.",
-        category: "financial",
-        tier: "free",
-      });
-    }
-
-    if (isPremium) {
-      checklist.push({
-        id: "fin_3",
-        phase: "Financing & Funding",
-        title: "Research IRC Economic Development Incentives",
-        description: "IRC offers tax abatements, impact fee deferrals, and infrastructure grants for qualifying businesses. Contact IRC Economic Development: (772) 226-1625.",
-        category: "financial",
-        tier: "premium",
-      });
-
-      if (survey.is_woman_owned) {
-        checklist.push({
-          id: "fin_4",
-          phase: "Financing & Funding",
-          title: "Apply for Women-Owned Business Programs",
-          description: "SBA Women's Business Centers offer free training. WOSB federal contracting program. Florida WBENC certification opens corporate contracts.",
-          category: "financial",
-          tier: "premium",
-        });
-      }
-
-      if (survey.is_veteran_owned) {
-        checklist.push({
-          id: "fin_5",
-          phase: "Financing & Funding",
-          title: "Apply for Veteran Business Programs",
-          description: "SBA Boots to Business program, Patriot Express loans, VA small business grants. Service-Disabled Veteran-Owned certification for government contracts.",
-          category: "financial",
-          tier: "premium",
-        });
-      }
-    }
-  }
 
   // === PHASE 4: LICENSES & PERMITS ===
   checklist.push({
@@ -460,8 +497,8 @@ export function generateChecklist(survey) {
       phase: "Construction & Build-Out",
       title: "Submit Building Permit Application",
       description: isPremium
-        ? "Submit plans to IRC Building Department. Include architectural drawings, mechanical/electrical/plumbing plans. Review timeline: 2-4 weeks. Permit fees based on project value."
-        : "Apply for building permits for your construction or renovation.",
+        ? "Submit plans to IRC Building Department. Include architectural drawings, mechanical/electrical/plumbing plans. Review timeline: 2-4 weeks. Permit fees based on project value.\n\nThis is done through your architect or contractor. For help, contact local experts:\n\n• Contractor: Your company here\n\n• Architect: Your company here"
+        : "Apply for building permits for your construction or renovation.\n\nThis is done through your architect or contractor. For help, contact local experts:\n\n• Contractor: Your company here\n\n• Architect: Your company here",
       category: "codes",
       tier: "free",
     });
@@ -554,7 +591,7 @@ export function generateChecklist(survey) {
     });
   }
 
-  // === PHASE 7: ONGOING TAXES & COMPLIANCE ===
+  // === PHASE 7: ONGOING TAXES & REPORTING ===
   checklist.push({
     id: "tax_1",
     phase: "Ongoing Taxes & Reporting",
