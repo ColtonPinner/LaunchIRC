@@ -75,9 +75,9 @@ export default function Footer() {
             © {new Date().getFullYear()} Launch Indian River. All rights reserved.
           </p>
           <div className="flex gap-6 text-xs text-primary-foreground/40">
-            <span className="hover:text-primary-foreground/60 cursor-pointer">Privacy</span>
-            <span className="hover:text-primary-foreground/60 cursor-pointer">Terms</span>
-            <span className="hover:text-primary-foreground/60 cursor-pointer">Disclaimer</span>
+            <Link to="/privacy" className="hover:text-primary-foreground/60 cursor-pointer">Privacy</Link>
+            <Link to="/terms" className="hover:text-primary-foreground/60 cursor-pointer">Terms</Link>
+            <Link to="/disclaimer" className="hover:text-primary-foreground/60 cursor-pointer">Disclaimer</Link>
           </div>
         </div>
       </div>

@@ -16,6 +16,9 @@ import DirectoryJoin from '@/pages/DirectoryJoin';
 import Concierge from '@/pages/Concierge';
 import Sponsor from '@/pages/Sponsor';
 import Events from '@/pages/Events';
+import Privacy from '@/pages/Privacy';
+import Terms from '@/pages/Terms';
+import Disclaimer from '@/pages/Disclaimer';
 import Login from '@/pages/Login';
 import Register from '@/pages/Register';
 import ForgotPassword from '@/pages/ForgotPassword';
@@ -62,6 +65,9 @@ const AuthenticatedApp = () => {
         <Route path="/concierge" element={<Concierge />} />
         <Route path="/sponsor" element={<Sponsor />} />
         <Route path="/events" element={<Events />} />
+        <Route path="/privacy" element={<Privacy />} />
+        <Route path="/terms" element={<Terms />} />
+        <Route path="/disclaimer" element={<Disclaimer />} />
         <Route element={<ProtectedRoute unauthenticatedElement={<Navigate to="/login" replace />} />}>
           <Route path="/checklist" element={<Checklist />} />
         </Route>
