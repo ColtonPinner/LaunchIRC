@@ -60,7 +60,7 @@ export default function Footer() {
               </div>
               <div className="flex items-center gap-2">
                 <Phone className="w-4 h-4" />
-                <span>(772) 555-0100</span>
+                <span>(772) 766-6533</span>
               </div>
               <div className="flex items-start gap-2">
                 <MapPin className="w-4 h-4 mt-0.5" />
