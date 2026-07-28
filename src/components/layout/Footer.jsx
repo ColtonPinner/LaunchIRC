@@ -72,7 +72,7 @@ export default function Footer() {
 
         <div className="mt-12 pt-8 border-t border-primary-foreground/10 flex flex-col sm:flex-row justify-between items-center gap-4">
           <p className="text-xs text-primary-foreground/40">
-            © {new Date().getFullYear()} Launch IRC. All rights reserved. A product of <span className="text-primary-foreground/60 font-medium">Launchpad</span>.
+            © {new Date().getFullYear()} Launch Indian River. All rights reserved. A product of <span className="text-primary-foreground/60 font-medium">Launchpad</span>.
           </p>
           <div className="flex gap-6 text-xs text-primary-foreground/40">
             <span className="hover:text-primary-foreground/60 cursor-pointer">Privacy</span>
