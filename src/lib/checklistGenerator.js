@@ -303,11 +303,11 @@ export function generateChecklist(survey) {
       title: "Need Help?",
       guidance_paragraphs: [
         "You can find a step-by-step guide for each of these items by upgrading your site plan or contacting me below for concierge services. Eventually you will need the services of a civil engineer to design your site and permit it so if you think you have found the perfect spot, it's a good idea to get a civil engineer on board!",
-        "Contact me, your local expert, at [Vitter Engineering Group, LLC](/directory#vitter-engineering-group-llc).",
+        "Contact me, your local engineering expert at [Vitter Engineering Group, LLC](/directory#vitter-engineering-group-llc) — reach me at elliese@launchindianriver.com.",
       ],
       contactInfo: {
         phone: "772-766-6533",
-        email: "eshaughnessy@vitterengineeringgroup.com",
+        email: "elliese@launchindianriver.com",
         website: "https://vitterengineeringgroup.com",
       },
       category: "property",
