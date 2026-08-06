@@ -1,6 +1,6 @@
 // Builders for the detailed guidance "cards" shown in the generated checklist.
 // Each builder returns a single guidance item (or array) consumed by GuidanceCard.
-import { getJurisdictionContext, UNSURE_FALLBACK, INSIDE_EXPERTS_INTRO, VACANT_EXPERTS } from "@/lib/jurisdictionData";
+import { getJurisdictionContext, UNSURE_FALLBACK, INSIDE_EXPERTS_INTRO, PLACEHOLDER_EXPERTS_INTRO, VACANT_EXPERTS } from "@/lib/jurisdictionData";
 
 const ADA_PARKING_LINK = "https://www.ada.gov/topics/parking/";
 const FEMA_LINK = "https://msc.fema.gov/portal/home";
@@ -17,13 +17,17 @@ export function buildStructureGuide() {
     type: "guidance",
     title: "Choosing a Business Structure in Florida",
     guidance_paragraphs: [
-      INSIDE_EXPERTS_INTRO,
+      PLACEHOLDER_EXPERTS_INTRO,
       "There are several corporate types in Florida: sole proprietorship, LLC, corporation (C/S), partnership, general partnership, and limited partnership.",
       "It is best to discuss with an accountant to see what is best for tax benefits. An attorney will help you file the necessary paperwork if needed.",
     ],
     links: [
       { url: "https://dos.fl.gov/sunbiz/start-business/corporate-structure/", label: "FL Division of Corporations — Corporate Structure Guide" },
       { url: "https://www.sba.gov/business-guide/launch-your-business/choose-business-structure", label: "SBA — Choose a Business Structure" },
+    ],
+    localExperts: [
+      { role: "Accountant", company: "Your Company" },
+      { role: "Lawyer", company: "Your Company" },
     ],
     category: "legal",
   };
@@ -32,7 +36,7 @@ export function buildStructureGuide() {
 // --- Financing guide ---
 export function buildFinancingGuide(survey) {
   const paragraphs = [
-    INSIDE_EXPERTS_INTRO,
+    PLACEHOLDER_EXPERTS_INTRO,
     "There are several different options including SBA loans, traditional bank loans, business loans, equipment financing, business line of credit, and self-funding or fundraising.",
     "Each has its own pros and cons with how much down payment is required, the effort required (paperwork, business plan, profit projections), and how long the application process takes.",
     "How much you can invest and how well you can prove the business will succeed will determine which type of loan is most beneficial.",
@@ -227,7 +231,7 @@ export function buildInteriorGuide() {
     type: "guidance",
     title: "Interior Build-Out — What You Should Know",
     guidance_paragraphs: [
-      INSIDE_EXPERTS_INTRO,
+      PLACEHOLDER_EXPERTS_INTRO,
       ADA_INDOOR_TEXT,
       "Depending on whether you are adding walls, plumbing, or a kitchen, you may need a building permit. It is recommended to talk with an interior designer to understand the ADA compliance requirements for your space and to produce permit-ready construction documents.",
     ],
@@ -269,7 +273,7 @@ export function buildPermittingGuide(survey) {
   const minor = level === "minor";
   const majorOrNew = level === "major_renovation" || level === "new_construction";
 
-  paragraphs.push(INSIDE_EXPERTS_INTRO);
+  paragraphs.push(PLACEHOLDER_EXPERTS_INTRO);
 
   if (minor) {
     if (j === "vero_beach") {

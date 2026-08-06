@@ -7,6 +7,10 @@ export const UNSURE_FALLBACK =
 export const INSIDE_EXPERTS_INTRO =
   "Guided by your local experts: [Vitter Engineering Group, LLC](/directory#vitter-engineering-group-llc) and [Formation Interiors, LLC](/directory#formation-interiors-llc).";
 
+// Placeholder attribution used on non-due-diligence guidance cards while
+// expert directory partners are being filled in.
+export const PLACEHOLDER_EXPERTS_INTRO = "Guided by your local experts: Your Company.";
+
 // Local experts for new construction / vacant due diligence.
 export const VACANT_EXPERTS = [
   { role: "Civil Engineer", company: "Vitter Engineering Group, LLC", slug: "vitter-engineering-group-llc" },
