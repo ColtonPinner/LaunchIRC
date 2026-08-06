@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useMemo } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import { base44 } from "@/api/base44Client";
 import { Button } from "@/components/ui/button";
@@ -25,6 +25,8 @@ const surveySteps = [
   {
     key: "has_property",
     question: "Do you have a property?",
+    show: (a) =>
+      ["exploring_idea", "actively_planning", "looking_for_property"].includes(a.business_stage),
     options: [
       { value: "looking_need_help", label: "No, I am looking and would like help" },
       { value: "looking_no_help", label: "No, I am looking and do not want help" },
@@ -34,11 +36,28 @@ const surveySteps = [
     ],
   },
   {
+    key: "jurisdiction",
+    question: "Which jurisdiction is the property in?",
+    description:
+      "City of Vero Beach, City of Sebastian, City of Fellsmere, or unincorporated County? You can check the address here: https://www.indianriver.gov/government/departments/property-records-recordings",
+    show: (a) =>
+      ["under_contract", "ready_to_open", "already_open"].includes(a.business_stage) ||
+      ["in_mind", "secured"].includes(a.has_property),
+    options: [
+      { value: "vero_beach", label: "City of Vero Beach" },
+      { value: "sebastian", label: "City of Sebastian" },
+      { value: "fellsmere", label: "City of Fellsmere" },
+      { value: "indian_river_county", label: "Indian River County (unincorporated)" },
+      { value: "unsure", label: "Unsure" },
+    ],
+  },
+  {
     key: "needs_construction",
     question: "Will you need construction or renovations?",
+    show: (a) => a.business_stage !== "already_open",
     options: [
       { value: "no", label: "No" },
-      { value: "minor", label: "Minor changes (interior)" },
+      { value: "minor", label: "Minor changes (interior, minimal outdoor changes)" },
       { value: "major_renovation", label: "Major renovation (inside and out)" },
       { value: "new_construction", label: "New construction" },
       { value: "not_sure", label: "Not sure" },
@@ -79,10 +98,11 @@ const surveySteps = [
   {
     key: "funding_needs",
     question: "Do you need help with financing?",
+    show: (a) => a.business_stage !== "already_open",
     options: [
       { value: "no", label: "No" },
-      { value: "exploring_options", label: "Yes, exploring options" },
-      { value: "actively_applying", label: "Yes, actively applying" },
+      { value: "exploring_options", label: "Yes" },
+      { value: "actively_applying", label: "Yes, and I'm actively applying" },
     ],
   },
   {
@@ -100,6 +120,7 @@ const surveySteps = [
   {
     key: "business_structure",
     question: "Have you decided on a business structure?",
+    show: (a) => a.business_stage !== "already_open",
     options: [
       { value: "no_reach_out", label: "No, I would like someone to reach out" },
       { value: "no_research_myself", label: "No, I will research it myself" },
@@ -117,9 +138,9 @@ const surveySteps = [
     question: "Do you anticipate having employees?",
     options: [
       { value: "no", label: "No" },
-      { value: "1_5", label: "Yes (1-5)" },
-      { value: "6_20", label: "Yes (6-20)" },
-      { value: "20_plus", label: "Yes (20+)" },
+      { value: "yes_1_9", label: "Yes (1-9)" },
+      { value: "yes_10_50", label: "Yes (10-50)" },
+      { value: "yes_50_plus", label: "Yes (50+)" },
     ],
   },
   {
@@ -128,8 +149,8 @@ const surveySteps = [
     options: [
       { value: "free_checklist", label: "Just the free checklist" },
       { value: "step_by_step", label: "Detailed step-by-step guide" },
-      { value: "review_situation", label: "Help reviewing my situation" },
-      { value: "full_concierge", label: "Full support / concierge" },
+      { value: "review_situation", label: "A quick phone call to review my path" },
+      { value: "full_concierge", label: "Full support / concierge services" },
     ],
   },
 ];
@@ -143,16 +164,22 @@ export default function Survey() {
   const [saving, setSaving] = useState(false);
 
   const planType = searchParams.get("plan") === "premium" ? "premium" : "free";
-  const totalSteps = surveySteps.length + 1;
-  const progress = ((step + 1) / totalSteps) * 100;
-  const isContactStep = step === surveySteps.length;
-  const currentStep = surveySteps[step];
+
+  const visibleSteps = useMemo(
+    () => surveySteps.filter((s) => (s.show ? s.show(answers) : true)),
+    [answers]
+  );
+
+  const totalSteps = visibleSteps.length + 1;
+  const progress = Math.min(((step + 1) / totalSteps) * 100, 100);
+  const isContactStep = step === visibleSteps.length;
+  const currentStep = visibleSteps[step];
 
   const canProceed = () => {
     if (isContactStep) return contactInfo.email.trim() !== "";
-    const stepConfig = surveySteps[step];
-    if (stepConfig.multi) return true;
-    return answers[stepConfig.key] !== undefined && answers[stepConfig.key] !== "";
+    if (!currentStep) return false;
+    if (currentStep.multi) return true;
+    return answers[currentStep.key] !== undefined && answers[currentStep.key] !== "";
   };
 
   const handleNext = () => {
@@ -172,7 +199,6 @@ export default function Survey() {
       checklist_progress: {},
     };
 
-    // Handle special designations (multi-select booleans)
     if (Array.isArray(answers.special_designations)) {
       surveyData.is_woman_owned = answers.special_designations.includes("is_woman_owned");
       surveyData.is_veteran_owned = answers.special_designations.includes("is_veteran_owned");
@@ -250,7 +276,7 @@ export default function Survey() {
                 </div>
               </div>
             </motion.div>
-          ) : (
+          ) : currentStep ? (
             <SurveyStep
               key={currentStep.key}
               question={currentStep.question}
@@ -260,7 +286,7 @@ export default function Survey() {
               onChange={(val) => setAnswers({ ...answers, [currentStep.key]: val })}
               multi={currentStep.multi}
             />
-          )}
+          ) : null}
         </AnimatePresence>
 
         {/* Navigation */}

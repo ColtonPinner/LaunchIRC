@@ -25,6 +25,17 @@
       ],
       "description": "Property status"
     },
+    "jurisdiction": {
+      "type": "string",
+      "enum": [
+        "vero_beach",
+        "sebastian",
+        "fellsmere",
+        "indian_river_county",
+        "unsure"
+      ],
+      "description": "Which city/county the property is in"
+    },
     "needs_construction": {
       "type": "string",
       "enum": [
@@ -111,9 +122,9 @@
       "type": "string",
       "enum": [
         "no",
-        "1_5",
-        "6_20",
-        "20_plus"
+        "yes_1_9",
+        "yes_10_50",
+        "yes_50_plus"
       ],
       "description": "Anticipated number of employees"
     },
