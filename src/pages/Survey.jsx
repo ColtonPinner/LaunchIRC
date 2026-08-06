@@ -195,7 +195,9 @@ export default function Survey() {
     const surveyData = {
       ...answers,
       ...contactInfo,
-      plan_type: planType,
+      // Choosing the detailed step-by-step guide upgrades the result to the
+      // premium checklist immediately (payment gated separately for later).
+      plan_type: answers.help_level === "step_by_step" ? "premium" : planType,
       checklist_progress: {},
     };
 
