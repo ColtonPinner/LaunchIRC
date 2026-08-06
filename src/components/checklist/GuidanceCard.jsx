@@ -186,6 +186,8 @@ export default function GuidanceCard({ item }) {
                           <span className="font-medium text-blue-900 min-w-fit">{ex.role}:</span>
                           {ex.slug ? (
                             <Link to={`/directory#${ex.slug}`} className="hover:underline text-blue-600">{ex.company}</Link>
+                          ) : ex.url ? (
+                            <a href={ex.url} target="_blank" rel="noopener noreferrer" className="hover:underline text-blue-600">{ex.company}</a>
                           ) : (
                             <span className="italic">{ex.company}</span>
                           )}

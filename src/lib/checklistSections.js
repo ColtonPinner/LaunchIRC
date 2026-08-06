@@ -27,7 +27,12 @@ export function buildStructureGuide() {
     ],
     localExperts: [
       { role: "Accountant", company: "Your Company" },
-      { role: "Lawyer", company: "Your Company" },
+      { role: "Accountant", company: "Your Company" },
+      { role: "Accountant", company: "Your Company" },
+      { role: "Attorney", company: "Your Company" },
+      { role: "Attorney", company: "Your Company" },
+      { role: "Attorney", company: "Your Company" },
+      { role: "SBDC", company: "Florida SBDC at IRSC", url: "https://floridasbdc.org/find/irsc/" },
     ],
     category: "legal",
   };
