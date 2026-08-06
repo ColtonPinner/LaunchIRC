@@ -60,6 +60,12 @@ export function buildFinancingGuide(survey) {
       { url: "https://floridasbdc.org/find/irsc/", label: "IRSC Florida SBDC — Free Business Mentoring" },
       { url: "https://www.sba.gov/funding-programs/loans", label: "SBA Loan Programs" },
     ],
+    localExperts: [
+      { role: "Lender", company: "Your Company" },
+      { role: "Lender", company: "Your Company" },
+      { role: "Lender", company: "Your Company" },
+      { role: "SBDC", company: "Florida SBDC at IRSC", url: "https://floridasbdc.org/find/irsc/" },
+    ],
     category: "financial",
   };
 }
