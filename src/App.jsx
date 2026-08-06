@@ -68,9 +68,7 @@ const AuthenticatedApp = () => {
         <Route path="/privacy" element={<Privacy />} />
         <Route path="/terms" element={<Terms />} />
         <Route path="/disclaimer" element={<Disclaimer />} />
-        <Route element={<ProtectedRoute unauthenticatedElement={<Navigate to="/login" replace />} />}>
-          <Route path="/checklist" element={<Checklist />} />
-        </Route>
+        <Route path="/checklist" element={<Checklist />} />
       </Route>
       <Route path="*" element={<PageNotFound />} />
     </Routes>
