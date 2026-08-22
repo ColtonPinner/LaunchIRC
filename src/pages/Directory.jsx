@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
-import { base44 } from "@/api/base44Client";
+import { launchpadClient } from "@/api/launchpadClient";
 import { useQuery } from "@tanstack/react-query";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -35,7 +35,7 @@ export default function Directory() {
 
   const { data: listings = [], isLoading } = useQuery({
     queryKey: ["directory"],
-    queryFn: () => base44.entities.DirectoryListing.filter({ is_approved: true }),
+    queryFn: () => launchpadClient.entities.DirectoryListing.filter({ is_approved: true }),
   });
 
   const filtered = listings.filter((l) => {

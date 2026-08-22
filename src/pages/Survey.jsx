@@ -1,6 +1,6 @@
 import React, { useState, useMemo } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
-import { base44 } from "@/api/base44Client";
+import { launchpadClient } from "@/api/launchpadClient";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Progress } from "@/components/ui/progress";
@@ -209,7 +209,7 @@ export default function Survey() {
     }
     delete surveyData.special_designations;
 
-    const result = await base44.entities.BusinessSurvey.create(surveyData);
+    const result = await launchpadClient.entities.BusinessSurvey.create(surveyData);
     setSaving(false);
     navigate(`/checklist?id=${result.id}`);
   };

@@ -1,6 +1,6 @@
 import React, { useState, useMemo } from "react";
 import { useQuery } from "@tanstack/react-query";
-import { base44 } from "@/api/base44Client";
+import { launchpadClient } from "@/api/launchpadClient";
 import { motion } from "framer-motion";
 import { format, startOfMonth, endOfMonth, eachDayOfInterval, getDay, isSameDay, isSameMonth, addMonths, subMonths, parseISO } from "date-fns";
 import { ChevronLeft, ChevronRight, MapPin, Clock, ExternalLink, Wifi, Tag } from "lucide-react";
@@ -30,7 +30,7 @@ export default function Events() {
 
   const { data: events = [] } = useQuery({
     queryKey: ["events"],
-    queryFn: () => base44.entities.Event.list("-date"),
+    queryFn: () => launchpadClient.entities.Event.list("-date"),
   });
 
   const monthStart = startOfMonth(currentMonth);

@@ -1,6 +1,6 @@
 import React, { useState, useMemo } from "react";
 import { useSearchParams, Link } from "react-router-dom";
-import { base44 } from "@/api/base44Client";
+import { launchpadClient } from "@/api/launchpadClient";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { generateChecklist } from "@/lib/checklistGenerator";
 import ChecklistItem from "@/components/checklist/ChecklistItem";
@@ -18,13 +18,13 @@ export default function Checklist() {
 
   const { data: survey, isLoading } = useQuery({
     queryKey: ["survey", surveyId],
-    queryFn: () => base44.entities.BusinessSurvey.filter({ id: surveyId }),
+    queryFn: () => launchpadClient.entities.BusinessSurvey.filter({ id: surveyId }),
     enabled: !!surveyId,
     select: (data) => data?.[0],
   });
 
   const updateMutation = useMutation({
-    mutationFn: ({ id, data }) => base44.entities.BusinessSurvey.update(id, data),
+    mutationFn: ({ id, data }) => launchpadClient.entities.BusinessSurvey.update(id, data),
     onSuccess: () => queryClient.invalidateQueries({ queryKey: ["survey", surveyId] }),
   });
 

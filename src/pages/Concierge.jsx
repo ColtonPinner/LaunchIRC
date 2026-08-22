@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { base44 } from "@/api/base44Client";
+import { launchpadClient } from "@/api/launchpadClient";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
@@ -66,7 +66,7 @@ export default function Concierge() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setSaving(true);
-    await base44.entities.ConciergeRequest.create(form);
+    await launchpadClient.entities.ConciergeRequest.create(form);
     setSaving(false);
     setSubmitted(true);
   };

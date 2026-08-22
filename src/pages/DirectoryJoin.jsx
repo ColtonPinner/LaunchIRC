@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { base44 } from "@/api/base44Client";
+import { launchpadClient } from "@/api/launchpadClient";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
@@ -39,7 +39,7 @@ export default function DirectoryJoin() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setSaving(true);
-    await base44.entities.DirectoryListing.create({
+    await launchpadClient.entities.DirectoryListing.create({
       ...form,
       is_approved: false,
       is_sponsor: false,
