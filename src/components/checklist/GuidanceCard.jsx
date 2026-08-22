@@ -1,9 +1,8 @@
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
-import { Info, ChevronDown, ChevronUp, ExternalLink, Phone, Mail, Globe, CheckCircle2, Loader2 } from "lucide-react";
+import { Info, ChevronDown, ChevronUp, ExternalLink, Phone, Mail, Globe, CheckCircle2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { base44 } from "@/api/base44Client";
 
 // Renders a paragraph string, converting [text](url) markdown links into anchors.
 // Internal links (url starting with "/") use react-router Link; external links open in a new tab.
@@ -44,35 +43,13 @@ function renderTextWithLinks(text) {
 
 export default function GuidanceCard({ item }) {
   const [expanded, setExpanded] = useState(true);
-  const [sending, setSending] = useState(false);
   const [sent, setSent] = useState(false);
-  const [error, setError] = useState("");
 
-  const handleNotify = async () => {
-    setSending(true);
-    setError("");
-    try {
-      let fromName = "A visitor";
-      let contact = "";
-      try {
-        const me = await base44.auth.me();
-        if (me?.full_name) fromName = me.full_name;
-        else if (me?.email) fromName = me.email;
-        if (me?.email) contact = ` (${me.email})`;
-      } catch (_) {
-        /* ignore — user may still be identifiable enough */
-      }
-      await base44.integrations.Core.SendEmail({
-        to: item.ctaButton.email,
-        subject: item.ctaButton.subject || "New assistance request from Launch IRC",
-        body: `${fromName}${contact} clicked the "${item.ctaButton.label}" button on the "${item.title}" guidance card and would like someone to reach out.`,
-      });
-      setSent(true);
-    } catch (e) {
-      setError("Could not send. Please email us directly instead.");
-    } finally {
-      setSending(false);
-    }
+  const handleNotify = () => {
+    const subject = item.ctaButton.subject || "Assistance request from Launch IRC";
+    const body = `I would like help with "${item.title}."`;
+    window.location.href = `mailto:${item.ctaButton.email}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+    setSent(true);
   };
 
   return (
@@ -134,21 +111,18 @@ export default function GuidanceCard({ item }) {
                   <div className="mt-1">
                     {sent ? (
                       <p className="text-sm text-blue-700 font-medium flex items-center gap-1">
-                        <CheckCircle2 className="w-4 h-4" /> Request sent — we'll reach out soon.
+                        <CheckCircle2 className="w-4 h-4" /> Email draft opened.
                       </p>
                     ) : (
                       <Button
                         type="button"
                         size="sm"
                         onClick={handleNotify}
-                        disabled={sending}
                         className="bg-blue-600 hover:bg-blue-700 text-white"
                       >
-                        {sending && <Loader2 className="w-4 h-4 animate-spin" />}
                         {item.ctaButton.label}
                       </Button>
                     )}
-                    {error && <p className="text-xs text-red-600 mt-1">{error}</p>}
                   </div>
                 )}
 

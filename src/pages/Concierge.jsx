@@ -51,7 +51,6 @@ export default function Concierge() {
       id: "elliese",
       name: "Elliese Shaughnessy, PE",
       company: "Vitter Engineering Group, LLC",
-      photo: "https://media.base44.com/images/public/6a2a1e3d16adb81a0e2c26fb/7d274199b_Elliese-Headshot.jpg",
       bio: "Elliese Shaughnessy is a Florida Professional Engineer, entrepreneur, and community leader with years of experience navigating zoning, permitting, and business development processes throughout Florida. As the founder of LaunchIRC, she is passionate about helping entrepreneurs turn ideas into successful businesses by providing clear guidance, trusted resources, and local expertise.",
       bullets: [
         "Licensed Professional Engineer",
@@ -253,11 +252,6 @@ export default function Concierge() {
                   </button>
                   {isOpen && (
                     <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="px-5 pb-5">
-                      <img
-                        src={expert.photo}
-                        alt={expert.name}
-                        className="float-right ml-6 mb-4 w-36 h-36 rounded-xl object-cover object-top"
-                      />
                       <p className="text-sm text-muted-foreground leading-relaxed mb-4">{expert.bio}</p>
                       <ul className="space-y-2 clear-both">
                         {expert.bullets.map((item) => (
