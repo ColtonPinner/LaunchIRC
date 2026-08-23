@@ -26,6 +26,7 @@ import CustomerPortal from '@/pages/CustomerPortal';
 import ProviderPortal from '@/pages/ProviderPortal';
 import ProviderContact from '@/pages/ProviderContact';
 import ProfessionalAuth from '@/pages/ProfessionalAuth';
+import ConsultantAuth from '@/pages/ConsultantAuth';
 import AccountAccess from '@/pages/AccountAccess';
 import { Navigate } from 'react-router-dom';
 
@@ -55,9 +56,9 @@ const AuthenticatedApp = () => {
       <Route path="/account" element={<AccountAccess />} />
       <Route path="/customer/login" element={<Login />} />
       <Route path="/customer/register" element={<Register />} />
-      <Route path="/provider/login" element={<ProfessionalAuth mode="login" accountType="provider" />} />
-      <Route path="/provider/register" element={<ProfessionalAuth mode="register" accountType="provider" />} />
-      <Route path="/consultant/login" element={<ProfessionalAuth mode="login" accountType="consultant" />} />
+      <Route path="/provider/login" element={<ProfessionalAuth mode="login" />} />
+      <Route path="/provider/register" element={<ProfessionalAuth mode="register" />} />
+      <Route path="/consultant/login" element={<ConsultantAuth />} />
       <Route path="/professional/login" element={<Navigate to="/account" replace />} />
       <Route path="/professional/register" element={<Navigate to="/provider/register" replace />} />
       <Route element={<AppLayout />}>

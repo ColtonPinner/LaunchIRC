@@ -1,19 +1,18 @@
 import React, { useState } from "react";
 import { Link, useSearchParams } from "react-router-dom";
-import { BriefcaseBusiness, Building2, Loader2, Lock, Mail, UserRound } from "lucide-react";
+import { Building2, Loader2, Lock, Mail, UserRound } from "lucide-react";
 import { launchpadClient } from "@/api/launchpadClient";
 import AuthLayout from "@/components/AuthLayout";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 
-export default function ProfessionalAuth({ mode = "login", accountType = "provider" }) {
+export default function ProfessionalAuth({ mode = "login" }) {
   const [searchParams] = useSearchParams();
   const [form, setForm] = useState({ fullName: "", businessName: "", email: "", password: "", confirmPassword: "" });
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const isRegister = mode === "register";
-  const isConsultant = accountType === "consultant";
   const accountCreated = searchParams.get("accountCreated") === "true";
 
   const handleSubmit = async (event) => {
@@ -32,7 +31,7 @@ export default function ProfessionalAuth({ mode = "login", accountType = "provid
           password: form.password,
           fullName: form.fullName,
           businessName: form.businessName,
-          accountType,
+          accountType: "provider",
         });
         window.location.href = session ? "/directory/join" : "/provider/login?accountCreated=true";
         return;
@@ -40,11 +39,11 @@ export default function ProfessionalAuth({ mode = "login", accountType = "provid
 
       await launchpadClient.auth.loginViaEmailPassword(form.email, form.password);
       const user = await launchpadClient.auth.me();
-      if (user.account_type !== accountType) {
+      if (user.account_type !== "provider") {
         await launchpadClient.auth.logout();
-        throw new Error(`This is not a ${accountType} account. Choose the correct account type.`);
+        throw new Error("This is not a provider account. Choose the correct account type.");
       }
-      window.location.href = isConsultant ? "/staff/inquiries" : "/provider";
+      window.location.href = "/provider";
     } catch (err) {
       setError(err.message || "Authentication failed");
     } finally {
@@ -54,15 +53,13 @@ export default function ProfessionalAuth({ mode = "login", accountType = "provid
 
   return (
     <AuthLayout
-      icon={isConsultant ? BriefcaseBusiness : Building2}
-      title={isRegister ? "Create a provider account" : isConsultant ? "Consultant sign in" : "Provider sign in"}
-      subtitle={isRegister ? "Apply to the directory and manage incoming leads" : isConsultant ? "Access the Launch IRC consultation workspace" : "Manage your listings and applicants"}
+      icon={Building2}
+      title={isRegister ? "Create a provider account" : "Provider sign in"}
+      subtitle={isRegister ? "Apply to the directory and manage incoming leads" : "Manage your listings and applicants"}
       footer={isRegister ? (
         <>Already registered? <Link to="/provider/login" className="text-primary font-medium hover:underline">Provider sign in</Link></>
       ) : (
-        isConsultant
-          ? <>Need a different workspace? <Link to="/account" className="text-primary font-medium hover:underline">Choose account type</Link></>
-          : <>Need a provider account? <Link to="/provider/register" className="text-primary font-medium hover:underline">Create one</Link></>
+        <>Need a provider account? <Link to="/provider/register" className="text-primary font-medium hover:underline">Create one</Link></>
       )}
     >
       {accountCreated && <div className="mb-4 p-3 rounded-md bg-accent/10 text-sm">Check your email to confirm your provider account, then sign in.</div>}
@@ -78,7 +75,7 @@ export default function ProfessionalAuth({ mode = "login", accountType = "provid
         <div className="space-y-2"><Label htmlFor="professional-email">Email</Label><div className="relative"><Mail className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" /><Input id="professional-email" type="email" autoComplete="email" value={form.email} onChange={(event) => setForm({ ...form, email: event.target.value })} className="pl-10 h-12" required /></div></div>
         <div className="space-y-2"><Label htmlFor="professional-password">Password</Label><div className="relative"><Lock className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" /><Input id="professional-password" type="password" autoComplete={isRegister ? "new-password" : "current-password"} value={form.password} onChange={(event) => setForm({ ...form, password: event.target.value })} className="pl-10 h-12" minLength={8} required /></div></div>
         {isRegister && <div className="space-y-2"><Label htmlFor="professional-confirm">Confirm password</Label><div className="relative"><Lock className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" /><Input id="professional-confirm" type="password" autoComplete="new-password" value={form.confirmPassword} onChange={(event) => setForm({ ...form, confirmPassword: event.target.value })} className="pl-10 h-12" minLength={8} required /></div></div>}
-        <Button type="submit" className="w-full h-12" disabled={loading}>{loading ? <Loader2 className="w-4 h-4 animate-spin" /> : isRegister ? "Create provider account" : isConsultant ? "Consultant sign in" : "Provider sign in"}</Button>
+        <Button type="submit" className="w-full h-12" disabled={loading}>{loading ? <Loader2 className="w-4 h-4 animate-spin" /> : isRegister ? "Create provider account" : "Provider sign in"}</Button>
       </form>
 
       <div className="mt-5 pt-5 border-t text-center text-sm text-muted-foreground">
