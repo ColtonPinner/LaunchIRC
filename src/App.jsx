@@ -20,6 +20,31 @@ import Terms from '@/pages/Terms';
 import Disclaimer from '@/pages/Disclaimer';
 import Login from '@/pages/Login';
 import Register from '@/pages/Register';
+import Dashboard from '@/pages/Dashboard';
+import Inquiries from '@/pages/Inquiries';
+import CustomerPortal from '@/pages/CustomerPortal';
+import ProviderPortal from '@/pages/ProviderPortal';
+import ProviderContact from '@/pages/ProviderContact';
+import ProfessionalAuth from '@/pages/ProfessionalAuth';
+import { Navigate } from 'react-router-dom';
+
+const ProtectedPage = ({ children }) => {
+  const { isAuthenticated } = useAuth();
+  const returnTo = window.location.pathname + window.location.search;
+  return isAuthenticated ? children : <Navigate to={`/customer/login?returnTo=${encodeURIComponent(returnTo)}`} replace />;
+};
+
+const StaffPage = ({ children }) => {
+  const { user } = useAuth();
+  return ['staff', 'admin'].includes(user?.role) ? children : <Navigate to="/dashboard" replace />;
+};
+
+const ProfessionalPage = ({ children }) => {
+  const { user, isAuthenticated } = useAuth();
+  if (!isAuthenticated) return <Navigate to="/professional/login" replace />;
+  const isProfessional = ['staff', 'admin'].includes(user?.role) || user?.user_metadata?.account_type === 'provider';
+  return isProfessional ? children : <Navigate to="/portal" replace />;
+};
 
 const AuthenticatedApp = () => {
   const { isLoadingAuth, isLoadingPublicSettings } = useAuth();
@@ -38,12 +63,17 @@ const AuthenticatedApp = () => {
     <Routes>
       <Route path="/login" element={<Login />} />
       <Route path="/register" element={<Register />} />
+      <Route path="/customer/login" element={<Login />} />
+      <Route path="/customer/register" element={<Register />} />
+      <Route path="/professional/login" element={<ProfessionalAuth mode="login" />} />
+      <Route path="/professional/register" element={<ProfessionalAuth mode="register" />} />
       <Route element={<AppLayout />}>
         <Route path="/" element={<Home />} />
         <Route path="/survey" element={<Survey />} />
         <Route path="/guides" element={<Guides />} />
         <Route path="/directory" element={<Directory />} />
-        <Route path="/directory/join" element={<DirectoryJoin />} />
+        <Route path="/directory/:id/contact" element={<ProviderContact />} />
+        <Route path="/directory/join" element={<ProfessionalPage><DirectoryJoin /></ProfessionalPage>} />
         <Route path="/concierge" element={<Concierge />} />
         <Route path="/sponsor" element={<Sponsor />} />
         <Route path="/events" element={<Events />} />
@@ -51,6 +81,10 @@ const AuthenticatedApp = () => {
         <Route path="/terms" element={<Terms />} />
         <Route path="/disclaimer" element={<Disclaimer />} />
         <Route path="/checklist" element={<Checklist />} />
+        <Route path="/dashboard" element={<ProtectedPage><Dashboard /></ProtectedPage>} />
+        <Route path="/portal" element={<ProtectedPage><CustomerPortal /></ProtectedPage>} />
+        <Route path="/provider" element={<ProfessionalPage><ProviderPortal /></ProfessionalPage>} />
+        <Route path="/staff/inquiries" element={<ProfessionalPage><StaffPage><Inquiries /></StaffPage></ProfessionalPage>} />
       </Route>
       <Route path="*" element={<PageNotFound />} />
     </Routes>

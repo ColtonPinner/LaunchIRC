@@ -6,7 +6,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { motion } from "framer-motion";
-import { Crown, CheckCircle2, Phone, Mail, Clock, Shield, Loader2, ChevronDown, ChevronUp } from "lucide-react";
+import { Crown, CheckCircle2, Phone, Clock, Shield, Loader2, ChevronDown, ChevronUp } from "lucide-react";
 
 const services = [
   {
@@ -42,6 +42,7 @@ export default function Concierge() {
   });
   const [saving, setSaving] = useState(false);
   const [submitted, setSubmitted] = useState(false);
+  const [error, setError] = useState("");
   const [openExperts, setOpenExperts] = useState({});
 
   const toggleExpert = (id) => setOpenExperts(prev => ({ ...prev, [id]: !prev[id] }));
@@ -65,9 +66,15 @@ export default function Concierge() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setSaving(true);
-    await launchpadClient.entities.ConciergeRequest.create(form);
-    setSaving(false);
-    setSubmitted(true);
+    setError("");
+    try {
+      await launchpadClient.entities.ConciergeRequest.create(form);
+      setSubmitted(true);
+    } catch (err) {
+      setError(err.message || "We couldn't send your request. Please try again.");
+    } finally {
+      setSaving(false);
+    }
   };
 
   return (
@@ -154,6 +161,11 @@ export default function Concierge() {
               </div>
 
               <form onSubmit={handleSubmit} className="space-y-6">
+                {error && (
+                  <div role="alert" className="p-3 rounded-md bg-destructive/10 text-destructive text-sm">
+                    {error}
+                  </div>
+                )}
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                   <div>
                     <Label>Full Name *</Label>

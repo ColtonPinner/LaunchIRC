@@ -1,0 +1,214 @@
+import React, { useEffect, useState } from "react";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { CalendarDays, CheckCircle2, Inbox, Loader2, Mail, Phone, RefreshCw, Save } from "lucide-react";
+import { launchpadClient } from "@/api/launchpadClient";
+import { Button } from "@/components/ui/button";
+import { Textarea } from "@/components/ui/textarea";
+
+const statuses = [
+  { value: "new", label: "New" },
+  { value: "contacted", label: "Contacted" },
+  { value: "in_progress", label: "In progress" },
+  { value: "closed", label: "Closed" },
+];
+
+const serviceLabels = {
+  full_concierge: "Full concierge",
+  property_search: "Property search",
+  permits_licensing: "Permits and licensing",
+  financial_guidance: "Financial guidance",
+  legal_setup: "Legal setup",
+  other: "Other",
+};
+
+const formatDate = (value) => new Intl.DateTimeFormat("en-US", {
+  month: "short",
+  day: "numeric",
+  year: "numeric",
+  hour: "numeric",
+  minute: "2-digit",
+}).format(new Date(value));
+
+const getStatus = (inquiry) => inquiry.status || "new";
+
+export default function Inquiries() {
+  const queryClient = useQueryClient();
+  const [filter, setFilter] = useState("all");
+  const [selectedId, setSelectedId] = useState(null);
+  const [notes, setNotes] = useState("");
+  const [saved, setSaved] = useState(false);
+
+  const { data: inquiries = [], isLoading, isError, refetch } = useQuery({
+    queryKey: ["staff-inquiries"],
+    queryFn: () => launchpadClient.entities.ConciergeRequest.list("-created_date"),
+  });
+
+  const filtered = filter === "all"
+    ? inquiries
+    : inquiries.filter((inquiry) => getStatus(inquiry) === filter);
+  const selected = filtered.find((inquiry) => inquiry.id === selectedId) || filtered[0];
+
+  useEffect(() => {
+    setNotes(selected?.staff_notes || "");
+    setSaved(false);
+  }, [selected?.id, selected?.staff_notes]);
+
+  const updateMutation = useMutation({
+    mutationFn: ({ id, data }) => launchpadClient.entities.ConciergeRequest.update(id, data),
+    onSuccess: () => queryClient.invalidateQueries({ queryKey: ["staff-inquiries"] }),
+  });
+
+  const updateStatus = (status) => {
+    if (!selected) return;
+    updateMutation.mutate({ id: selected.id, data: { status } });
+  };
+
+  const saveNotes = async () => {
+    if (!selected) return;
+    await updateMutation.mutateAsync({ id: selected.id, data: { staff_notes: notes } });
+    setSaved(true);
+  };
+
+  const newCount = inquiries.filter((inquiry) => getStatus(inquiry) === "new").length;
+
+  return (
+    <div className="min-h-[calc(100vh-5rem)] bg-background">
+      <header className="border-b bg-primary text-primary-foreground">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-9">
+          <div className="flex items-end justify-between gap-5">
+            <div>
+              <p className="text-xs font-semibold uppercase tracking-[0.18em] text-primary-foreground/60 mb-2">Staff workspace</p>
+              <h1 className="font-heading text-3xl md:text-4xl font-bold">Client inquiries</h1>
+              <p className="text-primary-foreground/70 mt-2">Review requests and keep outreach moving.</p>
+            </div>
+            <div className="hidden sm:flex items-center gap-2 px-3 py-2 border border-white/15 rounded-md text-sm">
+              <Inbox className="w-4 h-4 text-accent" /> {newCount} new
+            </div>
+          </div>
+        </div>
+      </header>
+
+      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <div className="flex gap-2 overflow-x-auto pb-3 mb-4">
+          {[{ value: "all", label: "All" }, ...statuses].map((status) => {
+            const count = status.value === "all"
+              ? inquiries.length
+              : inquiries.filter((inquiry) => getStatus(inquiry) === status.value).length;
+            return (
+              <button
+                key={status.value}
+                onClick={() => { setFilter(status.value); setSelectedId(null); }}
+                className={`px-3 py-2 rounded-md text-sm font-medium whitespace-nowrap border transition-colors ${
+                  filter === status.value ? "bg-primary text-primary-foreground border-primary" : "bg-card hover:bg-muted"
+                }`}
+              >
+                {status.label} <span className="ml-1 opacity-65">{count}</span>
+              </button>
+            );
+          })}
+        </div>
+
+        {isLoading && (
+          <div className="min-h-72 flex items-center justify-center border rounded-lg bg-card">
+            <Loader2 className="w-6 h-6 animate-spin text-accent" aria-label="Loading inquiries" />
+          </div>
+        )}
+
+        {isError && (
+          <div className="min-h-72 flex flex-col items-center justify-center text-center border rounded-lg bg-card p-6">
+            <p className="font-semibold">Inquiries could not be loaded.</p>
+            <p className="text-sm text-muted-foreground mt-1 mb-4">Check staff access and try again.</p>
+            <Button variant="outline" onClick={() => refetch()} className="gap-2"><RefreshCw className="w-4 h-4" /> Retry</Button>
+          </div>
+        )}
+
+        {!isLoading && !isError && filtered.length === 0 && (
+          <div className="min-h-72 flex flex-col items-center justify-center text-center border border-dashed rounded-lg bg-card p-6">
+            <CheckCircle2 className="w-8 h-8 text-accent mb-3" />
+            <h2 className="font-heading text-xl font-bold">Nothing in this queue</h2>
+            <p className="text-sm text-muted-foreground mt-1">New consultation requests will appear here.</p>
+          </div>
+        )}
+
+        {!isLoading && !isError && filtered.length > 0 && selected && (
+          <div className="grid grid-cols-1 lg:grid-cols-[minmax(0,0.85fr)_minmax(0,1.4fr)] border rounded-lg bg-card overflow-hidden min-h-[32rem]">
+            <div className="border-b lg:border-b-0 lg:border-r max-h-[34rem] overflow-y-auto">
+              {filtered.map((inquiry) => (
+                <button
+                  key={inquiry.id}
+                  onClick={() => setSelectedId(inquiry.id)}
+                  className={`w-full text-left p-4 border-b last:border-b-0 transition-colors ${
+                    selected.id === inquiry.id ? "bg-accent/5 border-l-4 border-l-accent" : "hover:bg-muted/50 border-l-4 border-l-transparent"
+                  }`}
+                >
+                  <div className="flex items-start justify-between gap-3">
+                    <div className="min-w-0">
+                      <p className="font-semibold truncate">{inquiry.name}</p>
+                      <p className="text-sm text-muted-foreground truncate">{inquiry.email}</p>
+                    </div>
+                    <span className="text-[11px] font-semibold uppercase tracking-wide text-accent whitespace-nowrap">
+                      {statuses.find((status) => status.value === getStatus(inquiry))?.label}
+                    </span>
+                  </div>
+                  <p className="text-xs text-muted-foreground mt-3">{serviceLabels[inquiry.service_needed] || "General inquiry"}</p>
+                </button>
+              ))}
+            </div>
+
+            <section className="p-5 md:p-7">
+              <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-4 pb-6 border-b">
+                <div>
+                  <p className="text-xs font-semibold uppercase tracking-wider text-accent mb-1">{serviceLabels[selected.service_needed] || "General inquiry"}</p>
+                  <h2 className="font-heading text-2xl font-bold">{selected.name}</h2>
+                  {selected.business_type && <p className="text-sm text-muted-foreground mt-1">{selected.business_type}</p>}
+                </div>
+                <div className="flex items-center gap-1.5 text-xs text-muted-foreground">
+                  <CalendarDays className="w-3.5 h-3.5" /> {formatDate(selected.created_date)}
+                </div>
+              </div>
+
+              <div className="flex flex-wrap gap-2 py-5 border-b">
+                <a href={`mailto:${selected.email}`}><Button variant="outline" size="sm" className="gap-2"><Mail className="w-4 h-4" /> Email</Button></a>
+                {selected.phone && <a href={`tel:${selected.phone}`}><Button variant="outline" size="sm" className="gap-2"><Phone className="w-4 h-4" /> Call</Button></a>}
+              </div>
+
+              <div className="py-5 border-b">
+                <p className="text-xs font-semibold uppercase tracking-wider text-muted-foreground mb-2">Message</p>
+                <p className="text-sm leading-6 whitespace-pre-wrap">{selected.message || "No additional message was provided."}</p>
+              </div>
+
+              <div className="py-5 border-b">
+                <p className="text-xs font-semibold uppercase tracking-wider text-muted-foreground mb-3">Status</p>
+                <div className="flex flex-wrap gap-2">
+                  {statuses.map((status) => (
+                    <button
+                      key={status.value}
+                      onClick={() => updateStatus(status.value)}
+                      disabled={updateMutation.isPending}
+                      className={`px-3 py-1.5 rounded-md text-xs font-semibold border transition-colors ${
+                        getStatus(selected) === status.value ? "bg-primary text-primary-foreground border-primary" : "hover:bg-muted"
+                      }`}
+                    >
+                      {status.label}
+                    </button>
+                  ))}
+                </div>
+              </div>
+
+              <div className="pt-5">
+                <label htmlFor="staff-notes" className="text-xs font-semibold uppercase tracking-wider text-muted-foreground block mb-2">Private staff notes</label>
+                <Textarea id="staff-notes" value={notes} onChange={(event) => { setNotes(event.target.value); setSaved(false); }} className="min-h-28" placeholder="Add follow-up details, next steps, or context..." />
+                <div className="flex items-center justify-between gap-3 mt-3">
+                  <span className="text-xs text-muted-foreground">{saved ? "Notes saved" : "Visible to staff only"}</span>
+                  <Button size="sm" onClick={saveNotes} disabled={updateMutation.isPending} className="gap-2">
+                    {updateMutation.isPending ? <Loader2 className="w-4 h-4 animate-spin" /> : <Save className="w-4 h-4" />} Save notes
+                  </Button>
+                </div>
+              </div>
+            </section>
+          </div>
+        )}
+      </main>
+    </div>
+  );
+}

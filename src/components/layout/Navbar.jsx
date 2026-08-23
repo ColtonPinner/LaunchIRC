@@ -2,7 +2,8 @@ import React, { useState } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
-import { Menu, X, MapPin, Sparkles } from "lucide-react";
+import { Menu, MapPin, Sparkles, LayoutDashboard, LogIn, LogOut, Inbox } from "lucide-react";
+import { useAuth } from "@/lib/AuthContext";
 
 const navLinks = [
   { label: "Home", path: "/" },
@@ -10,12 +11,17 @@ const navLinks = [
   { label: "Directory", path: "/directory" },
   { label: "Events", path: "/events" },
   { label: "Concierge", path: "/concierge" },
-  { label: "My Checklist", path: "/checklist" },
+  { label: "My Portal", path: "/portal" },
 ];
 
 export default function Navbar() {
   const [open, setOpen] = useState(false);
   const location = useLocation();
+  const { user, isAuthenticated, logout } = useAuth();
+  const isStaff = ["staff", "admin"].includes(user?.role);
+  const isProvider = user?.user_metadata?.account_type === "provider";
+  const workspacePath = isStaff ? "/staff/inquiries" : isProvider ? "/provider" : "/dashboard";
+  const workspaceLabel = isStaff ? "Inquiries" : isProvider ? "Provider portal" : "Dashboard";
 
   return (
     <nav className="fixed top-0 left-0 right-0 z-50 bg-background/80 backdrop-blur-xl border-b border-border/50">
@@ -55,6 +61,26 @@ export default function Navbar() {
 
           {/* CTA */}
           <div className="hidden md:flex items-center gap-3">
+            {isAuthenticated ? (
+              <>
+                <Link to={workspacePath}>
+                  <Button variant="outline" className="gap-2">
+                    {isStaff || isProvider ? <Inbox className="w-4 h-4" /> : <LayoutDashboard className="w-4 h-4" />}
+                    {workspaceLabel}
+                  </Button>
+                </Link>
+                <Button variant="ghost" size="icon" onClick={() => logout()} title="Log out">
+                  <LogOut className="w-4 h-4" />
+                </Button>
+              </>
+            ) : (
+              <Link to="/customer/login">
+                <Button variant="ghost" className="gap-2">
+                  <LogIn className="w-4 h-4" />
+                  Log in
+                </Button>
+              </Link>
+            )}
             <Link to="/survey">
               <Button className="bg-accent hover:bg-accent/90 text-accent-foreground font-semibold gap-2">
                 <Sparkles className="w-4 h-4" />
@@ -97,12 +123,23 @@ export default function Navbar() {
                   ))}
                 </div>
                 <div className="p-4 border-t">
+                  <Link to={isAuthenticated ? workspacePath : "/customer/login"} onClick={() => setOpen(false)}>
+                    <Button variant="outline" className="w-full mb-2 gap-2">
+                      {isAuthenticated ? (isStaff || isProvider ? <Inbox className="w-4 h-4" /> : <LayoutDashboard className="w-4 h-4" />) : <LogIn className="w-4 h-4" />}
+                      {isAuthenticated ? workspaceLabel : "Customer sign in"}
+                    </Button>
+                  </Link>
                   <Link to="/survey" onClick={() => setOpen(false)}>
                     <Button className="w-full bg-accent hover:bg-accent/90 text-accent-foreground font-semibold gap-2">
                       <Sparkles className="w-4 h-4" />
                       Get Started Free
                     </Button>
                   </Link>
+                  {isAuthenticated && (
+                    <Button variant="ghost" className="w-full mt-2 gap-2" onClick={() => logout()}>
+                      <LogOut className="w-4 h-4" /> Log out
+                    </Button>
+                  )}
                 </div>
               </div>
             </SheetContent>

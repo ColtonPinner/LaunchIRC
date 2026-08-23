@@ -1,5 +1,5 @@
 import React, { createContext, useCallback, useState, useContext, useEffect } from 'react';
-import { launchpadClient } from '@/api/launchpadClient';
+import { launchpadClient, pendingSurvey } from '@/api/launchpadClient';
 
 const AuthContext = createContext();
 
@@ -16,6 +16,15 @@ export const AuthProvider = ({ children }) => {
     setIsLoadingAuth(true);
     try {
       const currentUser = await launchpadClient.auth.me();
+      const pending = pendingSurvey.get();
+      if (pending) {
+        try {
+          await launchpadClient.entities.BusinessSurvey.create(pending);
+          pendingSurvey.clear();
+        } catch (error) {
+          console.error('Pending survey save failed:', error);
+        }
+      }
       setUser(currentUser);
       setIsAuthenticated(true);
       setAuthError(null);
@@ -44,7 +53,7 @@ export const AuthProvider = ({ children }) => {
   };
 
   const navigateToLogin = () => {
-    window.location.href = `/login?returnTo=${encodeURIComponent(window.location.pathname)}`;
+    window.location.href = `/customer/login?returnTo=${encodeURIComponent(window.location.pathname)}`;
   };
 
   return (

@@ -1,56 +1,72 @@
-const STORAGE_PREFIX = 'launch_irc';
-const SESSION_KEY = `${STORAGE_PREFIX}_session`;
-const USERS_KEY = `${STORAGE_PREFIX}_users`;
+import { supabase } from '@/utils/supabase';
 
-const readStorage = (key, fallback) => {
-  if (typeof window === 'undefined') return fallback;
+const PENDING_SURVEY_KEY = 'launch_irc_pending_survey';
 
-  try {
-    const value = window.localStorage.getItem(key);
-    return value ? JSON.parse(value) : fallback;
-  } catch {
-    return fallback;
+export const pendingSurvey = {
+  get() {
+    try {
+      const value = window.localStorage.getItem(PENDING_SURVEY_KEY);
+      return value ? JSON.parse(value) : null;
+    } catch {
+      return null;
+    }
+  },
+  save(data) {
+    window.localStorage.setItem(PENDING_SURVEY_KEY, JSON.stringify(data));
+  },
+  clear() {
+    window.localStorage.removeItem(PENDING_SURVEY_KEY);
+  },
+};
+
+const getSupabase = () => {
+  return supabase;
+};
+
+const unwrap = ({ data, error }) => {
+  if (error) throw error;
+  return data;
+};
+
+const unwrapAuth = ({ data, error }) => {
+  if (!error) return data;
+
+  if (error.status === 429 || error.code === 'over_email_send_rate_limit') {
+    throw new Error('Confirmation email limit reached. Wait a few minutes and try again, or sign in if your account was already created.');
   }
+
+  throw error;
 };
 
-const writeStorage = (key, value) => {
-  window.localStorage.setItem(key, JSON.stringify(value));
-};
+const flattenRecord = (record) => ({
+  ...record.data,
+  id: record.id,
+  created_date: record.created_date,
+  updated_date: record.updated_date,
+});
 
-const createId = () => {
-  if (globalThis.crypto?.randomUUID) return globalThis.crypto.randomUUID();
-  return `${Date.now()}-${Math.random().toString(16).slice(2)}`;
-};
+const flattenPortalRecord = ({ data, ...record }) => ({ ...data, ...record });
 
-const hashPassword = async (password) => {
-  const bytes = new TextEncoder().encode(password);
-  const digest = await globalThis.crypto.subtle.digest('SHA-256', bytes);
-  return Array.from(new Uint8Array(digest), (byte) => byte.toString(16).padStart(2, '0')).join('');
-};
-
-const publicUser = ({ passwordHash: _passwordHash, ...user }) => user;
-
-const createEntity = (name) => {
-  const storageKey = `${STORAGE_PREFIX}_${name}`;
+const createEntity = (table, { publicRead = false } = {}) => {
 
   return {
     async create(data) {
-      const records = readStorage(storageKey, []);
+      const id = globalThis.crypto.randomUUID();
       const now = new Date().toISOString();
-      const record = { ...data, id: createId(), created_date: now, updated_date: now };
-      writeStorage(storageKey, [...records, record]);
-      return record;
+      unwrap(await getSupabase().from(table).insert({ id, data }));
+      return { ...data, id, created_date: now, updated_date: now };
     },
 
     async filter(criteria) {
-      const records = readStorage(storageKey, []);
-      return records.filter((record) =>
-        Object.entries(criteria).every(([key, value]) => record[key] === value),
-      );
+      const { id, ...dataCriteria } = criteria;
+      let query = getSupabase().from(table).select('*');
+      if (id) query = query.eq('id', id);
+      if (Object.keys(dataCriteria).length) query = query.contains('data', dataCriteria);
+      return unwrap(await query).map(flattenRecord);
     },
 
     async list(orderBy) {
-      const records = [...readStorage(storageKey, [])];
+      const records = unwrap(await getSupabase().from(table).select('*')).map(flattenRecord);
       if (!orderBy) return records;
 
       const descending = orderBy.startsWith('-');
@@ -62,65 +78,143 @@ const createEntity = (name) => {
     },
 
     async update(id, data) {
-      const records = readStorage(storageKey, []);
-      const index = records.findIndex((record) => record.id === id);
-      if (index === -1) throw new Error(`${name} record not found`);
-
-      records[index] = { ...records[index], ...data, updated_date: new Date().toISOString() };
-      writeStorage(storageKey, records);
-      return records[index];
+      const current = unwrap(await getSupabase().from(table).select('*').eq('id', id).single());
+      const updated = unwrap(
+        await getSupabase()
+          .from(table)
+          .update({ data: { ...current.data, ...data } })
+          .eq('id', id)
+          .select('*')
+          .single(),
+      );
+      return flattenRecord(updated);
     },
   };
 };
 
+const businessSurveys = {
+  async create(data) {
+    const id = globalThis.crypto.randomUUID();
+    const record = unwrap(
+      await getSupabase().from('business_surveys').insert({ id, data }).select('*').single(),
+    );
+    return flattenRecord(record);
+  },
+
+  async filter({ id }) {
+    if (!id) return [];
+    const records = unwrap(await getSupabase().from('business_surveys').select('*').eq('id', id));
+    return records.map(flattenRecord);
+  },
+
+  async update(id, data) {
+    const current = unwrap(await getSupabase().from('business_surveys').select('*').eq('id', id).single());
+    const updated = unwrap(
+      await getSupabase()
+        .from('business_surveys')
+        .update({ data: { ...current.data, ...data } })
+        .eq('id', id)
+        .select('*')
+        .single(),
+    );
+    return flattenRecord(updated);
+  },
+
+  async listMine() {
+    const records = unwrap(
+      await getSupabase().from('business_surveys').select('*').order('updated_date', { ascending: false }),
+    );
+    return records.map(flattenRecord);
+  },
+};
+
 export const launchpadClient = {
   auth: {
-    async register({ email, password }) {
-      const normalizedEmail = email.trim().toLowerCase();
-      const users = readStorage(USERS_KEY, []);
-      if (users.some((user) => user.email === normalizedEmail)) {
-        throw new Error('An account with this email already exists');
+    async register({ email, password, fullName, accountType = 'customer', businessName = '' }) {
+      const { data: current } = await getSupabase().auth.getUser();
+      if (current.user?.is_anonymous) {
+        const { error } = await getSupabase().auth.signOut();
+        if (error) throw error;
       }
-
-      const user = {
-        id: createId(),
-        email: normalizedEmail,
-        role: 'user',
-        passwordHash: await hashPassword(password),
-      };
-      writeStorage(USERS_KEY, [...users, user]);
-      writeStorage(SESSION_KEY, { userId: user.id });
-      return publicUser(user);
+      return unwrapAuth(await getSupabase().auth.signUp({
+        email: email.trim(),
+        password,
+        options: {
+          data: {
+            full_name: fullName || '',
+            account_type: accountType,
+            business_name: businessName,
+          },
+        },
+      }));
     },
 
     async loginViaEmailPassword(email, password) {
-      const users = readStorage(USERS_KEY, []);
-      const passwordHash = await hashPassword(password);
-      const user = users.find(
-        (candidate) => candidate.email === email.trim().toLowerCase() && candidate.passwordHash === passwordHash,
-      );
-      if (!user) throw new Error('Invalid email or password');
-
-      writeStorage(SESSION_KEY, { userId: user.id });
-      return publicUser(user);
+      const result = unwrapAuth(await getSupabase().auth.signInWithPassword({ email: email.trim(), password }));
+      return result.user;
     },
 
     async me() {
-      const session = readStorage(SESSION_KEY, null);
-      const user = readStorage(USERS_KEY, []).find((candidate) => candidate.id === session?.userId);
-      if (!user) throw new Error('Not authenticated');
-      return publicUser(user);
+      const result = unwrap(await getSupabase().auth.getUser());
+      if (!result.user) throw new Error('Not authenticated');
+      return {
+        ...result.user,
+        role: result.user.app_metadata?.role || 'user',
+      };
     },
 
-    logout() {
-      window.localStorage.removeItem(SESSION_KEY);
+    async logout() {
+      const { error } = await getSupabase().auth.signOut();
+      if (error) throw error;
     },
   },
 
   entities: {
-    BusinessSurvey: createEntity('business_surveys'),
+    BusinessSurvey: businessSurveys,
     ConciergeRequest: createEntity('concierge_requests'),
-    DirectoryListing: createEntity('directory_listings'),
-    Event: createEntity('events'),
+    DirectoryListing: {
+      ...createEntity('directory_listings', { publicRead: true }),
+      async listMine(ownerId) {
+        const records = unwrap(
+          await getSupabase()
+            .from('directory_listings')
+            .select('*')
+            .eq('owner_id', ownerId)
+            .order('updated_date', { ascending: false }),
+        );
+        return records.map(flattenRecord);
+      },
+    },
+    Event: createEntity('events', { publicRead: true }),
+    ProviderLead: {
+      async create(listingId, data, surveyId = null) {
+        const id = globalThis.crypto.randomUUID();
+        const record = unwrap(await getSupabase().rpc('create_provider_lead', {
+          p_id: id,
+          p_listing_id: listingId,
+          p_data: data,
+          p_survey_id: surveyId,
+        }));
+        return flattenPortalRecord(record);
+      },
+      async listForProvider() {
+        const records = unwrap(await getSupabase().rpc('list_my_provider_leads')) || [];
+        return records.map(flattenPortalRecord);
+      },
+      async updateStatus(id, status) {
+        const record = unwrap(await getSupabase().rpc('update_provider_lead_status', { p_id: id, p_status: status }));
+        return flattenPortalRecord(record);
+      },
+    },
+  },
+  portal: {
+    async listMyConciergeRequests() {
+      const records = unwrap(await getSupabase().rpc('list_my_concierge_requests')) || [];
+      return records.map(flattenRecord);
+    },
+    async listMyProviderRequests() {
+      const records = unwrap(await getSupabase().rpc('list_my_provider_requests')) || [];
+      return records.map(flattenPortalRecord);
+    },
   },
 };

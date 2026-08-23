@@ -35,18 +35,25 @@ export default function DirectoryJoin() {
   });
   const [saving, setSaving] = useState(false);
   const [submitted, setSubmitted] = useState(false);
+  const [error, setError] = useState("");
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     setSaving(true);
-    await launchpadClient.entities.DirectoryListing.create({
-      ...form,
-      is_approved: false,
-      is_sponsor: false,
-      sponsor_level: "none",
-    });
-    setSaving(false);
-    setSubmitted(true);
+    setError("");
+    try {
+      await launchpadClient.entities.DirectoryListing.create({
+        ...form,
+        is_approved: false,
+        is_sponsor: false,
+        sponsor_level: "none",
+      });
+      setSubmitted(true);
+    } catch (err) {
+      setError(err.message || "We couldn't submit your listing. Please try again.");
+    } finally {
+      setSaving(false);
+    }
   };
 
   if (submitted) {
@@ -60,9 +67,10 @@ export default function DirectoryJoin() {
           <p className="text-muted-foreground mb-6">
             We'll review your listing and get back to you within 2 business days. Thank you for joining the IRC Business directory.
           </p>
-          <Button onClick={() => navigate("/directory")} variant="outline">
-            Back to Directory
-          </Button>
+          <div className="flex justify-center gap-2">
+            <Button onClick={() => navigate("/directory")} variant="outline">Back to Directory</Button>
+            <Button onClick={() => navigate("/provider")}>Provider Portal</Button>
+          </div>
         </div>
       </div>
     );
@@ -82,6 +90,7 @@ export default function DirectoryJoin() {
         </div>
 
         <form onSubmit={handleSubmit} className="space-y-6">
+          {error && <div role="alert" className="p-3 rounded-md bg-destructive/10 text-destructive text-sm">{error}</div>}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div className="md:col-span-2">
               <Label>Company Name *</Label>

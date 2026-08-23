@@ -1,12 +1,13 @@
 import React, { useState, useMemo } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
-import { launchpadClient } from "@/api/launchpadClient";
+import { launchpadClient, pendingSurvey } from "@/api/launchpadClient";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Progress } from "@/components/ui/progress";
 import { AnimatePresence, motion } from "framer-motion";
 import { ArrowLeft, ArrowRight, Sparkles, Loader2 } from "lucide-react";
 import SurveyStep from "@/components/survey/SurveyStep";
+import { useAuth } from "@/lib/AuthContext";
 
 const surveySteps = [
   {
@@ -161,7 +162,10 @@ export default function Survey() {
   const [step, setStep] = useState(0);
   const [answers, setAnswers] = useState({});
   const [contactInfo, setContactInfo] = useState({ full_name: "", email: "", phone: "" });
+  const [account, setAccount] = useState({ password: "", confirmPassword: "" });
   const [saving, setSaving] = useState(false);
+  const [error, setError] = useState("");
+  const { user, isAuthenticated } = useAuth();
 
   const planType = searchParams.get("plan") === "premium" ? "premium" : "free";
 
@@ -176,7 +180,10 @@ export default function Survey() {
   const currentStep = visibleSteps[step];
 
   const canProceed = () => {
-    if (isContactStep) return contactInfo.email.trim() !== "";
+    if (isContactStep) {
+      if (isAuthenticated) return true;
+      return contactInfo.email.trim() !== "" && account.password.length >= 8 && account.password === account.confirmPassword;
+    }
     if (!currentStep) return false;
     if (currentStep.multi) return true;
     return answers[currentStep.key] !== undefined && answers[currentStep.key] !== "";
@@ -192,9 +199,11 @@ export default function Survey() {
 
   const handleSubmit = async () => {
     setSaving(true);
+    setError("");
     const surveyData = {
       ...answers,
       ...contactInfo,
+      email: isAuthenticated ? user.email : contactInfo.email,
       // Choosing the detailed step-by-step guide upgrades the result to the
       // premium checklist immediately (payment gated separately for later).
       plan_type: answers.help_level === "step_by_step" ? "premium" : planType,
@@ -209,9 +218,29 @@ export default function Survey() {
     }
     delete surveyData.special_designations;
 
-    const result = await launchpadClient.entities.BusinessSurvey.create(surveyData);
-    setSaving(false);
-    navigate(`/checklist?id=${result.id}`);
+    try {
+      if (!isAuthenticated) {
+        pendingSurvey.save(surveyData);
+        const { session } = await launchpadClient.auth.register({
+          email: contactInfo.email,
+          password: account.password,
+          fullName: contactInfo.full_name,
+          accountType: "customer",
+        });
+        if (!session) {
+          navigate("/customer/login?accountCreated=true");
+          return;
+        }
+      }
+
+      const result = await launchpadClient.entities.BusinessSurvey.create(surveyData);
+      pendingSurvey.clear();
+      window.location.href = `/checklist?id=${result.id}`;
+    } catch (err) {
+      setError(err.message || "We couldn't create your account and save your checklist.");
+    } finally {
+      setSaving(false);
+    }
   };
 
   return (
@@ -245,11 +274,16 @@ export default function Survey() {
               transition={{ duration: 0.35 }}
             >
               <h2 className="font-heading text-2xl md:text-3xl font-bold text-foreground mb-2">
-                Almost done! Where should we send your checklist?
+                {isAuthenticated ? "Almost done!" : "Save your personalized checklist"}
               </h2>
               <p className="text-muted-foreground text-sm mb-8">
-                We'll save your personalized checklist so you can access it anytime.
+                {isAuthenticated
+                  ? "We'll add this plan to your dashboard."
+                  : "Create an account to keep your answers, track progress, and return anytime."}
               </p>
+              {error && (
+                <div className="mb-5 p-3 rounded-lg bg-destructive/10 text-destructive text-sm">{error}</div>
+              )}
               <div className="space-y-4">
                 <div>
                   <label className="text-sm font-medium text-foreground mb-1.5 block">Full Name</label>
@@ -264,8 +298,9 @@ export default function Survey() {
                   <Input
                     type="email"
                     placeholder="you@example.com"
-                    value={contactInfo.email}
+                    value={isAuthenticated ? user.email : contactInfo.email}
                     onChange={(e) => setContactInfo({ ...contactInfo, email: e.target.value })}
+                    disabled={isAuthenticated}
                   />
                 </div>
                 <div>
@@ -276,6 +311,33 @@ export default function Survey() {
                     onChange={(e) => setContactInfo({ ...contactInfo, phone: e.target.value })}
                   />
                 </div>
+                {!isAuthenticated && (
+                  <>
+                    <div>
+                      <label className="text-sm font-medium text-foreground mb-1.5 block">Create Password *</label>
+                      <Input
+                        type="password"
+                        autoComplete="new-password"
+                        placeholder="At least 8 characters"
+                        value={account.password}
+                        onChange={(e) => setAccount({ ...account, password: e.target.value })}
+                      />
+                    </div>
+                    <div>
+                      <label className="text-sm font-medium text-foreground mb-1.5 block">Confirm Password *</label>
+                      <Input
+                        type="password"
+                        autoComplete="new-password"
+                        placeholder="Repeat your password"
+                        value={account.confirmPassword}
+                        onChange={(e) => setAccount({ ...account, confirmPassword: e.target.value })}
+                      />
+                      {account.confirmPassword && account.password !== account.confirmPassword && (
+                        <p className="text-xs text-destructive mt-1.5">Passwords do not match.</p>
+                      )}
+                    </div>
+                  </>
+                )}
               </div>
             </motion.div>
           ) : currentStep ? (
@@ -313,7 +375,7 @@ export default function Survey() {
               ) : (
                 <Sparkles className="w-4 h-4" />
               )}
-              Generate My Checklist
+              {isAuthenticated ? "Save My Checklist" : "Create Account & Save"}
             </Button>
           ) : (
             <Button

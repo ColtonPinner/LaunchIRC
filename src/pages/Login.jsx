@@ -1,6 +1,6 @@
 import React, { useState } from "react";
-import { Link } from "react-router-dom";
-import { launchpadClient } from "@/api/launchpadClient";
+import { Link, useSearchParams } from "react-router-dom";
+import { launchpadClient, pendingSurvey } from "@/api/launchpadClient";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -8,18 +8,35 @@ import { LogIn, Mail, Lock, Loader2 } from "lucide-react";
 import AuthLayout from "@/components/AuthLayout";
 
 export default function Login() {
+  const [searchParams] = useSearchParams();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
+  const accountCreated = searchParams.get("accountCreated") === "true";
+  const hasPendingSurvey = !!pendingSurvey.get();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError("");
     setLoading(true);
     try {
-      await launchpadClient.auth.loginViaEmailPassword(email, password);
-      window.location.href = "/";
+      const user = await launchpadClient.auth.loginViaEmailPassword(email, password);
+      const isProfessional = ["staff", "admin"].includes(user.app_metadata?.role)
+        || user.user_metadata?.account_type === "provider";
+      if (isProfessional) {
+        await launchpadClient.auth.logout();
+        throw new Error("This is a professional account. Use professional sign in instead.");
+      }
+      const pending = pendingSurvey.get();
+      if (pending) {
+        const survey = await launchpadClient.entities.BusinessSurvey.create(pending);
+        pendingSurvey.clear();
+        window.location.href = `/checklist?id=${survey.id}`;
+        return;
+      }
+      const returnTo = searchParams.get("returnTo");
+      window.location.href = returnTo?.startsWith("/") && !returnTo.startsWith("//") ? returnTo : "/dashboard";
     } catch (err) {
       setError(err.message || "Invalid email or password");
     } finally {
@@ -30,17 +47,23 @@ export default function Login() {
   return (
     <AuthLayout
       icon={LogIn}
-      title="Welcome back"
-      subtitle="Log in to your account"
+      title="Customer sign in"
+      subtitle="Access your plans and requests"
       footer={
         <>
           Don't have an account?{" "}
-          <Link to="/register" className="text-primary font-medium hover:underline">
+          <Link to="/customer/register" className="text-primary font-medium hover:underline">
             Create one
           </Link>
         </>
       }
     >
+      {accountCreated && (
+        <div className="mb-4 p-3 rounded-lg bg-accent/10 text-foreground text-sm">
+          Check your email to confirm your account, then log in.
+          {hasPendingSurvey && " Your completed survey is ready to save."}
+        </div>
+      )}
       {error && (
         <div className="mb-4 p-3 rounded-lg bg-destructive/10 text-destructive text-sm">
           {error}
@@ -94,6 +117,9 @@ export default function Login() {
           )}
         </Button>
       </form>
+      <div className="mt-5 pt-5 border-t text-center text-sm text-muted-foreground">
+        Staff or service provider? <Link to="/professional/login" className="text-primary font-medium hover:underline">Professional sign in</Link>
+      </div>
     </AuthLayout>
   );
 }

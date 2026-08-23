@@ -126,7 +126,7 @@ export default function Directory() {
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: i * 0.05 }}
                 id={(listing.company_name || "").toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-+|-+$/g, "")}
-                className={`bg-card rounded-xl border p-6 hover:shadow-lg transition-all duration-200 ${
+                className={`bg-card rounded-xl border p-6 hover:shadow-lg transition-all duration-200 flex flex-col ${
                   listing.is_sponsor ? "ring-2 ring-accent/20" : ""
                 }`}
               >
@@ -185,6 +185,11 @@ export default function Directory() {
                     </div>
                   )}
                 </div>
+                <Link to={`/directory/${listing.id}/contact`} className="mt-auto pt-5">
+                  <Button variant="outline" className="w-full gap-2">
+                    <Mail className="w-4 h-4" /> Contact provider
+                  </Button>
+                </Link>
               </motion.div>
             ))}
           </div>

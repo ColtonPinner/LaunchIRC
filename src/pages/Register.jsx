@@ -23,8 +23,8 @@ export default function Register() {
     }
     setLoading(true);
     try {
-      await launchpadClient.auth.register({ email, password });
-      window.location.href = "/";
+      const { session } = await launchpadClient.auth.register({ email, password, accountType: "customer" });
+      window.location.href = session ? "/dashboard" : "/customer/login?accountCreated=true";
     } catch (err) {
       setError(err.message || "Registration failed");
     } finally {
@@ -35,12 +35,12 @@ export default function Register() {
   return (
     <AuthLayout
       icon={UserPlus}
-      title="Create your account"
-      subtitle="Sign up to get started"
+      title="Create a customer account"
+      subtitle="Save your plans and track requests"
       footer={
         <>
           Already have an account?{" "}
-          <Link to="/login" className="text-primary font-medium hover:underline">
+          <Link to="/customer/login" className="text-primary font-medium hover:underline">
             Log in
           </Link>
         </>
@@ -113,6 +113,9 @@ export default function Register() {
           )}
         </Button>
       </form>
+      <div className="mt-5 pt-5 border-t text-center text-sm text-muted-foreground">
+        Joining as a service provider? <Link to="/professional/register" className="text-primary font-medium hover:underline">Create a provider account</Link>
+      </div>
     </AuthLayout>
   );
 }
