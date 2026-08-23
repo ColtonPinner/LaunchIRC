@@ -23,10 +23,11 @@ export default function ProviderContact() {
     queryFn: async () => (await launchpadClient.entities.DirectoryListing.filter({ id }))[0],
     enabled: !!id,
   });
+  const isCustomer = isAuthenticated && user?.account_type === "customer";
   const { data: surveys = [] } = useQuery({
     queryKey: ["provider-contact-surveys", user?.id],
     queryFn: () => launchpadClient.entities.BusinessSurvey.listMine(),
-    enabled: isAuthenticated,
+    enabled: isCustomer,
   });
   const selectedSurveyId = surveyId || surveys[0]?.id || null;
 
@@ -58,7 +59,7 @@ export default function ProviderContact() {
             <h1 className="font-heading text-3xl font-bold">{listing.company_name}</h1>
             <p className="text-primary-foreground/70 mt-2 capitalize">{listing.category?.replaceAll("_", " ")}</p>
             {listing.description && <p className="text-sm leading-6 text-primary-foreground/75 mt-7">{listing.description}</p>}
-            {isAuthenticated && <p className="text-xs text-primary-foreground/60 mt-8">This request will also appear in your customer portal.</p>}
+            {isCustomer && <p className="text-xs text-primary-foreground/60 mt-8">This request will also appear in your customer portal.</p>}
           </aside>
 
           <main className="p-7 md:p-9">
@@ -67,7 +68,7 @@ export default function ProviderContact() {
                 <div className="w-12 h-12 rounded-lg bg-emerald-50 flex items-center justify-center mb-4"><CheckCircle2 className="w-6 h-6 text-emerald-600" /></div>
                 <h2 className="font-heading text-2xl font-bold">Request sent</h2>
                 <p className="text-sm text-muted-foreground mt-2 max-w-sm">{listing.company_name} can now review your message and contact you directly.</p>
-                <div className="flex flex-wrap justify-center gap-2 mt-6"><Link to="/directory"><Button variant="outline">Browse directory</Button></Link>{isAuthenticated && <Link to="/portal"><Button>Track request</Button></Link>}</div>
+                <div className="flex flex-wrap justify-center gap-2 mt-6"><Link to="/directory"><Button variant="outline">Browse directory</Button></Link>{isCustomer && <Link to="/portal"><Button>Track request</Button></Link>}</div>
               </div>
             ) : (
               <>

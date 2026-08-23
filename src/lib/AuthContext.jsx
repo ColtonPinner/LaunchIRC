@@ -17,7 +17,7 @@ export const AuthProvider = ({ children }) => {
     try {
       const currentUser = await launchpadClient.auth.me();
       const pending = pendingSurvey.get();
-      if (pending) {
+      if (pending && currentUser.account_type === 'customer') {
         try {
           await launchpadClient.entities.BusinessSurvey.create(pending);
           pendingSurvey.clear();

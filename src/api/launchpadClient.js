@@ -157,9 +157,19 @@ export const launchpadClient = {
     async me() {
       const result = unwrap(await getSupabase().auth.getUser());
       if (!result.user) throw new Error('Not authenticated');
+      const { data: profile } = await getSupabase()
+        .from('account_profiles')
+        .select('account_type, full_name, business_name')
+        .eq('id', result.user.id)
+        .maybeSingle();
+      const fallbackType = ['staff', 'admin'].includes(result.user.app_metadata?.role)
+        ? 'consultant'
+        : result.user.user_metadata?.account_type === 'provider' ? 'provider' : 'customer';
       return {
         ...result.user,
         role: result.user.app_metadata?.role || 'user',
+        account_type: profile?.account_type || fallbackType,
+        profile,
       };
     },
 
@@ -183,6 +193,15 @@ export const launchpadClient = {
             .order('updated_date', { ascending: false }),
         );
         return records.map(flattenRecord);
+      },
+      async listPending() {
+        const records = unwrap(
+          await getSupabase().from('directory_listings').select('*').order('created_date', { ascending: false }),
+        );
+        return records.map(flattenRecord).filter((listing) => !listing.is_approved);
+      },
+      async approve(id) {
+        return this.update(id, { is_approved: true });
       },
     },
     Event: createEntity('events', { publicRead: true }),

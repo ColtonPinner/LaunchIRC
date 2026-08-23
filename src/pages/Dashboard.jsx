@@ -37,7 +37,6 @@ const getPlanProgress = (survey) => {
 
 export default function Dashboard() {
   const { user } = useAuth();
-  const isProfessional = ["staff", "admin"].includes(user?.role) || user?.user_metadata?.account_type === "provider";
   const { data: surveys = [], isLoading, isError, refetch } = useQuery({
     queryKey: ["dashboard-surveys", user?.id],
     queryFn: () => launchpadClient.entities.BusinessSurvey.listMine(),
@@ -96,7 +95,7 @@ export default function Dashboard() {
             <span className="flex items-center gap-3"><span className="w-10 h-10 rounded-md bg-accent/10 flex items-center justify-center"><Headphones className="w-5 h-5 text-accent" /></span><span><strong className="block">Customer portal</strong><span className="text-sm text-muted-foreground">Track consultation and provider requests</span></span></span>
             <ArrowRight className="w-4 h-4 text-muted-foreground" />
           </Link>
-          <Link to={isProfessional ? "/provider" : "/professional/register"} className="border rounded-lg bg-card p-5 flex items-center justify-between gap-4 hover:border-accent transition-colors">
+          <Link to="/provider/register" className="border rounded-lg bg-card p-5 flex items-center justify-between gap-4 hover:border-accent transition-colors">
             <span className="flex items-center gap-3"><span className="w-10 h-10 rounded-md bg-primary/10 flex items-center justify-center"><Building2 className="w-5 h-5 text-primary" /></span><span><strong className="block">Provider portal</strong><span className="text-sm text-muted-foreground">Manage listings and incoming leads</span></span></span>
             <ArrowRight className="w-4 h-4 text-muted-foreground" />
           </Link>

@@ -21,12 +21,11 @@ export default function Login() {
     setError("");
     setLoading(true);
     try {
-      const user = await launchpadClient.auth.loginViaEmailPassword(email, password);
-      const isProfessional = ["staff", "admin"].includes(user.app_metadata?.role)
-        || user.user_metadata?.account_type === "provider";
-      if (isProfessional) {
+      await launchpadClient.auth.loginViaEmailPassword(email, password);
+      const user = await launchpadClient.auth.me();
+      if (user.account_type !== "customer") {
         await launchpadClient.auth.logout();
-        throw new Error("This is a professional account. Use professional sign in instead.");
+        throw new Error("This is not a customer account. Choose the correct account type.");
       }
       const pending = pendingSurvey.get();
       if (pending) {
@@ -118,7 +117,7 @@ export default function Login() {
         </Button>
       </form>
       <div className="mt-5 pt-5 border-t text-center text-sm text-muted-foreground">
-        Staff or service provider? <Link to="/professional/login" className="text-primary font-medium hover:underline">Professional sign in</Link>
+        Not a customer? <Link to="/account" className="text-primary font-medium hover:underline">Choose account type</Link>
       </div>
     </AuthLayout>
   );

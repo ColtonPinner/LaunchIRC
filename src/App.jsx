@@ -26,24 +26,13 @@ import CustomerPortal from '@/pages/CustomerPortal';
 import ProviderPortal from '@/pages/ProviderPortal';
 import ProviderContact from '@/pages/ProviderContact';
 import ProfessionalAuth from '@/pages/ProfessionalAuth';
+import AccountAccess from '@/pages/AccountAccess';
 import { Navigate } from 'react-router-dom';
 
-const ProtectedPage = ({ children }) => {
-  const { isAuthenticated } = useAuth();
-  const returnTo = window.location.pathname + window.location.search;
-  return isAuthenticated ? children : <Navigate to={`/customer/login?returnTo=${encodeURIComponent(returnTo)}`} replace />;
-};
-
-const StaffPage = ({ children }) => {
-  const { user } = useAuth();
-  return ['staff', 'admin'].includes(user?.role) ? children : <Navigate to="/dashboard" replace />;
-};
-
-const ProfessionalPage = ({ children }) => {
+const AccountPage = ({ type, children }) => {
   const { user, isAuthenticated } = useAuth();
-  if (!isAuthenticated) return <Navigate to="/professional/login" replace />;
-  const isProfessional = ['staff', 'admin'].includes(user?.role) || user?.user_metadata?.account_type === 'provider';
-  return isProfessional ? children : <Navigate to="/portal" replace />;
+  if (!isAuthenticated) return <Navigate to={`/${type}/login`} replace />;
+  return user?.account_type === type ? children : <Navigate to="/account" replace />;
 };
 
 const AuthenticatedApp = () => {
@@ -63,17 +52,21 @@ const AuthenticatedApp = () => {
     <Routes>
       <Route path="/login" element={<Login />} />
       <Route path="/register" element={<Register />} />
+      <Route path="/account" element={<AccountAccess />} />
       <Route path="/customer/login" element={<Login />} />
       <Route path="/customer/register" element={<Register />} />
-      <Route path="/professional/login" element={<ProfessionalAuth mode="login" />} />
-      <Route path="/professional/register" element={<ProfessionalAuth mode="register" />} />
+      <Route path="/provider/login" element={<ProfessionalAuth mode="login" accountType="provider" />} />
+      <Route path="/provider/register" element={<ProfessionalAuth mode="register" accountType="provider" />} />
+      <Route path="/consultant/login" element={<ProfessionalAuth mode="login" accountType="consultant" />} />
+      <Route path="/professional/login" element={<Navigate to="/account" replace />} />
+      <Route path="/professional/register" element={<Navigate to="/provider/register" replace />} />
       <Route element={<AppLayout />}>
         <Route path="/" element={<Home />} />
         <Route path="/survey" element={<Survey />} />
         <Route path="/guides" element={<Guides />} />
         <Route path="/directory" element={<Directory />} />
         <Route path="/directory/:id/contact" element={<ProviderContact />} />
-        <Route path="/directory/join" element={<ProfessionalPage><DirectoryJoin /></ProfessionalPage>} />
+        <Route path="/directory/join" element={<AccountPage type="provider"><DirectoryJoin /></AccountPage>} />
         <Route path="/concierge" element={<Concierge />} />
         <Route path="/sponsor" element={<Sponsor />} />
         <Route path="/events" element={<Events />} />
@@ -81,10 +74,10 @@ const AuthenticatedApp = () => {
         <Route path="/terms" element={<Terms />} />
         <Route path="/disclaimer" element={<Disclaimer />} />
         <Route path="/checklist" element={<Checklist />} />
-        <Route path="/dashboard" element={<ProtectedPage><Dashboard /></ProtectedPage>} />
-        <Route path="/portal" element={<ProtectedPage><CustomerPortal /></ProtectedPage>} />
-        <Route path="/provider" element={<ProfessionalPage><ProviderPortal /></ProfessionalPage>} />
-        <Route path="/staff/inquiries" element={<ProfessionalPage><StaffPage><Inquiries /></StaffPage></ProfessionalPage>} />
+        <Route path="/dashboard" element={<AccountPage type="customer"><Dashboard /></AccountPage>} />
+        <Route path="/portal" element={<AccountPage type="customer"><CustomerPortal /></AccountPage>} />
+        <Route path="/provider" element={<AccountPage type="provider"><ProviderPortal /></AccountPage>} />
+        <Route path="/staff/inquiries" element={<AccountPage type="consultant"><Inquiries /></AccountPage>} />
       </Route>
       <Route path="*" element={<PageNotFound />} />
     </Routes>

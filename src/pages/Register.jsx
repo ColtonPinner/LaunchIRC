@@ -114,7 +114,7 @@ export default function Register() {
         </Button>
       </form>
       <div className="mt-5 pt-5 border-t text-center text-sm text-muted-foreground">
-        Joining as a service provider? <Link to="/professional/register" className="text-primary font-medium hover:underline">Create a provider account</Link>
+        Joining as a service provider? <Link to="/provider/register" className="text-primary font-medium hover:underline">Create a provider account</Link>
       </div>
     </AuthLayout>
   );
