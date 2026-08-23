@@ -20,6 +20,9 @@ export const pendingSurvey = {
 };
 
 const getSupabase = () => {
+  if (!supabase) {
+    throw new Error('Supabase is not configured. Set VITE_SUPABASE_URL and VITE_SUPABASE_PUBLISHABLE_KEY.');
+  }
   return supabase;
 };
 
