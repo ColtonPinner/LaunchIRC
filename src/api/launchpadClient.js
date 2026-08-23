@@ -179,6 +179,31 @@ export const launchpadClient = {
     },
   },
 
+  admin: {
+    async inviteConsultant({ email, fullName }) {
+      const { data: sessionData } = await getSupabase().auth.getSession();
+      const token = sessionData.session?.access_token;
+      if (!token) throw new Error('Not authenticated');
+
+      const response = await fetch(`${import.meta.env.VITE_SUPABASE_URL}/functions/v1/create-consultant`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${token}`,
+          apikey: import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY,
+        },
+        body: JSON.stringify({ email, fullName }),
+      });
+      const result = await response.json();
+      if (!response.ok) throw new Error(result.error || 'Could not invite consultant');
+      return result;
+    },
+
+    async listConsultants() {
+      return unwrap(await getSupabase().rpc('list_consultants')) || [];
+    },
+  },
+
   entities: {
     BusinessSurvey: businessSurveys,
     ConciergeRequest: createEntity('concierge_requests'),

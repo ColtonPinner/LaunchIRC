@@ -1,8 +1,11 @@
 import React, { useEffect, useState } from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { Building2, CalendarDays, CheckCircle2, Inbox, Loader2, Mail, Phone, RefreshCw, Save } from "lucide-react";
+import { Building2, CalendarDays, CheckCircle2, Inbox, Loader2, Mail, Phone, RefreshCw, Save, UserPlus } from "lucide-react";
 import { launchpadClient } from "@/api/launchpadClient";
+import { useAuth } from "@/lib/AuthContext";
 import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 
 const statuses = [
@@ -47,11 +50,16 @@ const getStatus = (inquiry) => inquiry.status || "new";
 
 export default function Inquiries() {
   const queryClient = useQueryClient();
+  const { user } = useAuth();
+  const isAdmin = user?.role === "admin";
   const [workspaceTab, setWorkspaceTab] = useState("consultations");
   const [filter, setFilter] = useState("all");
   const [selectedId, setSelectedId] = useState(null);
   const [notes, setNotes] = useState("");
   const [saved, setSaved] = useState(false);
+  const [inviteForm, setInviteForm] = useState({ email: "", fullName: "" });
+  const [inviteError, setInviteError] = useState("");
+  const [inviteSuccess, setInviteSuccess] = useState("");
 
   const { data: inquiries = [], isLoading, isError, refetch } = useQuery({
     queryKey: ["staff-inquiries"],
@@ -82,6 +90,29 @@ export default function Inquiries() {
     mutationFn: (id) => launchpadClient.entities.DirectoryListing.approve(id),
     onSuccess: () => queryClient.invalidateQueries({ queryKey: ["staff-pending-listings"] }),
   });
+
+  const { data: consultants = [], isLoading: isLoadingConsultants, isError: isConsultantsError, refetch: refetchConsultants } = useQuery({
+    queryKey: ["staff-consultants"],
+    queryFn: () => launchpadClient.admin.listConsultants(),
+    enabled: isAdmin,
+  });
+
+  const inviteMutation = useMutation({
+    mutationFn: (payload) => launchpadClient.admin.inviteConsultant(payload),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["staff-consultants"] });
+      setInviteForm({ email: "", fullName: "" });
+      setInviteSuccess("Invite sent. They'll receive an email to set their password.");
+    },
+    onError: (error) => setInviteError(error.message || "Could not invite consultant"),
+  });
+
+  const handleInvite = (event) => {
+    event.preventDefault();
+    setInviteError("");
+    setInviteSuccess("");
+    inviteMutation.mutate(inviteForm);
+  };
 
   const updateStatus = (status) => {
     if (!selected) return;
@@ -128,6 +159,14 @@ export default function Inquiries() {
             Directory listings
             {pendingListings.length > 0 && <span className="text-[11px] font-semibold bg-accent/10 text-accent rounded-full px-1.5 py-0.5">{pendingListings.length}</span>}
           </button>
+          {isAdmin && (
+            <button
+              onClick={() => setWorkspaceTab("team")}
+              className={`px-4 py-2.5 text-sm font-medium border-b-2 -mb-px ${workspaceTab === "team" ? "border-primary text-foreground" : "border-transparent text-muted-foreground hover:text-foreground"}`}
+            >
+              Team
+            </button>
+          )}
         </div>
 
         {workspaceTab === "consultations" && (
@@ -305,6 +344,63 @@ export default function Inquiries() {
               </div>
             )}
           </>
+        )}
+
+        {workspaceTab === "team" && isAdmin && (
+          <div className="grid grid-cols-1 lg:grid-cols-[minmax(0,0.85fr)_minmax(0,1.15fr)] gap-6">
+            <div className="border rounded-lg bg-card p-5 md:p-6 h-fit">
+              <h2 className="font-heading text-lg font-bold mb-1">Invite a consultant</h2>
+              <p className="text-sm text-muted-foreground mb-5">They'll receive an email to set their own password and sign in at /consultant/login.</p>
+              {inviteError && <div role="alert" className="mb-4 p-3 rounded-md bg-destructive/10 text-destructive text-sm">{inviteError}</div>}
+              {inviteSuccess && <div className="mb-4 p-3 rounded-md bg-emerald-50 text-emerald-700 text-sm">{inviteSuccess}</div>}
+              <form onSubmit={handleInvite} className="space-y-4">
+                <div>
+                  <Label htmlFor="invite-name">Full name</Label>
+                  <Input id="invite-name" value={inviteForm.fullName} onChange={(event) => setInviteForm({ ...inviteForm, fullName: event.target.value })} className="mt-1.5" />
+                </div>
+                <div>
+                  <Label htmlFor="invite-email">Email *</Label>
+                  <Input id="invite-email" type="email" required value={inviteForm.email} onChange={(event) => setInviteForm({ ...inviteForm, email: event.target.value })} className="mt-1.5" />
+                </div>
+                <Button type="submit" disabled={inviteMutation.isPending || !inviteForm.email} className="w-full gap-2">
+                  {inviteMutation.isPending ? <Loader2 className="w-4 h-4 animate-spin" /> : <UserPlus className="w-4 h-4" />} Send invite
+                </Button>
+              </form>
+            </div>
+
+            <div className="border rounded-lg bg-card overflow-hidden">
+              <div className="px-5 py-4 border-b">
+                <h2 className="font-heading text-lg font-bold">Consultants</h2>
+              </div>
+              {isLoadingConsultants && (
+                <div className="min-h-40 flex items-center justify-center">
+                  <Loader2 className="w-5 h-5 animate-spin text-accent" />
+                </div>
+              )}
+              {isConsultantsError && (
+                <div className="p-6 text-center">
+                  <p className="text-sm font-semibold">Consultants could not be loaded.</p>
+                  <Button variant="outline" size="sm" onClick={() => refetchConsultants()} className="gap-2 mt-3"><RefreshCw className="w-4 h-4" /> Retry</Button>
+                </div>
+              )}
+              {!isLoadingConsultants && !isConsultantsError && consultants.length === 0 && (
+                <p className="p-6 text-sm text-muted-foreground text-center">No consultants yet.</p>
+              )}
+              {!isLoadingConsultants && !isConsultantsError && consultants.length > 0 && (
+                <div className="divide-y">
+                  {consultants.map((consultant) => (
+                    <div key={consultant.id} className="px-5 py-3.5 flex items-center justify-between gap-3">
+                      <div className="min-w-0">
+                        <p className="font-medium truncate">{consultant.full_name || consultant.email}</p>
+                        <p className="text-sm text-muted-foreground truncate">{consultant.email}</p>
+                      </div>
+                      <span className="text-[11px] font-semibold uppercase tracking-wide text-muted-foreground whitespace-nowrap">{consultant.role}</span>
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
+          </div>
         )}
       </main>
     </div>
