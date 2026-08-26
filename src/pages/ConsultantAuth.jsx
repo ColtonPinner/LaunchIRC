@@ -24,7 +24,7 @@ export default function ConsultantAuth() {
         await launchpadClient.auth.logout();
         throw new Error("This is not a consultant account. Choose the correct account type.");
       }
-      window.location.href = "/staff/inquiries";
+      window.location.href = "/consultant";
     } catch (err) {
       setError(err.message || "Invalid email or password");
     } finally {

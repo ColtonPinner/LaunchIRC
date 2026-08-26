@@ -27,6 +27,7 @@ import ProviderPortal from '@/pages/ProviderPortal';
 import ProviderContact from '@/pages/ProviderContact';
 import ProfessionalAuth from '@/pages/ProfessionalAuth';
 import ConsultantAuth from '@/pages/ConsultantAuth';
+import ConsultantDashboard from '@/pages/ConsultantDashboard';
 import AccountAccess from '@/pages/AccountAccess';
 import { Navigate } from 'react-router-dom';
 
@@ -78,6 +79,7 @@ const AuthenticatedApp = () => {
         <Route path="/dashboard" element={<AccountPage type="customer"><Dashboard /></AccountPage>} />
         <Route path="/portal" element={<AccountPage type="customer"><CustomerPortal /></AccountPage>} />
         <Route path="/provider" element={<AccountPage type="provider"><ProviderPortal /></AccountPage>} />
+        <Route path="/consultant" element={<AccountPage type="consultant"><ConsultantDashboard /></AccountPage>} />
         <Route path="/staff/inquiries" element={<AccountPage type="consultant"><Inquiries /></AccountPage>} />
       </Route>
       <Route path="*" element={<PageNotFound />} />

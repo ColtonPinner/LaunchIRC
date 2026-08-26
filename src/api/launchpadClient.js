@@ -50,6 +50,17 @@ const flattenRecord = (record) => ({
 
 const flattenPortalRecord = ({ data, ...record }) => ({ ...data, ...record });
 
+export const resolveAccountType = (user, profile = null) => {
+  const role = user?.app_metadata?.role;
+  const metadataType = user?.user_metadata?.account_type;
+  const profileType = profile?.account_type;
+
+  if (['staff', 'admin'].includes(role)) return 'consultant';
+  if (profileType && ['customer', 'provider', 'consultant'].includes(profileType)) return profileType;
+  if (metadataType && ['customer', 'provider', 'consultant'].includes(metadataType)) return metadataType;
+  return 'customer';
+};
+
 const createEntity = (table, { publicRead = false } = {}) => {
 
   return {
@@ -133,7 +144,7 @@ const businessSurveys = {
 
 export const launchpadClient = {
   auth: {
-    async register({ email, password, fullName, accountType = 'customer', businessName = '' }) {
+    async register({ email, password, fullName, accountType = 'customer', businessName = '', ein = '' }) {
       const { data: current } = await getSupabase().auth.getUser();
       if (current.user?.is_anonymous) {
         const { error } = await getSupabase().auth.signOut();
@@ -147,6 +158,7 @@ export const launchpadClient = {
             full_name: fullName || '',
             account_type: accountType,
             business_name: businessName,
+            ein,
           },
         },
       }));
@@ -162,16 +174,14 @@ export const launchpadClient = {
       if (!result.user) throw new Error('Not authenticated');
       const { data: profile } = await getSupabase()
         .from('account_profiles')
-        .select('account_type, full_name, business_name')
+        .select('account_type, full_name, business_name, ein')
         .eq('id', result.user.id)
         .maybeSingle();
-      const fallbackType = ['staff', 'admin'].includes(result.user.app_metadata?.role)
-        ? 'consultant'
-        : result.user.user_metadata?.account_type === 'provider' ? 'provider' : 'customer';
+      const accountType = resolveAccountType(result.user, profile);
       return {
         ...result.user,
         role: result.user.app_metadata?.role || 'user',
-        account_type: profile?.account_type || fallbackType,
+        account_type: accountType,
         profile,
       };
     },
@@ -229,7 +239,24 @@ export const launchpadClient = {
         return records.map(flattenRecord).filter((listing) => !listing.is_approved);
       },
       async approve(id) {
-        return this.update(id, { is_approved: true });
+        const { data: currentRecord, error: fetchError } = await getSupabase()
+          .from('directory_listings')
+          .select('*')
+          .eq('id', id)
+          .single();
+
+        if (fetchError) throw fetchError;
+
+        const updatedData = { ...currentRecord.data, is_approved: true };
+        const { data, error } = await getSupabase()
+          .from('directory_listings')
+          .update({ data: updatedData })
+          .eq('id', id)
+          .select('*')
+          .single();
+
+        if (error) throw error;
+        return flattenRecord(data);
       },
     },
     Event: createEntity('events', { publicRead: true }),

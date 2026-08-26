@@ -51,7 +51,7 @@ const getStatus = (inquiry) => inquiry.status || "new";
 export default function Inquiries() {
   const queryClient = useQueryClient();
   const { user } = useAuth();
-  const isAdmin = user?.role === "admin";
+  const canManageTeam = ['admin', 'staff'].includes(user?.role);
   const [workspaceTab, setWorkspaceTab] = useState("consultations");
   const [filter, setFilter] = useState("all");
   const [selectedId, setSelectedId] = useState(null);
@@ -86,6 +86,11 @@ export default function Inquiries() {
     queryFn: () => launchpadClient.entities.DirectoryListing.listPending(),
   });
 
+  const { data: providerLeads = [], isLoading: isLoadingLeads, isError: isLeadsError, refetch: refetchLeads } = useQuery({
+    queryKey: ["staff-provider-leads"],
+    queryFn: () => launchpadClient.entities.ProviderLead.listForProvider(),
+  });
+
   const approveMutation = useMutation({
     mutationFn: (id) => launchpadClient.entities.DirectoryListing.approve(id),
     onSuccess: () => queryClient.invalidateQueries({ queryKey: ["staff-pending-listings"] }),
@@ -94,7 +99,7 @@ export default function Inquiries() {
   const { data: consultants = [], isLoading: isLoadingConsultants, isError: isConsultantsError, refetch: refetchConsultants } = useQuery({
     queryKey: ["staff-consultants"],
     queryFn: () => launchpadClient.admin.listConsultants(),
-    enabled: isAdmin,
+    enabled: canManageTeam,
   });
 
   const inviteMutation = useMutation({
@@ -159,7 +164,14 @@ export default function Inquiries() {
             Directory listings
             {pendingListings.length > 0 && <span className="text-[11px] font-semibold bg-accent/10 text-accent rounded-full px-1.5 py-0.5">{pendingListings.length}</span>}
           </button>
-          {isAdmin && (
+          <button
+            onClick={() => setWorkspaceTab("leads")}
+            className={`px-4 py-2.5 text-sm font-medium border-b-2 -mb-px flex items-center gap-2 ${workspaceTab === "leads" ? "border-primary text-foreground" : "border-transparent text-muted-foreground hover:text-foreground"}`}
+          >
+            Provider leads
+            {providerLeads.length > 0 && <span className="text-[11px] font-semibold bg-accent/10 text-accent rounded-full px-1.5 py-0.5">{providerLeads.length}</span>}
+          </button>
+          {canManageTeam && (
             <button
               onClick={() => setWorkspaceTab("team")}
               className={`px-4 py-2.5 text-sm font-medium border-b-2 -mb-px ${workspaceTab === "team" ? "border-primary text-foreground" : "border-transparent text-muted-foreground hover:text-foreground"}`}
@@ -346,7 +358,49 @@ export default function Inquiries() {
           </>
         )}
 
-        {workspaceTab === "team" && isAdmin && (
+        {workspaceTab === "leads" && (
+          <>
+            {isLoadingLeads && (
+              <div className="min-h-72 flex items-center justify-center border rounded-lg bg-card">
+                <Loader2 className="w-6 h-6 animate-spin text-accent" aria-label="Loading provider leads" />
+              </div>
+            )}
+
+            {isLeadsError && (
+              <div className="min-h-72 flex flex-col items-center justify-center text-center border rounded-lg bg-card p-6">
+                <p className="font-semibold">Provider leads could not be loaded.</p>
+                <Button variant="outline" onClick={() => refetchLeads()} className="gap-2 mt-4"><RefreshCw className="w-4 h-4" /> Retry</Button>
+              </div>
+            )}
+
+            {!isLoadingLeads && !isLeadsError && providerLeads.length === 0 && (
+              <div className="min-h-72 flex flex-col items-center justify-center text-center border border-dashed rounded-lg bg-card p-6">
+                <CheckCircle2 className="w-8 h-8 text-accent mb-3" />
+                <h2 className="font-heading text-xl font-bold">No provider leads yet</h2>
+                <p className="text-sm text-muted-foreground mt-1">Customer requests to directory providers will appear here.</p>
+              </div>
+            )}
+
+            {!isLoadingLeads && !isLeadsError && providerLeads.length > 0 && (
+              <div className="divide-y border rounded-lg bg-card">
+                {providerLeads.map((lead) => (
+                  <article key={lead.id} className="p-5 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+                    <div className="min-w-0">
+                      <div className="flex items-center gap-2 mb-1">
+                        <h3 className="font-semibold truncate">{lead.name}</h3>
+                        <span className="text-[11px] font-semibold uppercase tracking-wide text-accent whitespace-nowrap">{lead.status}</span>
+                      </div>
+                      <p className="text-sm text-muted-foreground truncate">{lead.email}{lead.message ? ` — ${lead.message}` : ""}</p>
+                    </div>
+                    <span className="flex items-center gap-1.5 text-xs text-muted-foreground whitespace-nowrap"><CalendarDays className="w-3.5 h-3.5" /> {formatDate(lead.created_date)}</span>
+                  </article>
+                ))}
+              </div>
+            )}
+          </>
+        )}
+
+        {workspaceTab === "team" && canManageTeam && (
           <div className="grid grid-cols-1 lg:grid-cols-[minmax(0,0.85fr)_minmax(0,1.15fr)] gap-6">
             <div className="border rounded-lg bg-card p-5 md:p-6 h-fit">
               <h2 className="font-heading text-lg font-bold mb-1">Invite a consultant</h2>

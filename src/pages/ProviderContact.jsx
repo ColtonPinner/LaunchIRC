@@ -46,7 +46,7 @@ export default function ProviderContact() {
   };
 
   if (isLoading) return <div className="min-h-[60vh] flex items-center justify-center"><Loader2 className="w-7 h-7 animate-spin text-accent" /></div>;
-  if (isError || !listing) return <div className="min-h-[60vh] flex flex-col items-center justify-center text-center p-6"><h1 className="font-heading text-2xl font-bold">Provider not found</h1><Link to="/directory"><Button variant="outline" className="mt-5">Back to directory</Button></Link></div>;
+  if (isError || !listing) return <div className="min-h-[60vh] flex flex-col items-center justify-center text-center p-6"><h1 className="font-heading text-2xl font-bold">Business not found</h1><Link to="/directory"><Button variant="outline" className="mt-5">Back to directory</Button></Link></div>;
 
   return (
     <div className="min-h-[calc(100vh-5rem)] bg-background">
@@ -55,7 +55,7 @@ export default function ProviderContact() {
         <div className="grid grid-cols-1 lg:grid-cols-[0.8fr_1.2fr] border rounded-lg bg-card overflow-hidden">
           <aside className="bg-primary text-primary-foreground p-7 md:p-9">
             <div className="w-12 h-12 rounded-lg bg-white/10 flex items-center justify-center mb-6"><Building2 className="w-6 h-6 text-accent" /></div>
-            <p className="text-xs font-semibold uppercase tracking-wider text-primary-foreground/60 mb-2">Contact provider</p>
+            <p className="text-xs font-semibold uppercase tracking-wider text-primary-foreground/60 mb-2">Contact this business</p>
             <h1 className="font-heading text-3xl font-bold">{listing.company_name}</h1>
             <p className="text-primary-foreground/70 mt-2 capitalize">{listing.category?.replaceAll("_", " ")}</p>
             {listing.description && <p className="text-sm leading-6 text-primary-foreground/75 mt-7">{listing.description}</p>}
@@ -72,7 +72,7 @@ export default function ProviderContact() {
               </div>
             ) : (
               <>
-                <div className="mb-7"><h2 className="font-heading text-2xl font-bold">Tell them what you need</h2><p className="text-sm text-muted-foreground mt-1">Your contact details and message will be shared with this provider.</p></div>
+                <div className="mb-7"><h2 className="font-heading text-2xl font-bold">Tell them what you need</h2><p className="text-sm text-muted-foreground mt-1">Your contact details and message will be shared with this business.</p></div>
                 {error && <div role="alert" className="p-3 rounded-md bg-destructive/10 text-destructive text-sm mb-5">{error}</div>}
                 <form onSubmit={handleSubmit} className="space-y-5">
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
@@ -95,12 +95,12 @@ export default function ProviderContact() {
                           </option>
                         ))}
                       </select>
-                      <p className="text-xs text-muted-foreground mt-1.5">The provider will receive all answers from this saved survey with your request.</p>
+                      <p className="text-xs text-muted-foreground mt-1.5">This business will receive all answers from this saved survey with your request.</p>
                     </div>
                   )}
                   <div><Label htmlFor="lead-message">How can they help? *</Label><Textarea id="lead-message" required value={form.message} onChange={(event) => setForm({ ...form, message: event.target.value })} placeholder="Share what you're working on, your timeline, and the help you need..." className="mt-1.5 min-h-36" /></div>
-                  <Button type="submit" disabled={saving || !form.name || !form.email || !form.message} className="w-full h-11 gap-2">{saving ? <Loader2 className="w-4 h-4 animate-spin" /> : <Send className="w-4 h-4" />} Send to provider</Button>
-                  <p className="text-xs text-center text-muted-foreground flex items-center justify-center gap-1.5"><Mail className="w-3.5 h-3.5" /> The provider will reply using your contact details.</p>
+                  <Button type="submit" disabled={saving || !form.name || !form.email || !form.message} className="w-full h-11 gap-2">{saving ? <Loader2 className="w-4 h-4 animate-spin" /> : <Send className="w-4 h-4" />} Send to business</Button>
+                  <p className="text-xs text-center text-muted-foreground flex items-center justify-center gap-1.5"><Mail className="w-3.5 h-3.5" /> The business will reply using your contact details.</p>
                 </form>
               </>
             )}

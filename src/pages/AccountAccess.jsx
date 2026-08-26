@@ -5,15 +5,15 @@ import { useAuth } from "@/lib/AuthContext";
 
 const accountTypes = [
   {
-    title: "Customer",
-    description: "Create launch plans, track consultations, and contact local providers.",
+    title: "Business owner",
+    description: "Create launch plans, track consultations, and manage your business goals.",
     icon: UserRound,
     login: "/customer/login",
     register: "/customer/register",
   },
   {
-    title: "Service provider",
-    description: "Manage your directory listing and respond to new applicants.",
+    title: "Business",
+    description: "Join the directory, manage your listing, and respond to customer inquiries.",
     icon: Building2,
     login: "/provider/login",
     register: "/provider/register",
@@ -30,7 +30,7 @@ export default function AccountAccess() {
   const { user, isAuthenticated } = useAuth();
 
   if (isAuthenticated) {
-    const workspace = user?.account_type === "consultant" ? "/staff/inquiries" : user?.account_type === "provider" ? "/provider" : "/dashboard";
+    const workspace = user?.account_type === "consultant" ? "/consultant" : user?.account_type === "provider" ? "/provider" : "/dashboard";
     return <Navigate to={workspace} replace />;
   }
 

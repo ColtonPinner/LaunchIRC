@@ -7,6 +7,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Loader2, CheckCircle2 } from "lucide-react";
+import { useAuth } from "@/lib/AuthContext";
 
 const categories = [
   { value: "attorney", label: "Attorney" },
@@ -24,6 +25,7 @@ const categories = [
 
 export default function DirectoryJoin() {
   const navigate = useNavigate();
+  const { user } = useAuth();
   const [form, setForm] = useState({
     company_name: "",
     category: "",
@@ -32,6 +34,7 @@ export default function DirectoryJoin() {
     email: "",
     website: "",
     address: "",
+    ein: user?.user_metadata?.ein || user?.profile?.ein || "",
   });
   const [saving, setSaving] = useState(false);
   const [submitted, setSubmitted] = useState(false);
@@ -69,7 +72,7 @@ export default function DirectoryJoin() {
           </p>
           <div className="flex justify-center gap-2">
             <Button onClick={() => navigate("/directory")} variant="outline">Back to Directory</Button>
-            <Button onClick={() => navigate("/provider")}>Provider Portal</Button>
+            <Button onClick={() => navigate("/provider")}>Business Portal</Button>
           </div>
         </div>
       </div>
@@ -144,6 +147,16 @@ export default function DirectoryJoin() {
                 value={form.website}
                 onChange={(e) => setForm({ ...form, website: e.target.value })}
                 placeholder="https://yourcompany.com"
+                className="mt-1.5"
+              />
+            </div>
+
+            <div>
+              <Label>EIN</Label>
+              <Input
+                value={form.ein}
+                onChange={(e) => setForm({ ...form, ein: e.target.value })}
+                placeholder="12-3456789"
                 className="mt-1.5"
               />
             </div>

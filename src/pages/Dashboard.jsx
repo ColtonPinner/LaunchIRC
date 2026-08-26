@@ -92,11 +92,11 @@ export default function Dashboard() {
 
         <section className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-10" aria-label="Portal shortcuts">
           <Link to="/portal" className="border rounded-lg bg-card p-5 flex items-center justify-between gap-4 hover:border-accent transition-colors">
-            <span className="flex items-center gap-3"><span className="w-10 h-10 rounded-md bg-accent/10 flex items-center justify-center"><Headphones className="w-5 h-5 text-accent" /></span><span><strong className="block">Customer portal</strong><span className="text-sm text-muted-foreground">Track consultation and provider requests</span></span></span>
+            <span className="flex items-center gap-3"><span className="w-10 h-10 rounded-md bg-accent/10 flex items-center justify-center"><Headphones className="w-5 h-5 text-accent" /></span><span><strong className="block">Customer portal</strong><span className="text-sm text-muted-foreground">Track consultations and business requests</span></span></span>
             <ArrowRight className="w-4 h-4 text-muted-foreground" />
           </Link>
           <Link to="/provider/register" className="border rounded-lg bg-card p-5 flex items-center justify-between gap-4 hover:border-accent transition-colors">
-            <span className="flex items-center gap-3"><span className="w-10 h-10 rounded-md bg-primary/10 flex items-center justify-center"><Building2 className="w-5 h-5 text-primary" /></span><span><strong className="block">Provider portal</strong><span className="text-sm text-muted-foreground">Manage listings and incoming leads</span></span></span>
+            <span className="flex items-center gap-3"><span className="w-10 h-10 rounded-md bg-primary/10 flex items-center justify-center"><Building2 className="w-5 h-5 text-primary" /></span><span><strong className="block">Business portal</strong><span className="text-sm text-muted-foreground">Manage your listing and incoming leads</span></span></span>
             <ArrowRight className="w-4 h-4 text-muted-foreground" />
           </Link>
         </section>

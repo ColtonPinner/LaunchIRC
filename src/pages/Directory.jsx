@@ -67,15 +67,15 @@ export default function Directory() {
       <div className="bg-primary text-primary-foreground py-16 md:py-24">
         <div className="max-w-4xl mx-auto px-4 text-center">
           <h1 className="font-heading text-3xl md:text-5xl font-bold mb-4">
-            Service Provider Directory
+            Local Business Directory
           </h1>
           <p className="text-primary-foreground/70 text-lg max-w-2xl mx-auto mb-8">
-            Trusted local professionals to help you start and grow your business in Indian River County.
+            Trusted local businesses to help you start and grow your business in Indian River County.
           </p>
           <div className="max-w-md mx-auto relative">
             <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground" />
             <Input
-              placeholder="Search providers..."
+              placeholder="Search businesses..."
               value={search}
               onChange={(e) => setSearch(e.target.value)}
               className="pl-10 bg-background text-foreground h-12"
@@ -187,7 +187,7 @@ export default function Directory() {
                 </div>
                 <Link to={`/directory/${listing.id}/contact`} className="mt-auto pt-5">
                   <Button variant="outline" className="w-full gap-2">
-                    <Mail className="w-4 h-4" /> Contact provider
+                    <Mail className="w-4 h-4" /> Contact business
                   </Button>
                 </Link>
               </motion.div>
@@ -205,7 +205,7 @@ export default function Directory() {
         <div className="mt-16 bg-muted/30 rounded-2xl p-10 border text-center">
           <h3 className="font-heading text-2xl font-bold mb-3">List Your Business</h3>
           <p className="text-muted-foreground mb-6 max-w-lg mx-auto">
-            Are you a service provider in Indian River County? Join our directory and connect with new business owners.
+            Are you a business serving Indian River County? Join our directory and connect with new business owners.
           </p>
           <Link to="/directory/join">
             <Button className="bg-accent hover:bg-accent/90 text-white font-semibold gap-2 px-8" size="lg">

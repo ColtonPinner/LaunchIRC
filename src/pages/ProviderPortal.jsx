@@ -59,7 +59,7 @@ export default function ProviderPortal() {
   const { user } = useAuth();
   const queryClient = useQueryClient();
   const [selectedId, setSelectedId] = useState(null);
-  const [leadFilter, setLeadFilter] = useState("new");
+  const [leadFilter, setLeadFilter] = useState("all");
 
   const { data, isLoading, isError, refetch } = useQuery({
     queryKey: ["provider-portal", user?.id],
@@ -90,7 +90,7 @@ export default function ProviderPortal() {
     <div className="min-h-[calc(100vh-5rem)] bg-background">
       <header className="border-b bg-primary text-primary-foreground">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
-          <p className="text-xs font-semibold uppercase tracking-[0.18em] text-primary-foreground/60 mb-2">Provider portal</p>
+          <p className="text-xs font-semibold uppercase tracking-[0.18em] text-primary-foreground/60 mb-2">Business portal</p>
           <div className="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-5">
             <div><h1 className="font-heading text-3xl md:text-4xl font-bold">Business leads</h1><p className="text-primary-foreground/70 mt-2">Manage your directory presence and incoming opportunities.</p></div>
             <Link to="/directory/join"><Button className="bg-accent hover:bg-accent/90 text-white gap-2"><Plus className="w-4 h-4" /> Add listing</Button></Link>
@@ -102,7 +102,7 @@ export default function ProviderPortal() {
         {isLoading && <div className="min-h-72 flex items-center justify-center border rounded-lg"><Loader2 className="w-6 h-6 animate-spin text-accent" /></div>}
         {isError && (
           <div className="min-h-72 flex flex-col items-center justify-center text-center border rounded-lg p-6">
-            <p className="font-semibold">Your provider workspace could not be loaded.</p>
+            <p className="font-semibold">Your business workspace could not be loaded.</p>
             <Button variant="outline" className="gap-2 mt-4" onClick={() => refetch()}><RefreshCw className="w-4 h-4" /> Retry</Button>
           </div>
         )}
@@ -128,7 +128,7 @@ export default function ProviderPortal() {
                   ))}
                 </div>
               ) : (
-                <div className="border border-dashed rounded-lg p-7 text-center"><Building2 className="w-7 h-7 text-muted-foreground mx-auto mb-3" /><h3 className="font-semibold">No provider listing yet</h3><p className="text-sm text-muted-foreground mt-1 mb-4">Apply to appear in the local service directory.</p><Link to="/directory/join"><Button size="sm">Apply to join</Button></Link></div>
+                <div className="border border-dashed rounded-lg p-7 text-center"><Building2 className="w-7 h-7 text-muted-foreground mx-auto mb-3" /><h3 className="font-semibold">No business listing yet</h3><p className="text-sm text-muted-foreground mt-1 mb-4">Apply to appear in the local business directory.</p><Link to="/directory/join"><Button size="sm">Apply to join</Button></Link></div>
               )}
             </section>
 
@@ -160,7 +160,7 @@ export default function ProviderPortal() {
                   <div className="border-b lg:border-b-0 lg:border-r max-h-[30rem] overflow-y-auto">
                     {filteredLeads.map((lead) => (
                       <button key={lead.id} onClick={() => setSelectedId(lead.id)} className={`w-full text-left p-4 border-b last:border-b-0 border-l-4 ${selected.id === lead.id ? "bg-accent/5 border-l-accent" : "hover:bg-muted/50 border-l-transparent"}`}>
-                        <div className="flex items-start justify-between gap-3"><div className="min-w-0"><p className="font-semibold truncate">{lead.name}</p><p className="text-sm text-muted-foreground truncate">{listingById[lead.listing_id]?.company_name || "Provider listing"}</p></div><span className="text-[11px] font-semibold uppercase text-accent">{leadStatuses.find((status) => status.value === lead.status)?.label}</span></div>
+                        <div className="flex items-start justify-between gap-3"><div className="min-w-0"><p className="font-semibold truncate">{lead.name}</p><p className="text-sm text-muted-foreground truncate">{listingById[lead.listing_id]?.company_name || "Business listing"}</p></div><span className="text-[11px] font-semibold uppercase text-accent">{leadStatuses.find((status) => status.value === lead.status)?.label}</span></div>
                         <p className="text-xs text-muted-foreground mt-3">{formatDate(lead.created_date)}</p>
                       </button>
                     ))}

@@ -46,13 +46,13 @@ export default function Login() {
   return (
     <AuthLayout
       icon={LogIn}
-      title="Customer sign in"
-      subtitle="Access your plans and requests"
+      title="Business owner sign in"
+      subtitle="Access your launch plan and requests"
       footer={
         <>
-          Don't have an account?{" "}
+          Need a different account?{" "}
           <Link to="/customer/register" className="text-primary font-medium hover:underline">
-            Create one
+            Create an account
           </Link>
         </>
       }
@@ -117,7 +117,7 @@ export default function Login() {
         </Button>
       </form>
       <div className="mt-5 pt-5 border-t text-center text-sm text-muted-foreground">
-        Not a customer? <Link to="/account" className="text-primary font-medium hover:underline">Choose account type</Link>
+        Not a business owner? <Link to="/account" className="text-primary font-medium hover:underline">Choose account type</Link>
       </div>
     </AuthLayout>
   );
