@@ -5,8 +5,8 @@ import { useAuth } from "@/lib/AuthContext";
 
 const accountTypes = [
   {
-    title: "Business owner",
-    description: "Create launch plans, track consultations, and manage your business goals.",
+    title: "Start-up",
+    description: "Create a launch plan, track consultations, and manage your start-up goals.",
     icon: UserRound,
     login: "/customer/login",
     register: "/customer/register",

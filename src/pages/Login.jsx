@@ -46,7 +46,7 @@ export default function Login() {
   return (
     <AuthLayout
       icon={LogIn}
-      title="Business owner sign in"
+      title="Start-up sign in"
       subtitle="Access your launch plan and requests"
       footer={
         <>
@@ -117,7 +117,7 @@ export default function Login() {
         </Button>
       </form>
       <div className="mt-5 pt-5 border-t text-center text-sm text-muted-foreground">
-        Not a business owner? <Link to="/account" className="text-primary font-medium hover:underline">Choose account type</Link>
+        Not a start-up? <Link to="/account" className="text-primary font-medium hover:underline">Choose account type</Link>
       </div>
     </AuthLayout>
   );
