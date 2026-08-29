@@ -280,6 +280,15 @@ export const launchpadClient = {
         return flattenPortalRecord(record);
       },
     },
+    ExpertRequest: {
+      async list() {
+        const records = unwrap(await getSupabase().rpc('list_expert_requests')) || [];
+        return records;
+      },
+      async updateStatus(id, status) {
+        return unwrap(await getSupabase().rpc('update_expert_request_status', { p_id: id, p_status: status }));
+      },
+    },
   },
   portal: {
     async listMyConciergeRequests() {

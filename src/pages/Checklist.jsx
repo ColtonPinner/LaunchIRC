@@ -7,8 +7,7 @@ import ChecklistItem from "@/components/checklist/ChecklistItem";
 import GuidanceCard from "@/components/checklist/GuidanceCard";
 import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
-import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Crown, Download, Sparkles, Loader2 } from "lucide-react";
+import { Crown, Sparkles, Loader2 } from "lucide-react";
 
 export default function Checklist() {
   const [searchParams] = useSearchParams();

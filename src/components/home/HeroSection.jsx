@@ -13,13 +13,8 @@ const highlights = [
 
 export default function HeroSection() {
   return (
-    <section className="relative overflow-hidden">
-      {/* Background */}
-      <div className="absolute inset-0 bg-gradient-to-br from-primary/5 via-background to-accent/5" />
-      <div className="absolute top-20 right-0 w-96 h-96 bg-accent/10 rounded-full blur-3xl" />
-      <div className="absolute bottom-0 left-0 w-80 h-80 bg-primary/5 rounded-full blur-3xl" />
-
-      <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20 md:py-32">
+    <section className="relative overflow-hidden border-b border-border">
+      <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20 md:py-28">
         <div className="grid lg:grid-cols-2 gap-12 lg:gap-20 items-center">
           {/* Left Content */}
           <motion.div
@@ -27,12 +22,12 @@ export default function HeroSection() {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8, ease: "easeOut" }}
           >
-            <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-accent/10 text-accent text-xs font-semibold mb-6 tracking-wide uppercase">
+            <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full border border-border bg-secondary text-muted-foreground text-xs font-medium mb-6 tracking-wide">
               <MapPinIcon />
               Indian River County, Florida
             </div>
 
-            <h1 className="font-heading text-4xl sm:text-5xl lg:text-6xl font-bold text-foreground leading-[1.1] mb-6">
+            <h1 className="font-heading text-4xl sm:text-5xl lg:text-6xl font-bold text-foreground leading-[1.05] mb-6">
               Start Your Business{" "}
               <span className="text-accent">the Right Way</span>
             </h1>
@@ -78,7 +73,7 @@ export default function HeroSection() {
             className="hidden lg:block"
           >
             <div className="relative">
-              <div className="bg-card rounded-2xl border shadow-2xl shadow-primary/5 p-8">
+              <div className="bg-card rounded-xl border p-8">
                 <div className="text-xs font-semibold uppercase tracking-wider text-muted-foreground mb-4">Your Personalized Checklist</div>
                 <div className="space-y-3">
                   {[

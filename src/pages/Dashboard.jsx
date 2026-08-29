@@ -50,13 +50,13 @@ export default function Dashboard() {
 
   return (
     <div className="min-h-[calc(100vh-5rem)] bg-background">
-      <header className="border-b bg-primary text-primary-foreground">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 md:py-12">
+      <header className="page-header">
+        <div className="page-header-inner">
           <div className="flex flex-col md:flex-row md:items-end md:justify-between gap-6">
             <div>
-              <p className="text-xs font-semibold uppercase tracking-[0.18em] text-primary-foreground/60 mb-2">My workspace</p>
+              <p className="eyebrow mb-2">My workspace</p>
               <h1 className="font-heading text-3xl md:text-4xl font-bold">Business launch dashboard</h1>
-              <p className="text-primary-foreground/70 mt-2">{user?.email}</p>
+              <p className="text-muted-foreground mt-2">{user?.email}</p>
             </div>
             <Link to="/survey">
               <Button className="bg-accent hover:bg-accent/90 text-white gap-2">
@@ -67,15 +67,15 @@ export default function Dashboard() {
         </div>
       </header>
 
-      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 md:py-10">
-        <section className="grid grid-cols-1 sm:grid-cols-3 border rounded-lg bg-card mb-10 overflow-hidden" aria-label="Account summary">
-          <div className="p-5 border-b sm:border-b-0 sm:border-r">
+      <main className="page-container py-8 md:py-10">
+        <section className="stat-grid mb-10" aria-label="Account summary">
+          <div className="p-5">
             <div className="flex items-center gap-2 text-muted-foreground text-sm mb-2">
               <BriefcaseBusiness className="w-4 h-4" /> Active plans
             </div>
             <p className="text-3xl font-bold text-foreground">{plans.length}</p>
           </div>
-          <div className="p-5 border-b sm:border-b-0 sm:border-r">
+          <div className="p-5">
             <div className="flex items-center gap-2 text-muted-foreground text-sm mb-2">
               <CheckCircle2 className="w-4 h-4" /> Tasks completed
             </div>

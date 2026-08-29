@@ -1,5 +1,5 @@
 import React from "react";
-import { motion, AnimatePresence } from "framer-motion";
+import { motion } from "framer-motion";
 import { Check } from "lucide-react";
 
 export default function SurveyStep({ question, options, value, onChange, multi, description }) {

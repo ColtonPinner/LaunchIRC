@@ -64,17 +64,19 @@ export default function ProviderPortal() {
   const { data, isLoading, isError, refetch } = useQuery({
     queryKey: ["provider-portal", user?.id],
     queryFn: async () => {
-      const [listings, leads] = await Promise.all([
+      const [listings, leads, expertRequests] = await Promise.all([
         launchpadClient.entities.DirectoryListing.listMine(user.id),
         launchpadClient.entities.ProviderLead.listForProvider(),
+        launchpadClient.entities.ExpertRequest.list().catch(() => []),
       ]);
-      return { listings, leads };
+      return { listings, leads, expertRequests };
     },
     enabled: !!user,
   });
 
   const listings = data?.listings || [];
   const leads = data?.leads || [];
+  const expertRequests = data?.expertRequests || [];
   const filteredLeads = leadFilter === "all" ? leads : leads.filter((lead) => lead.status === leadFilter);
   const selected = filteredLeads.find((lead) => lead.id === selectedId) || filteredLeads[0];
   const listingById = Object.fromEntries(listings.map((listing) => [listing.id, listing]));
@@ -84,21 +86,28 @@ export default function ProviderPortal() {
     onSuccess: () => queryClient.invalidateQueries({ queryKey: ["provider-portal", user?.id] }),
   });
 
+  const expertStatusMutation = useMutation({
+    mutationFn: ({ id, status }) => launchpadClient.entities.ExpertRequest.updateStatus(id, status),
+    onSuccess: () => queryClient.invalidateQueries({ queryKey: ["provider-portal", user?.id] }),
+  });
+
+  const openExpertRequests = expertRequests.filter((request) => request.status !== "closed");
+
   const newCount = leads.filter((lead) => lead.status === "new").length;
 
   return (
     <div className="min-h-[calc(100vh-5rem)] bg-background">
-      <header className="border-b bg-primary text-primary-foreground">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
-          <p className="text-xs font-semibold uppercase tracking-[0.18em] text-primary-foreground/60 mb-2">Business portal</p>
+      <header className="page-header">
+        <div className="page-header-inner">
+          <p className="eyebrow mb-2">Business portal</p>
           <div className="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-5">
-            <div><h1 className="font-heading text-3xl md:text-4xl font-bold">Business leads</h1><p className="text-primary-foreground/70 mt-2">Manage your directory presence and incoming opportunities.</p></div>
+            <div><h1 className="font-heading text-3xl md:text-4xl font-bold">Business leads</h1><p className="text-muted-foreground mt-2">Manage your directory presence and incoming opportunities.</p></div>
             <Link to="/directory/join"><Button className="bg-accent hover:bg-accent/90 text-white gap-2"><Plus className="w-4 h-4" /> Add listing</Button></Link>
           </div>
         </div>
       </header>
 
-      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 md:py-10">
+      <main className="page-container py-8 md:py-10">
         {isLoading && <div className="min-h-72 flex items-center justify-center border rounded-lg"><Loader2 className="w-6 h-6 animate-spin text-accent" /></div>}
         {isError && (
           <div className="min-h-72 flex flex-col items-center justify-center text-center border rounded-lg p-6">
@@ -116,7 +125,7 @@ export default function ProviderPortal() {
               {listings.length ? (
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                   {listings.map((listing) => (
-                    <article key={listing.id} className="border rounded-lg bg-card p-5">
+                    <article key={listing.id} className="surface-interactive p-5">
                       <div className="flex items-start justify-between gap-3">
                         <div className="w-10 h-10 rounded-md bg-primary/10 flex items-center justify-center"><Building2 className="w-5 h-5 text-primary" /></div>
                         <span className={`px-2 py-1 rounded-md border text-[11px] font-semibold uppercase ${listing.is_approved ? "bg-emerald-50 text-emerald-700 border-emerald-200" : "bg-amber-50 text-amber-700 border-amber-200"}`}>{listing.is_approved ? "Live" : "In review"}</span>
@@ -129,6 +138,61 @@ export default function ProviderPortal() {
                 </div>
               ) : (
                 <div className="border border-dashed rounded-lg p-7 text-center"><Building2 className="w-7 h-7 text-muted-foreground mx-auto mb-3" /><h3 className="font-semibold">No business listing yet</h3><p className="text-sm text-muted-foreground mt-1 mb-4">Apply to appear in the local business directory.</p><Link to="/directory/join"><Button size="sm">Apply to join</Button></Link></div>
+              )}
+            </section>
+
+            <section className="mb-10">
+              <div className="flex items-center justify-between gap-4 mb-4">
+                <div>
+                  <h2 className="font-heading text-2xl font-bold">Survey requests</h2>
+                  <p className="text-sm text-muted-foreground mt-1">People who completed the launch survey and asked to be contacted by a local expert.</p>
+                </div>
+                <span className="flex items-center gap-2 text-sm font-medium text-accent"><Inbox className="w-4 h-4" /> {openExpertRequests.length} open</span>
+              </div>
+
+              {openExpertRequests.length ? (
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  {openExpertRequests.map((request) => (
+                    <article key={request.id} className="surface p-5">
+                      <div className="flex items-start justify-between gap-3">
+                        <div className="min-w-0">
+                          <h3 className="font-semibold truncate">{request.name || "New survey request"}</h3>
+                          <p className="text-sm text-muted-foreground mt-1 capitalize">
+                            {humanize(request.business_type)} · {humanize(request.business_stage)}
+                          </p>
+                        </div>
+                        <span className="px-2 py-1 rounded-md border text-[11px] font-semibold uppercase whitespace-nowrap">
+                          {request.kind === "realtor" ? "Realtor" : "Expert"}
+                        </span>
+                      </div>
+
+                      <dl className="mt-4 space-y-1 text-sm">
+                        {request.email && <div><dt className="sr-only">Email</dt><dd><a className="text-accent hover:underline" href={`mailto:${request.email}`}>{request.email}</a></dd></div>}
+                        {request.phone && <div><dt className="sr-only">Phone</dt><dd><a className="text-accent hover:underline" href={`tel:${request.phone}`}>{request.phone}</a></dd></div>}
+                        {request.jurisdiction && <div><dt className="sr-only">Jurisdiction</dt><dd className="text-muted-foreground capitalize">{humanize(request.jurisdiction)}</dd></div>}
+                      </dl>
+
+                      <div className="flex flex-wrap gap-2 mt-4 pt-4 border-t">
+                        {leadStatuses.map((status) => (
+                          <button
+                            key={status.value}
+                            disabled={expertStatusMutation.isPending}
+                            onClick={() => expertStatusMutation.mutate({ id: request.id, status: status.value })}
+                            className={`px-3 py-1.5 rounded-md border text-xs font-semibold ${request.status === status.value ? "bg-primary text-primary-foreground border-primary" : "hover:bg-muted"}`}
+                          >
+                            {status.label}
+                          </button>
+                        ))}
+                      </div>
+                    </article>
+                  ))}
+                </div>
+              ) : (
+                <div className="empty-state">
+                  <Inbox className="w-7 h-7 text-muted-foreground mb-3" />
+                  <h3 className="font-semibold">No survey requests yet</h3>
+                  <p className="text-sm text-muted-foreground mt-1">When someone completes the survey and opts in to expert contact, they will appear here.</p>
+                </div>
               )}
             </section>
 

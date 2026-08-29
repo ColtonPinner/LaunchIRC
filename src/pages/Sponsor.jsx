@@ -1,5 +1,4 @@
 import React from "react";
-import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { motion } from "framer-motion";
 import { Star, Eye, TrendingUp, Users, Mail } from "lucide-react";
@@ -58,7 +57,7 @@ export default function Sponsor() {
   return (
     <div className="min-h-screen bg-background">
       {/* Hero */}
-      <div className="bg-primary text-primary-foreground py-16 md:py-24">
+      <div className="brand-panel py-16 md:py-24">
         <div className="max-w-4xl mx-auto px-4 text-center">
           <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-gold/20 text-amber-300 text-sm font-semibold mb-6">
             <Star className="w-4 h-4" />

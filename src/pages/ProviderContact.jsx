@@ -53,7 +53,7 @@ export default function ProviderContact() {
       <div className="max-w-5xl mx-auto px-4 sm:px-6 py-10 md:py-16">
         <Link to="/directory" className="inline-flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground mb-7"><ArrowLeft className="w-4 h-4" /> Back to directory</Link>
         <div className="grid grid-cols-1 lg:grid-cols-[0.8fr_1.2fr] border rounded-lg bg-card overflow-hidden">
-          <aside className="bg-primary text-primary-foreground p-7 md:p-9">
+          <aside className="brand-panel p-7 md:p-9">
             <div className="w-12 h-12 rounded-lg bg-white/10 flex items-center justify-center mb-6"><Building2 className="w-6 h-6 text-accent" /></div>
             <p className="text-xs font-semibold uppercase tracking-wider text-primary-foreground/60 mb-2">Contact this business</p>
             <h1 className="font-heading text-3xl font-bold">{listing.company_name}</h1>

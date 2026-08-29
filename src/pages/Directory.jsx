@@ -64,7 +64,7 @@ export default function Directory() {
   return (
     <div className="min-h-screen bg-background">
       {/* Hero */}
-      <div className="bg-primary text-primary-foreground py-16 md:py-24">
+      <div className="brand-panel py-16 md:py-24">
         <div className="max-w-4xl mx-auto px-4 text-center">
           <h1 className="font-heading text-3xl md:text-5xl font-bold mb-4">
             Local Business Directory
@@ -91,7 +91,7 @@ export default function Directory() {
             onClick={() => setActiveCategory("all")}
             className={`px-4 py-2 rounded-lg text-xs font-medium whitespace-nowrap transition-all ${
               activeCategory === "all"
-                ? "bg-primary text-primary-foreground"
+                ? "bg-primary text-primary-foreground shadow-soft"
                 : "bg-muted text-muted-foreground hover:bg-muted/80"
             }`}
           >
@@ -103,7 +103,7 @@ export default function Directory() {
               onClick={() => setActiveCategory(key)}
               className={`px-4 py-2 rounded-lg text-xs font-medium whitespace-nowrap transition-all ${
                 activeCategory === key
-                  ? "bg-primary text-primary-foreground"
+                  ? "bg-primary text-primary-foreground shadow-soft"
                   : "bg-muted text-muted-foreground hover:bg-muted/80"
               }`}
             >
@@ -126,7 +126,7 @@ export default function Directory() {
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: i * 0.05 }}
                 id={(listing.company_name || "").toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-+|-+$/g, "")}
-                className={`bg-card rounded-xl border p-6 hover:shadow-lg transition-all duration-200 flex flex-col ${
+                className={`surface-interactive p-6 flex flex-col ${
                   listing.is_sponsor ? "ring-2 ring-accent/20" : ""
                 }`}
               >

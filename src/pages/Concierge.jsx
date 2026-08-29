@@ -80,7 +80,7 @@ export default function Concierge() {
   return (
     <div className="min-h-screen bg-background">
       {/* Hero */}
-      <div className="bg-primary text-primary-foreground py-16 md:py-24">
+      <div className="brand-panel py-16 md:py-24">
         <div className="max-w-4xl mx-auto px-4 text-center">
           <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-accent/20 text-accent text-sm font-semibold mb-6">
             <Crown className="w-4 h-4" />

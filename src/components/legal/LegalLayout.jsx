@@ -4,7 +4,7 @@ import React from "react";
 export default function LegalLayout({ title, lastUpdated, children }) {
   return (
     <div className="min-h-screen bg-background">
-      <div className="bg-primary text-primary-foreground py-14 md:py-20">
+      <div className="brand-panel py-14 md:py-20">
         <div className="max-w-3xl mx-auto px-4">
           <h1 className="font-heading text-3xl md:text-4xl font-bold">{title}</h1>
           {lastUpdated && (

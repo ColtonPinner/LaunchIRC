@@ -327,7 +327,7 @@ export default function Guides() {
   return (
     <div className="min-h-screen bg-background">
       {/* Hero */}
-      <div className="bg-primary text-primary-foreground py-16 md:py-24">
+      <div className="brand-panel py-16 md:py-24">
         <div className="max-w-4xl mx-auto px-4 text-center">
           <h1 className="font-heading text-3xl md:text-5xl font-bold mb-4">
             Business Startup Guides

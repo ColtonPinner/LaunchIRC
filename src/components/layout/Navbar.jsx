@@ -1,9 +1,10 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
-import { Menu, MapPin, Sparkles, LayoutDashboard, LogIn, LogOut, Inbox } from "lucide-react";
+import { Menu, MapPin, Sparkles, LayoutDashboard, LogIn, LogOut, Inbox, Moon, Sun } from "lucide-react";
 import { useAuth } from "@/lib/AuthContext";
+import { useTheme } from "@/lib/ThemeContext";
 
 const baseNavLinks = [
   { label: "Home", path: "/" },
@@ -15,8 +16,11 @@ const baseNavLinks = [
 
 export default function Navbar() {
   const [open, setOpen] = useState(false);
+  const [scrolled, setScrolled] = useState(false);
   const location = useLocation();
   const { user, isAuthenticated, logout } = useAuth();
+  const { resolvedTheme, toggleTheme } = useTheme();
+  const isDark = resolvedTheme === "dark";
   const isConsultant = user?.account_type === "consultant";
   const isProvider = user?.account_type === "provider";
   const isWorkspaceAccount = isConsultant || isProvider;
@@ -24,13 +28,24 @@ export default function Navbar() {
   const workspaceLabel = isConsultant ? "Consultant dashboard" : isProvider ? "Business portal" : "Dashboard";
   const navLinks = isWorkspaceAccount ? baseNavLinks : [...baseNavLinks, { label: "My Portal", path: "/portal" }];
 
+  useEffect(() => {
+    const onScroll = () => setScrolled(window.scrollY > 8);
+    onScroll();
+    window.addEventListener("scroll", onScroll, { passive: true });
+    return () => window.removeEventListener("scroll", onScroll);
+  }, []);
+
   return (
-    <nav className="fixed top-0 left-0 right-0 z-50 bg-background/80 backdrop-blur-xl border-b border-border/50">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <nav
+      className={`fixed top-0 left-0 right-0 z-50 bg-background/85 backdrop-blur-xl transition-shadow duration-200 ${
+        scrolled ? "border-b border-border shadow-soft" : "border-b border-transparent"
+      }`}
+    >
+      <div className="page-container">
         <div className="flex items-center justify-between h-16 md:h-20">
           {/* Logo */}
           <Link to="/" className="flex items-center gap-2 group">
-            <div className="w-9 h-9 rounded-lg bg-primary flex items-center justify-center">
+            <div className="w-9 h-9 rounded-lg bg-primary flex items-center justify-center transition-transform duration-200 group-hover:scale-105">
               <MapPin className="w-5 h-5 text-primary-foreground" />
             </div>
             <div className="hidden sm:block">
@@ -49,19 +64,31 @@ export default function Navbar() {
               <Link
                 key={link.path}
                 to={link.path}
-                className={`px-4 py-2 rounded-lg text-sm font-medium transition-all duration-200 ${
+                className={`relative px-4 py-2 rounded-lg text-sm font-medium transition-colors duration-200 ${
                   location.pathname === link.path
-                    ? "bg-primary text-primary-foreground"
+                    ? "text-foreground"
                     : "text-muted-foreground hover:text-foreground hover:bg-muted"
                 }`}
               >
                 {link.label}
+                {location.pathname === link.path && (
+                  <span className="absolute inset-x-3 -bottom-0.5 h-0.5 rounded-full bg-accent" />
+                )}
               </Link>
             ))}
           </div>
 
           {/* CTA */}
           <div className="hidden md:flex items-center gap-3">
+            <Button
+              variant="ghost"
+              size="icon"
+              onClick={toggleTheme}
+              title={isDark ? "Switch to light mode" : "Switch to dark mode"}
+              aria-label={isDark ? "Switch to light mode" : "Switch to dark mode"}
+            >
+              {isDark ? <Sun className="w-4 h-4" /> : <Moon className="w-4 h-4" />}
+            </Button>
             {isAuthenticated ? (
               <>
                 <Link to={workspacePath}>
@@ -126,6 +153,10 @@ export default function Navbar() {
                   ))}
                 </div>
                 <div className="p-4 border-t">
+                  <Button variant="outline" className="w-full mb-2 gap-2" onClick={toggleTheme}>
+                    {isDark ? <Sun className="w-4 h-4" /> : <Moon className="w-4 h-4" />}
+                    {isDark ? "Light mode" : "Dark mode"}
+                  </Button>
                   <Link to={isAuthenticated ? workspacePath : "/account"} onClick={() => setOpen(false)}>
                     <Button variant="outline" className="w-full mb-2 gap-2">
                       {isAuthenticated ? (isConsultant || isProvider ? <Inbox className="w-4 h-4" /> : <LayoutDashboard className="w-4 h-4" />) : <LogIn className="w-4 h-4" />}

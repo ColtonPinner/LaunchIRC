@@ -37,6 +37,17 @@ const surveySteps = [
     ],
   },
   {
+    key: "wants_realtor_contact",
+    question: "Would you like someone to reach out to you?",
+    description:
+      "We can connect you with a local realtor expert, or you can browse listings through the Indian River County Chamber of Commerce or LoopNet.",
+    show: (a) => a.has_property === "looking_need_help",
+    options: [
+      { value: "yes", label: "Yes, have an expert contact me" },
+      { value: "no", label: "No thanks" },
+    ],
+  },
+  {
     key: "jurisdiction",
     question: "Which jurisdiction is the property in?",
     description:
@@ -102,8 +113,7 @@ const surveySteps = [
     show: (a) => a.business_stage !== "already_open",
     options: [
       { value: "no", label: "No" },
-      { value: "exploring_options", label: "Yes" },
-      { value: "actively_applying", label: "Yes, and I'm actively applying" },
+      { value: "yes", label: "Yes" },
     ],
   },
   {
@@ -123,13 +133,11 @@ const surveySteps = [
     question: "Have you decided on a business structure?",
     show: (a) => a.business_stage !== "already_open",
     options: [
-      { value: "no_reach_out", label: "No, I would like someone to reach out" },
+      { value: "no_reach_out", label: "No, I would like guidance" },
       { value: "no_research_myself", label: "No, I will research it myself" },
-      { value: "sole_proprietor", label: "Sole Proprietor" },
       { value: "partnership", label: "Partnership" },
       { value: "llc", label: "LLC" },
       { value: "c_corp", label: "Corporation (C Corp)" },
-      { value: "s_corp", label: "S Corp" },
       { value: "nonprofit", label: "Nonprofit" },
       { value: "other", label: "Other" },
     ],
@@ -145,13 +153,56 @@ const surveySteps = [
     ],
   },
   {
+    key: "age_range",
+    question: "If you want, tell us your age range",
+    description: "Optional. This helps us report on who we're serving locally.",
+    options: [
+      { value: "18_21", label: "18-21" },
+      { value: "22_30", label: "22-30" },
+      { value: "31_50", label: "31-50" },
+      { value: "50_70", label: "50-70" },
+      { value: "70_plus", label: "70+" },
+      { value: "skip", label: "Skip" },
+    ],
+  },
+  {
+    key: "employment_status",
+    question: "Are you currently employed?",
+    description: "Optional.",
+    show: (a) => a.age_range && a.age_range !== "skip",
+    options: [
+      { value: "full_time", label: "Yes, full time" },
+      { value: "part_time", label: "Yes, part time" },
+      { value: "no", label: "No" },
+    ],
+  },
+  {
+    key: "prior_business_owner",
+    question: "Have you owned your own business before?",
+    description: "Optional.",
+    show: (a) => a.age_range && a.age_range !== "skip",
+    options: [
+      { value: "yes", label: "Yes" },
+      { value: "no", label: "No" },
+    ],
+  },
+  {
+    key: "wants_expert_contact",
+    question: "Are you interested in being contacted by local experts in the area?",
+    show: (a) => a.age_range && a.age_range !== "skip",
+    options: [
+      { value: "yes", label: "Yes" },
+      { value: "no", label: "No" },
+    ],
+  },
+  {
     key: "help_level",
     question: "How much help do you want with this process?",
     options: [
       { value: "free_checklist", label: "Just the free checklist" },
-      { value: "step_by_step", label: "Detailed step-by-step guide" },
-      { value: "review_situation", label: "A quick phone call to review my path" },
-      { value: "full_concierge", label: "Full support / concierge services" },
+      { value: "step_by_step", label: "Detailed step-by-step guide ($50)" },
+      { value: "review_situation", label: "A quick phone call to see the best path moving forward" },
+      { value: "full_concierge", label: "Full support / concierge services (price varies by project)" },
     ],
   },
 ];

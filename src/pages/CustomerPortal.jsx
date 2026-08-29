@@ -44,24 +44,24 @@ export default function CustomerPortal() {
 
   return (
     <div className="min-h-[calc(100vh-5rem)] bg-background">
-      <header className="border-b bg-primary text-primary-foreground">
-        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
-          <p className="text-xs font-semibold uppercase tracking-[0.18em] text-primary-foreground/60 mb-2">Customer portal</p>
+      <header className="page-header">
+        <div className="page-header-inner">
+          <p className="eyebrow mb-2">Customer portal</p>
           <div className="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-5">
             <div>
               <h1 className="font-heading text-3xl md:text-4xl font-bold">Your requests</h1>
-              <p className="text-primary-foreground/70 mt-2">Track conversations with Launch IRC and local providers.</p>
+              <p className="text-muted-foreground mt-2">Track conversations with Launch IRC and local businesses.</p>
             </div>
-            <span className="text-sm text-primary-foreground/70">{user?.email}</span>
+            <span className="text-sm text-muted-foreground">{user?.email}</span>
           </div>
         </div>
       </header>
 
-      <main className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-8 md:py-10">
-        <section className="grid grid-cols-1 sm:grid-cols-3 border rounded-lg bg-card overflow-hidden mb-9" aria-label="Request summary">
-          <div className="p-5 border-b sm:border-b-0 sm:border-r"><p className="text-sm text-muted-foreground mb-1">Open requests</p><p className="text-3xl font-bold">{activeCount}</p></div>
-          <div className="p-5 border-b sm:border-b-0 sm:border-r"><p className="text-sm text-muted-foreground mb-1">Launch IRC</p><p className="text-3xl font-bold">{consultations.length}</p></div>
-          <div className="p-5"><p className="text-sm text-muted-foreground mb-1">Local providers</p><p className="text-3xl font-bold">{providerRequests.length}</p></div>
+      <main className="page-container py-8 md:py-10">
+        <section className="stat-grid mb-9" aria-label="Request summary">
+          <div className="p-5"><p className="text-sm text-muted-foreground mb-1">Open requests</p><p className="text-3xl font-bold">{activeCount}</p></div>
+          <div className="p-5"><p className="text-sm text-muted-foreground mb-1">Launch IRC</p><p className="text-3xl font-bold">{consultations.length}</p></div>
+          <div className="p-5"><p className="text-sm text-muted-foreground mb-1">Local businesses</p><p className="text-3xl font-bold">{providerRequests.length}</p></div>
         </section>
 
         {isLoading && <div className="min-h-64 flex items-center justify-center border rounded-lg"><Loader2 className="w-6 h-6 animate-spin text-accent" /></div>}

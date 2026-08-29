@@ -4,8 +4,8 @@ import { MapPin, Mail, Phone } from "lucide-react";
 
 export default function Footer() {
   return (
-    <footer className="bg-primary text-primary-foreground">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
+    <footer className="brand-panel border-t border-border">
+      <div className="page-container py-16">
         <div className="grid grid-cols-1 md:grid-cols-4 gap-10">
           <div className="md:col-span-1">
             <div className="flex items-center gap-2 mb-4">
@@ -25,7 +25,7 @@ export default function Footer() {
               {[
                 { label: "Home", path: "/" },
                 { label: "Business Guides", path: "/guides" },
-                { label: "Service Directory", path: "/directory" },
+                { label: "Business Directory", path: "/directory" },
                 { label: "Concierge Services", path: "/concierge" },
               ].map((link) => (
                 <Link key={link.path} to={link.path} className="block text-sm text-primary-foreground/60 hover:text-primary-foreground transition-colors">

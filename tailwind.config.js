@@ -5,9 +5,14 @@ module.exports = {
   theme: {
   	extend: {
   		borderRadius: {
+  			xl: 'calc(var(--radius) + 4px)',
   			lg: 'var(--radius)',
   			md: 'calc(var(--radius) - 2px)',
   			sm: 'calc(var(--radius) - 4px)'
+  		},
+  		boxShadow: {
+  			soft: '0 1px 2px 0 hsl(215 40% 13% / 0.04), 0 1px 3px 0 hsl(215 40% 13% / 0.06)',
+  			elevated: '0 10px 30px -12px hsl(215 40% 13% / 0.18), 0 2px 8px -2px hsl(215 40% 13% / 0.08)'
   		},
   		colors: {
   			gold: 'hsl(var(--gold))',
@@ -84,11 +89,22 @@ module.exports = {
   				to: {
   					height: '0'
   				}
+  			},
+  			'fade-up': {
+  				from: {
+  					opacity: '0',
+  					transform: 'translateY(12px)'
+  				},
+  				to: {
+  					opacity: '1',
+  					transform: 'translateY(0)'
+  				}
   			}
   		},
   		animation: {
   			'accordion-down': 'accordion-down 0.2s ease-out',
-  			'accordion-up': 'accordion-up 0.2s ease-out'
+  			'accordion-up': 'accordion-up 0.2s ease-out',
+  			'fade-up': 'fade-up 0.5s ease-out both'
   		}
   	}
   },

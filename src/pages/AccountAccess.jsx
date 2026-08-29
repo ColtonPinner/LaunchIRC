@@ -37,7 +37,7 @@ export default function AccountAccess() {
   return (
     <main className="min-h-screen bg-background flex flex-col">
       <header className="border-b">
-        <div className="max-w-6xl mx-auto px-4 sm:px-6 h-16 flex items-center">
+        <div className="page-container h-16 flex items-center">
           <Link to="/" className="flex items-center gap-2">
             <span className="w-9 h-9 rounded-lg bg-primary flex items-center justify-center"><MapPin className="w-5 h-5 text-primary-foreground" /></span>
             <span className="font-heading font-bold text-lg">Launch IRC</span>
@@ -53,14 +53,14 @@ export default function AccountAccess() {
             <p className="text-muted-foreground mt-3">Each account type has a separate workspace and permissions.</p>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-3 border rounded-lg bg-card overflow-hidden">
-            {accountTypes.map((account, index) => (
-              <article key={account.title} className={`p-6 flex flex-col min-h-72 ${index < accountTypes.length - 1 ? "border-b md:border-b-0 md:border-r" : ""}`}>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
+            {accountTypes.map((account) => (
+              <article key={account.title} className="surface-interactive p-6 flex flex-col min-h-72">
                 <div className="w-11 h-11 rounded-lg bg-primary/10 flex items-center justify-center mb-5"><account.icon className="w-5 h-5 text-primary" /></div>
                 <h2 className="font-heading text-xl font-bold">{account.title}</h2>
                 <p className="text-sm text-muted-foreground leading-6 mt-2">{account.description}</p>
                 <div className="mt-auto pt-7 space-y-2">
-                  <Link to={account.login} className="h-10 px-4 rounded-md bg-primary text-primary-foreground text-sm font-medium flex items-center justify-between">
+                  <Link to={account.login} className="h-10 px-4 rounded-md bg-primary text-primary-foreground text-sm font-medium flex items-center justify-between transition-colors hover:bg-primary/90">
                     Sign in <ArrowRight className="w-4 h-4" />
                   </Link>
                   {account.register && (

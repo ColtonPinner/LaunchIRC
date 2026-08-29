@@ -3,9 +3,7 @@ import { useQuery } from "@tanstack/react-query";
 import { launchpadClient } from "@/api/launchpadClient";
 import { motion } from "framer-motion";
 import { format, startOfMonth, endOfMonth, eachDayOfInterval, getDay, isSameDay, isSameMonth, addMonths, subMonths, parseISO } from "date-fns";
-import { ChevronLeft, ChevronRight, MapPin, Clock, ExternalLink, Wifi, Tag } from "lucide-react";
-import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
+import { ChevronLeft, ChevronRight, MapPin, ExternalLink, Wifi, Tag } from "lucide-react";
 
 const EVENT_TYPES = {
   networking: { label: "Networking", color: "bg-blue-100 text-blue-700 border-blue-200" },
