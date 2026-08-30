@@ -31,7 +31,7 @@ import ConsultantAuth from '@/pages/ConsultantAuth';
 import ConsultantDashboard from '@/pages/ConsultantDashboard';
 import AccountAccess from '@/pages/AccountAccess';
 import { Navigate } from 'react-router-dom';
-import { HeroUIProvider } from '@heroui/react';
+import { HeroUIProvider } from '@heroui/system';
 
 const AccountPage = ({ type, children }) => {
   const { user, isAuthenticated } = useAuth();
