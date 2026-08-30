@@ -69,7 +69,7 @@ export default function ConsultantDashboard() {
               <p className="text-muted-foreground mt-2">{user?.profile?.full_name || user?.email}</p>
             </div>
             <Link to="/staff/inquiries">
-              <Button className="bg-accent hover:bg-accent/90 text-white gap-2">
+              <Button className="bg-accent hover:bg-accent/90 text-accent-foreground gap-2">
                 <Inbox className="w-4 h-4" /> Open inquiry queue
               </Button>
             </Link>

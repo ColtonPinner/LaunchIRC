@@ -193,7 +193,7 @@ export default function DirectoryJoin() {
           <Button
             type="submit"
             disabled={saving || !form.company_name || !form.category}
-            className="w-full bg-accent hover:bg-accent/90 text-white font-semibold h-12"
+            className="w-full bg-accent hover:bg-accent/90 text-accent-foreground font-semibold h-12"
           >
             {saving ? <Loader2 className="w-4 h-4 animate-spin" /> : "Submit Application"}
           </Button>

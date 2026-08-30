@@ -59,7 +59,7 @@ export default function Dashboard() {
               <p className="text-muted-foreground mt-2">{user?.email}</p>
             </div>
             <Link to="/survey">
-              <Button className="bg-accent hover:bg-accent/90 text-white gap-2">
+              <Button className="bg-accent hover:bg-accent/90 text-accent-foreground gap-2">
                 <Plus className="w-4 h-4" /> New launch plan
               </Button>
             </Link>

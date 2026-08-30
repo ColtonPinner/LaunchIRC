@@ -70,7 +70,7 @@ export default function PricingSection() {
                 </span>
               )}
 
-              <span className={`flex h-11 w-11 items-center justify-center rounded-xl ${plan.highlighted ? "bg-accent text-white" : "bg-primary text-primary-foreground"}`}>
+              <span className={`flex h-11 w-11 items-center justify-center rounded-xl ${plan.highlighted ? "bg-accent text-accent-foreground" : "bg-primary text-primary-foreground"}`}>
                 <plan.icon className="h-5 w-5" />
               </span>
               <h3 className="mt-6 text-xl font-extrabold text-foreground">{plan.name}</h3>
@@ -92,7 +92,7 @@ export default function PricingSection() {
                 ))}
               </ul>
 
-              <Button asChild size="lg" variant={plan.highlighted ? "default" : "outline"} className={plan.highlighted ? "bg-accent text-white hover:bg-accent/90" : ""}>
+              <Button asChild size="lg" variant={plan.highlighted ? "default" : "outline"} className={plan.highlighted ? "bg-accent text-accent-foreground hover:bg-accent/90" : ""}>
                 <Link to={plan.ctaLink}>{plan.cta} <ArrowRight /></Link>
               </Button>
             </motion.article>

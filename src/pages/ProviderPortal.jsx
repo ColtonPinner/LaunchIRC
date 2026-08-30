@@ -102,7 +102,7 @@ export default function ProviderPortal() {
           <p className="eyebrow mb-2">Business portal</p>
           <div className="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-5">
             <div><h1 className="font-heading text-3xl md:text-4xl font-bold">Business leads</h1><p className="text-muted-foreground mt-2">Manage your directory presence and incoming opportunities.</p></div>
-            <Link to="/directory/join"><Button className="bg-accent hover:bg-accent/90 text-white gap-2"><Plus className="w-4 h-4" /> Add listing</Button></Link>
+            <Link to="/directory/join"><Button className="bg-accent hover:bg-accent/90 text-accent-foreground gap-2"><Plus className="w-4 h-4" /> Add listing</Button></Link>
           </div>
         </div>
       </header>

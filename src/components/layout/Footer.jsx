@@ -19,14 +19,14 @@ const resources = [
 
 export default function Footer() {
   return (
-    <footer className="bg-slate-950 text-white">
+    <footer className="brand-panel">
       <div className="page-container pt-10 sm:pt-14">
         <div className="flex flex-col gap-6 rounded-3xl border border-white/10 bg-white/[0.055] px-6 py-7 sm:flex-row sm:items-center sm:justify-between sm:px-8">
           <div>
-            <p className="text-sm font-bold text-orange-400">Ready when you are</p>
+            <p className="text-sm font-bold text-accent">Ready when you are</p>
             <h2 className="mt-1 text-2xl font-extrabold tracking-tight text-white sm:text-3xl">Turn your idea into a launch plan.</h2>
           </div>
-          <Button asChild size="lg" className="shrink-0 bg-accent text-white hover:bg-accent/90">
+          <Button asChild size="lg" className="shrink-0 bg-accent text-accent-foreground hover:bg-accent/90">
             <Link to="/survey">Build my free roadmap <ArrowRight /></Link>
           </Button>
         </div>
@@ -34,7 +34,7 @@ export default function Footer() {
         <div className="grid gap-10 py-14 md:grid-cols-[1.35fr_0.8fr_0.8fr_1fr]">
           <div className="max-w-sm">
             <Link to="/" className="flex items-center gap-3">
-              <span className="flex h-10 w-10 items-center justify-center rounded-xl bg-accent text-white">
+              <span className="flex h-10 w-10 items-center justify-center rounded-xl bg-accent text-accent-foreground">
                 <MapPin className="h-5 w-5" />
               </span>
               <span className="text-lg font-extrabold tracking-tight">Launch Indian River</span>
@@ -51,15 +51,15 @@ export default function Footer() {
             <h3 className="text-xs font-bold uppercase tracking-[0.16em] text-white/40">Get in touch</h3>
             <div className="mt-5 space-y-3 text-sm text-white/60">
               <a href="mailto:elliese@launchindianriver.com" className="flex items-center gap-2.5 transition-colors hover:text-white">
-                <Mail className="h-4 w-4 text-orange-400" />
+                <Mail className="h-4 w-4 text-accent" />
                 <span className="break-all">elliese@launchindianriver.com</span>
               </a>
               <a href="tel:+17727666533" className="flex items-center gap-2.5 transition-colors hover:text-white">
-                <Phone className="h-4 w-4 text-orange-400" />
+                <Phone className="h-4 w-4 text-accent" />
                 (772) 766-6533
               </a>
               <span className="flex items-center gap-2.5">
-                <MapPin className="h-4 w-4 text-orange-400" />
+                <MapPin className="h-4 w-4 text-accent" />
                 Indian River County, FL
               </span>
             </div>

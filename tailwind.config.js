@@ -9,19 +9,38 @@ module.exports = {
       "./node_modules/@heroui/theme/dist/**/*.{js,ts,jsx,tsx}",
     ],
   theme: {
-  	extend: {
-  		borderRadius: {
-  			xl: 'calc(var(--radius) + 4px)',
-  			lg: 'var(--radius)',
-  			md: 'calc(var(--radius) - 2px)',
-  			sm: 'calc(var(--radius) - 4px)'
-  		},
-  		boxShadow: {
-  			soft: '0 1px 2px 0 hsl(215 40% 13% / 0.04), 0 1px 3px 0 hsl(215 40% 13% / 0.06)',
-  			elevated: '0 10px 30px -12px hsl(215 40% 13% / 0.18), 0 2px 8px -2px hsl(215 40% 13% / 0.08)'
-  		},
-  		colors: {
-  			gold: 'hsl(var(--gold))',
+	  	extend: {
+		borderRadius: {
+			xl: 'var(--radius)',
+			lg: 'calc(var(--radius) - 2px)',
+			md: 'calc(var(--radius) - 4px)',
+			sm: '0.25rem',
+			'2xl': '1.5rem',
+			'3xl': '1.75rem'
+		},
+		boxShadow: {
+			sm: 'inset 0 1px 0 hsl(var(--card-foreground) / 0.035)',
+			md: '0 0 28px -12px hsl(var(--glow-blue) / 0.2)',
+			lg: '0 0 34px -12px hsl(var(--glow-coral) / 0.2)',
+			xl: '0 0 40px -14px hsl(var(--glow-blue) / 0.2)',
+			'2xl': '0 0 48px -16px hsl(var(--glow-coral) / 0.2)',
+			soft: 'inset 0 1px 0 hsl(var(--card-foreground) / 0.035)',
+			elevated: 'inset 0 1px 0 hsl(var(--card-foreground) / 0.035), 0 0 34px -12px hsl(var(--glow-blue) / 0.22)'
+		},
+		colors: {
+			gold: 'hsl(var(--gold))',
+			panel: 'hsl(var(--surface-panel))',
+			raised: 'hsl(var(--surface-raised))',
+			outline: 'hsl(var(--outline))',
+			inverse: {
+				DEFAULT: 'hsl(var(--inverse-surface))',
+				foreground: 'hsl(var(--inverse-foreground))'
+			},
+			glow: {
+				coral: 'hsl(var(--glow-coral))',
+				blue: 'hsl(var(--glow-blue))',
+				green: 'hsl(var(--glow-green))'
+			},
   			background: 'hsl(var(--background))',
   			foreground: 'hsl(var(--foreground))',
   			card: {
@@ -73,7 +92,8 @@ module.exports = {
   				ring: 'hsl(var(--sidebar-ring))'
   			}
   		},
-  		fontFamily: {
+		fontFamily: {
+			sans: ['var(--font-body)'],
   			heading: ['var(--font-heading)'],
   			body: ['var(--font-body)'],
   			display: ['var(--font-display)'],

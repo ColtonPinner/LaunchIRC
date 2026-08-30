@@ -466,7 +466,7 @@ export default function Guides() {
           <h3 className="font-heading text-2xl font-bold mb-3">Ready to Get Started?</h3>
           <p className="text-muted-foreground mb-6">Take our quick survey and get a personalized checklist for your specific business.</p>
           <Link to="/survey">
-            <Button className="bg-accent hover:bg-accent/90 text-white font-semibold gap-2 px-8" size="lg">
+            <Button className="bg-accent hover:bg-accent/90 text-accent-foreground font-semibold gap-2 px-8" size="lg">
               <Sparkles className="w-5 h-5" /> Get Your Checklist
             </Button>
           </Link>

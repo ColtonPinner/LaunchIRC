@@ -61,7 +61,7 @@ export default function Checklist() {
           <h2 className="font-heading text-2xl font-bold mb-4">No Checklist Found</h2>
           <p className="text-muted-foreground mb-6">Take the survey to generate your personalized checklist.</p>
           <Link to="/survey">
-            <Button className="bg-accent hover:bg-accent/90 text-white gap-2">
+            <Button className="bg-accent hover:bg-accent/90 text-accent-foreground gap-2">
               <Sparkles className="w-4 h-4" /> Take the Survey
             </Button>
           </Link>
@@ -84,7 +84,7 @@ export default function Checklist() {
         <div className="text-center">
           <h2 className="font-heading text-2xl font-bold mb-4">Checklist Not Found</h2>
           <Link to="/survey">
-            <Button className="bg-accent hover:bg-accent/90 text-white gap-2">
+            <Button className="bg-accent hover:bg-accent/90 text-accent-foreground gap-2">
               <Sparkles className="w-4 h-4" /> Create a New Checklist
             </Button>
           </Link>
@@ -189,7 +189,7 @@ export default function Checklist() {
             Our concierge team can handle the permits, paperwork, and phone calls for you.
           </p>
           <Link to="/concierge">
-            <Button className="bg-accent hover:bg-accent/90 text-white font-semibold gap-2">
+            <Button className="bg-accent hover:bg-accent/90 text-accent-foreground font-semibold gap-2">
               <Crown className="w-4 h-4" />
               Explore Concierge Services
             </Button>

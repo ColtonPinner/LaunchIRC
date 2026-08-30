@@ -236,7 +236,7 @@ export default function Concierge() {
                 <Button
                   type="submit"
                   disabled={saving || !form.name || !form.email}
-                  className="w-full bg-accent hover:bg-accent/90 text-white font-semibold h-12"
+                  className="w-full bg-accent hover:bg-accent/90 text-accent-foreground font-semibold h-12"
                 >
                   {saving ? <Loader2 className="w-4 h-4 animate-spin" /> : "Request Consultation"}
                 </Button>

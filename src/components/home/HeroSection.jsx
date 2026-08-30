@@ -37,7 +37,7 @@ export default function HeroSection() {
     <section className="relative isolate overflow-hidden border-b border-border/70 bg-background">
       <div className="dot-grid absolute inset-0 -z-20 opacity-40 [mask-image:linear-gradient(to_bottom,black,transparent_86%)]" />
       <div className="absolute -left-24 top-12 -z-10 h-80 w-80 rounded-full bg-accent/10 blur-3xl" />
-      <div className="absolute right-0 top-0 -z-10 h-[34rem] w-[34rem] rounded-full bg-blue-500/[0.07] blur-3xl dark:bg-blue-400/[0.06]" />
+      <div className="absolute right-0 top-0 -z-10 h-[34rem] w-[34rem] rounded-full bg-teal-500/[0.08] blur-3xl dark:bg-teal-300/[0.07]" />
 
       <div className="page-container py-20 sm:py-24 lg:py-28">
         <div className="grid items-center gap-14 lg:grid-cols-[1.02fr_0.98fr] lg:gap-20">
@@ -72,7 +72,7 @@ export default function HeroSection() {
                 size="lg"
                 radius="lg"
                 endContent={<ArrowRight className="h-4 w-4" />}
-                className="h-12 w-full bg-accent px-6 text-[0.9375rem] font-bold text-white shadow-lg shadow-accent/20 transition-transform hover:-translate-y-0.5 sm:w-auto"
+                className="h-12 w-full bg-accent px-6 text-[0.9375rem] font-bold text-accent-foreground shadow-lg shadow-accent/20 transition-transform hover:-translate-y-0.5 sm:w-auto"
               >
                 Build my free roadmap
               </Button>
@@ -106,7 +106,7 @@ export default function HeroSection() {
             transition={{ duration: 0.6, delay: 0.08, ease: "easeOut" }}
             className="relative mx-auto w-full max-w-xl"
           >
-            <div className="absolute -inset-4 -z-10 rounded-[2rem] bg-gradient-to-br from-accent/15 via-transparent to-blue-500/10 blur-2xl" />
+            <div className="absolute -inset-4 -z-10 rounded-[2rem] bg-gradient-to-br from-accent/20 via-transparent to-teal-500/10 blur-2xl" />
             <Card className="glass-panel overflow-hidden rounded-[1.75rem]" shadow="none">
               <CardBody className="p-0">
                 <div className="flex items-center justify-between border-b border-border/70 px-5 py-4 sm:px-6">

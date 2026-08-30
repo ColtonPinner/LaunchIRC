@@ -120,7 +120,7 @@ export default function Events() {
                     onClick={() => setSelectedDate(isSelected ? null : day)}
                     className={`h-16 border-b border-r border-border/50 p-1.5 text-left hover:bg-muted/50 transition-colors relative ${isSelected ? "bg-primary/5" : ""}`}
                   >
-                    <span className={`text-xs font-medium w-6 h-6 flex items-center justify-center rounded-full ${isToday ? "bg-accent text-white" : isSelected ? "bg-primary text-primary-foreground" : "text-foreground"}`}>
+                    <span className={`text-xs font-medium w-6 h-6 flex items-center justify-center rounded-full ${isToday ? "bg-accent text-accent-foreground" : isSelected ? "bg-primary text-primary-foreground" : "text-foreground"}`}>
                       {format(day, "d")}
                     </span>
                     <div className="flex flex-wrap gap-0.5 mt-0.5">

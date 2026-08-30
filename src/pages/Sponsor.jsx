@@ -133,7 +133,7 @@ export default function Sponsor() {
             Custom packages are also available.
           </p>
           <a href="mailto:elliese@launchindianriver.com">
-            <Button className="bg-accent hover:bg-accent/90 text-white font-semibold gap-2 px-8" size="lg">
+            <Button className="bg-accent hover:bg-accent/90 text-accent-foreground font-semibold gap-2 px-8" size="lg">
               <Mail className="w-5 h-5" />
               Contact Us
             </Button>

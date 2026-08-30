@@ -41,7 +41,7 @@ export default function Navbar() {
   return (
     <nav
       aria-label="Primary navigation"
-      className={`fixed inset-x-0 top-0 z-50 border-b bg-background/90 backdrop-blur-xl transition-all duration-300 ${
+      className={`site-navigation fixed inset-x-0 top-0 z-50 border-b bg-background/90 backdrop-blur-xl transition-all duration-300 ${
         scrolled ? "border-border/80 shadow-soft" : "border-transparent"
       }`}
     >
@@ -108,7 +108,7 @@ export default function Navbar() {
             )}
 
             {!isWorkspaceAccount && (
-              <Button asChild className="ml-1 bg-accent text-white shadow-sm hover:bg-accent/90">
+              <Button asChild className="ml-1 bg-accent text-accent-foreground shadow-sm hover:bg-accent/90">
                 <Link to="/survey"><Sparkles /> Start free</Link>
               </Button>
             )}
@@ -166,7 +166,7 @@ export default function Navbar() {
                     </Link>
                   </Button>
                   {!isWorkspaceAccount && (
-                    <Button asChild className="w-full bg-accent text-white hover:bg-accent/90">
+                    <Button asChild className="w-full bg-accent text-accent-foreground hover:bg-accent/90">
                       <Link to="/survey" onClick={() => setOpen(false)}><Sparkles /> Start free</Link>
                     </Button>
                   )}
