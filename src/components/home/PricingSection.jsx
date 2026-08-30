@@ -1,159 +1,122 @@
 import React from "react";
 import { Link } from "react-router-dom";
-import { motion } from "framer-motion";
+import { motion, useReducedMotion } from "framer-motion";
+import { ArrowRight, Check, Crown, Headphones, Sparkles } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { Check, X, Crown, Sparkles } from "lucide-react";
 
 const plans = [
   {
-    name: "Free Checklist",
+    name: "Free roadmap",
     price: "$0",
-    description: "Get started with the essentials",
+    description: "The essential steps for getting your business moving.",
     icon: Sparkles,
-    cta: "Get Free Checklist",
+    cta: "Start for free",
     ctaLink: "/survey",
-    highlighted: false,
     features: [
-      { label: "Personalized business checklist", included: true },
-      { label: "Basic step-by-step guide", included: true },
-      { label: "General resource links", included: true },
-      { label: "Progress tracking", included: true },
-      { label: "Detailed how-to instructions", included: false },
-      { label: "Downloadable document templates", included: false },
-      { label: "IRC-specific contact information", included: false },
-      { label: "Priority email support", included: false },
+      "Personalized launch checklist",
+      "Core step-by-step guidance",
+      "Curated local resource links",
+      "Progress tracking",
     ],
   },
   {
-    name: "Premium Checklist",
+    name: "Premium roadmap",
     price: "$50",
     period: "one-time",
-    description: "Everything you need for DIY success",
+    description: "The complete DIY toolkit with deeper local detail.",
     icon: Crown,
-    cta: "Get Premium Access",
+    cta: "Choose premium",
     ctaLink: "/survey?plan=premium",
     highlighted: true,
     features: [
-      { label: "Personalized business checklist", included: true },
-      { label: "Detailed step-by-step instructions", included: true },
-      { label: "Downloadable templates & forms", included: true },
-      { label: "Progress tracking", included: true },
-      { label: "IRC department contacts & direct links", included: true },
-      { label: "Timeline estimates per step", included: true },
-      { label: "Cost breakdown estimates", included: true },
-      { label: "Email support for questions", included: true },
+      "Everything in the free roadmap",
+      "Detailed how-to instructions",
+      "Downloadable templates and forms",
+      "Local contacts, timelines, and cost estimates",
+      "Email support for questions",
     ],
   },
 ];
 
 export default function PricingSection() {
-  return (
-    <section className="py-20 md:py-28 bg-background">
-      <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          className="text-center mb-16"
-        >
-          <h2 className="font-heading text-3xl md:text-4xl font-bold text-foreground mb-4">
-            Choose Your Path
-          </h2>
-          <p className="text-muted-foreground text-lg max-w-2xl mx-auto">
-            Start free or go premium for the complete DIY toolkit
-          </p>
-        </motion.div>
+  const reduceMotion = useReducedMotion();
 
-        <div className="grid md:grid-cols-2 gap-8 max-w-4xl mx-auto">
-          {plans.map((plan, i) => (
-            <motion.div
+  return (
+    <section className="section-y bg-muted/40">
+      <div className="page-container">
+        <div className="mx-auto max-w-2xl text-center">
+          <p className="eyebrow">Simple, transparent options</p>
+          <h2 className="mt-3 text-3xl font-extrabold leading-tight text-foreground sm:text-4xl">Start free. Go deeper when you need to.</h2>
+          <p className="mt-4 text-base leading-7 text-muted-foreground sm:text-lg">
+            Build your roadmap at no cost, then unlock the complete local toolkit with one payment.
+          </p>
+        </div>
+
+        <div className="mx-auto mt-12 grid max-w-4xl gap-5 md:grid-cols-2">
+          {plans.map((plan, index) => (
+            <motion.article
               key={plan.name}
-              initial={{ opacity: 0, y: 20 }}
+              initial={reduceMotion ? false : { opacity: 0, y: 16 }}
               whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ delay: i * 0.1 }}
-              className={`relative rounded-2xl border p-8 ${
-                plan.highlighted
-                  ? "bg-primary text-primary-foreground border-primary shadow-2xl shadow-primary/20 scale-[1.02]"
-                  : "bg-card"
+              viewport={{ once: true, amount: 0.2 }}
+              transition={{ delay: reduceMotion ? 0 : index * 0.07 }}
+              className={`relative flex flex-col rounded-3xl border bg-card p-7 shadow-soft sm:p-8 ${
+                plan.highlighted ? "border-accent/50 ring-4 ring-accent/[0.07]" : "border-border/80"
               }`}
             >
               {plan.highlighted && (
-                <div className="absolute -top-3 left-1/2 -translate-x-1/2 bg-accent text-white text-xs font-bold px-4 py-1 rounded-full">
-                  MOST POPULAR
-                </div>
+                <span className="absolute right-6 top-6 rounded-full bg-accent/10 px-3 py-1 text-[10px] font-extrabold uppercase tracking-[0.12em] text-accent">
+                  Best value
+                </span>
               )}
 
-              <div className="mb-6">
-                <plan.icon className={`w-8 h-8 mb-4 ${plan.highlighted ? "text-accent" : "text-accent"}`} />
-                <h3 className="font-heading text-2xl font-bold mb-1">{plan.name}</h3>
-                <p className={`text-sm ${plan.highlighted ? "text-primary-foreground/70" : "text-muted-foreground"}`}>
-                  {plan.description}
-                </p>
+              <span className={`flex h-11 w-11 items-center justify-center rounded-xl ${plan.highlighted ? "bg-accent text-white" : "bg-primary text-primary-foreground"}`}>
+                <plan.icon className="h-5 w-5" />
+              </span>
+              <h3 className="mt-6 text-xl font-extrabold text-foreground">{plan.name}</h3>
+              <p className="mt-2 min-h-12 text-sm leading-6 text-muted-foreground">{plan.description}</p>
+
+              <div className="mt-6 flex items-end gap-2 border-b border-border/70 pb-6">
+                <span className="text-4xl font-extrabold tracking-[-0.04em] text-foreground">{plan.price}</span>
+                {plan.period && <span className="pb-1 text-sm font-medium text-muted-foreground">{plan.period}</span>}
               </div>
 
-              <div className="flex items-baseline gap-1 mb-8">
-                <span className="text-4xl font-bold">{plan.price}</span>
-                {plan.period && (
-                  <span className={`text-sm ${plan.highlighted ? "text-primary-foreground/60" : "text-muted-foreground"}`}>
-                    /{plan.period}
-                  </span>
-                )}
-              </div>
-
-              <div className="space-y-3 mb-8">
+              <ul className="my-7 flex-1 space-y-3">
                 {plan.features.map((feature) => (
-                  <div key={feature.label} className="flex items-start gap-3">
-                    {feature.included ? (
-                      <Check className={`w-4 h-4 mt-0.5 flex-shrink-0 ${plan.highlighted ? "text-accent" : "text-accent"}`} />
-                    ) : (
-                      <X className={`w-4 h-4 mt-0.5 flex-shrink-0 ${plan.highlighted ? "text-primary-foreground/30" : "text-muted-foreground/40"}`} />
-                    )}
-                    <span className={`text-sm ${
-                      !feature.included
-                        ? plan.highlighted ? "text-primary-foreground/40" : "text-muted-foreground/50"
-                        : ""
-                    }`}>
-                      {feature.label}
+                  <li key={feature} className="flex items-start gap-3 text-sm leading-6 text-foreground/80">
+                    <span className="mt-1 flex h-4 w-4 shrink-0 items-center justify-center rounded-full bg-emerald-500/10 text-emerald-600 dark:bg-emerald-400/20 dark:text-emerald-400">
+                      <Check className="h-3 w-3" />
                     </span>
-                  </div>
+                    {feature}
+                  </li>
                 ))}
-              </div>
+              </ul>
 
-              <Link to={plan.ctaLink}>
-                <Button
-                  className={`w-full font-semibold ${
-                    plan.highlighted
-                      ? "bg-accent hover:bg-accent/90 text-white"
-                      : ""
-                  }`}
-                  variant={plan.highlighted ? "default" : "outline"}
-                  size="lg"
-                >
-                  {plan.cta}
-                </Button>
-              </Link>
-            </motion.div>
+              <Button asChild size="lg" variant={plan.highlighted ? "default" : "outline"} className={plan.highlighted ? "bg-accent text-white hover:bg-accent/90" : ""}>
+                <Link to={plan.ctaLink}>{plan.cta} <ArrowRight /></Link>
+              </Button>
+            </motion.article>
           ))}
         </div>
 
-        {/* Concierge Upsell */}
         <motion.div
-          initial={{ opacity: 0, y: 20 }}
+          initial={reduceMotion ? false : { opacity: 0, y: 14 }}
           whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          className="mt-12 text-center bg-muted/50 rounded-2xl p-8 border border-dashed"
+          viewport={{ once: true, amount: 0.3 }}
+          className="mx-auto mt-6 flex max-w-4xl flex-col gap-5 rounded-2xl border border-border/75 bg-card px-6 py-6 shadow-soft sm:flex-row sm:items-center sm:justify-between"
         >
-          <h3 className="font-heading text-xl font-semibold mb-2">Need hands-on help?</h3>
-          <p className="text-muted-foreground mb-4">
-            Our concierge service handles the legwork for you — permits, paperwork, and coordination.
-          </p>
-          <Link to="/concierge">
-            <Button variant="outline" className="font-semibold gap-2">
-              <Crown className="w-4 h-4" />
-              Explore Concierge Services
-            </Button>
-          </Link>
+          <div className="flex items-start gap-4">
+            <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-primary text-primary-foreground">
+              <Headphones className="h-5 w-5" />
+            </span>
+            <div>
+              <h3 className="font-extrabold text-foreground">Prefer hands-on help?</h3>
+              <p className="mt-1 text-sm leading-6 text-muted-foreground">Our concierge can help manage permits, paperwork, and local coordination.</p>
+            </div>
+          </div>
+          <Button asChild variant="ghost" className="shrink-0 justify-start text-foreground sm:justify-center">
+            <Link to="/concierge">Explore concierge <ArrowRight /></Link>
+          </Button>
         </motion.div>
       </div>
     </section>

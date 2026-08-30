@@ -31,6 +31,7 @@ import ConsultantAuth from '@/pages/ConsultantAuth';
 import ConsultantDashboard from '@/pages/ConsultantDashboard';
 import AccountAccess from '@/pages/AccountAccess';
 import { Navigate } from 'react-router-dom';
+import { HeroUIProvider } from '@heroui/react';
 
 const AccountPage = ({ type, children }) => {
   const { user, isAuthenticated } = useAuth();
@@ -95,10 +96,12 @@ function App() {
     <ThemeProvider>
       <AuthProvider>
         <QueryClientProvider client={queryClientInstance}>
-          <Router>
-            <ScrollToTop />
-            <AuthenticatedApp />
-          </Router>
+          <HeroUIProvider>
+            <Router>
+              <ScrollToTop />
+              <AuthenticatedApp />
+            </Router>
+          </HeroUIProvider>
           <Toaster />
         </QueryClientProvider>
       </AuthProvider>

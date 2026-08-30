@@ -1,140 +1,203 @@
 import React from "react";
 import { Link } from "react-router-dom";
-import { Button } from "@/components/ui/button";
-import { motion } from "framer-motion";
-import { Sparkles, ArrowRight, CheckCircle2 } from "lucide-react";
+import { Button, Card, CardBody, Chip, Progress } from "@heroui/react";
+import { motion, useReducedMotion } from "framer-motion";
+import {
+  ArrowRight,
+  Building2,
+  Check,
+  CheckCircle2,
+  CircleDashed,
+  MapPin,
+  ShieldCheck,
+  Sparkles,
+} from "lucide-react";
 
-const highlights = [
-  "Zoning & Property Guidance",
-  "SBA Loans & Incentives",
-  "Licenses & Permits",
-  "Tax & Compliance",
+const checklist = [
+  { label: "Choose your business structure", detail: "Florida registration", done: true },
+  { label: "Apply for your EIN", detail: "Federal tax ID", done: true },
+  { label: "Confirm property zoning", detail: "Commercial C-1", active: true },
+  { label: "Get your local tax receipt", detail: "Indian River County" },
+  { label: "Review permits and inspections", detail: "Based on your location" },
+];
+
+const proofPoints = [
+  { value: "6", label: "local guide categories" },
+  { value: "1", label: "personalized launch plan" },
+  { value: "Free", label: "to build your roadmap" },
 ];
 
 export default function HeroSection() {
-  return (
-    <section className="relative overflow-hidden border-b border-border">
-      <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20 md:py-28">
-        <div className="grid lg:grid-cols-2 gap-12 lg:gap-20 items-center">
-          {/* Left Content */}
-          <motion.div
-            initial={{ opacity: 0, y: 30 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8, ease: "easeOut" }}
-          >
-            <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full border border-border bg-secondary text-muted-foreground text-xs font-medium mb-6 tracking-wide">
-              <MapPinIcon />
-              Indian River County, Florida
-            </div>
+  const reduceMotion = useReducedMotion();
 
-            <h1 className="font-heading text-4xl sm:text-5xl lg:text-6xl font-bold text-foreground leading-[1.05] mb-6">
-              Start Your Business{" "}
-              <span className="text-accent">the Right Way</span>
+  return (
+    <section className="relative isolate overflow-hidden border-b border-border/70 bg-background">
+      <div className="dot-grid absolute inset-0 -z-20 opacity-40 [mask-image:linear-gradient(to_bottom,black,transparent_86%)]" />
+      <div className="absolute -left-24 top-12 -z-10 h-80 w-80 rounded-full bg-accent/10 blur-3xl" />
+      <div className="absolute right-0 top-0 -z-10 h-[34rem] w-[34rem] rounded-full bg-blue-500/[0.07] blur-3xl dark:bg-blue-400/[0.06]" />
+
+      <div className="page-container py-20 sm:py-24 lg:py-28">
+        <div className="grid items-center gap-14 lg:grid-cols-[1.02fr_0.98fr] lg:gap-20">
+          <motion.div
+            initial={reduceMotion ? false : { opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.55, ease: "easeOut" }}
+          >
+            <Chip
+              variant="flat"
+              startContent={<MapPin className="h-3.5 w-3.5" />}
+              classNames={{
+                base: "mb-7 h-8 border border-accent/20 bg-accent/10 px-1.5 text-accent",
+                content: "text-xs font-bold tracking-wide",
+              }}
+            >
+              Built for Indian River County
+            </Chip>
+
+            <h1 className="max-w-3xl text-5xl font-extrabold leading-[0.98] text-foreground sm:text-6xl lg:text-[4.5rem]">
+              Your local roadmap to <span className="text-accent">opening day.</span>
             </h1>
 
-            <p className="text-lg text-muted-foreground leading-relaxed mb-8 max-w-lg">
-              From finding the perfect property to opening your doors — your personalized, 
-              step-by-step roadmap for launching a business in Indian River County.
+            <p className="mt-7 max-w-xl text-lg leading-8 text-muted-foreground sm:text-xl">
+              Turn your business idea into a clear, step-by-step launch plan—with local guidance for zoning, permits, funding, and compliance.
             </p>
 
-            <div className="grid grid-cols-2 gap-3 mb-10">
-              {highlights.map((item) => (
-                <div key={item} className="flex items-center gap-2 text-sm text-foreground/80">
-                  <CheckCircle2 className="w-4 h-4 text-accent flex-shrink-0" />
-                  <span>{item}</span>
-                </div>
-              ))}
+            <div className="mt-9 flex flex-col gap-3 sm:flex-row">
+              <Button
+                as={Link}
+                to="/survey"
+                size="lg"
+                radius="lg"
+                endContent={<ArrowRight className="h-4 w-4" />}
+                className="h-12 w-full bg-accent px-6 text-[0.9375rem] font-bold text-white shadow-lg shadow-accent/20 transition-transform hover:-translate-y-0.5 sm:w-auto"
+              >
+                Build my free roadmap
+              </Button>
+              <Button
+                as={Link}
+                to="/guides"
+                size="lg"
+                radius="lg"
+                variant="bordered"
+                className="h-12 w-full border-border bg-card/70 px-6 text-[0.9375rem] font-bold text-foreground backdrop-blur-sm sm:w-auto"
+              >
+                Explore local guides
+              </Button>
             </div>
 
-            <div className="flex flex-col sm:flex-row gap-3">
-              <Link to="/survey">
-                <Button size="lg" className="bg-accent hover:bg-accent/90 text-white font-semibold gap-2 w-full sm:w-auto text-base px-8">
-                  <Sparkles className="w-5 h-5" />
-                  Get Your Free Checklist
-                </Button>
-              </Link>
-              <Link to="/guides">
-                <Button size="lg" variant="outline" className="font-semibold gap-2 w-full sm:w-auto text-base px-8">
-                  Browse Guides
-                  <ArrowRight className="w-4 h-4" />
-                </Button>
-              </Link>
+            <div className="mt-6 flex flex-wrap items-center gap-x-5 gap-y-2 text-sm text-muted-foreground">
+              <span className="inline-flex items-center gap-1.5">
+                <ShieldCheck className="h-4 w-4 text-accent" />
+                Local expert-reviewed information
+              </span>
+              <span className="inline-flex items-center gap-1.5">
+                <Check className="h-4 w-4 text-accent" />
+                No credit card required
+              </span>
             </div>
-            <p className="text-xs text-muted-foreground mt-3">
-              ✓ All information verified by local Indian River County experts.
-            </p>
           </motion.div>
 
-          {/* Right Visual */}
           <motion.div
-            initial={{ opacity: 0, scale: 0.95 }}
-            animate={{ opacity: 1, scale: 1 }}
-            transition={{ duration: 0.8, delay: 0.2 }}
-            className="hidden lg:block"
+            initial={reduceMotion ? false : { opacity: 0, y: 24, scale: 0.98 }}
+            animate={{ opacity: 1, y: 0, scale: 1 }}
+            transition={{ duration: 0.6, delay: 0.08, ease: "easeOut" }}
+            className="relative mx-auto w-full max-w-xl"
           >
-            <div className="relative">
-              <div className="bg-card rounded-xl border p-8">
-                <div className="text-xs font-semibold uppercase tracking-wider text-muted-foreground mb-4">Your Personalized Checklist</div>
-                <div className="space-y-3">
-                  {[
-                    { label: "Choose Business Structure", done: true },
-                    { label: "Register with FL Division of Corporations", done: true },
-                    { label: "Apply for EIN (Federal Tax ID)", done: true },
-                    { label: "Verify Property Zoning — Commercial C-1", done: false, active: true },
-                    { label: "Apply for Local Business Tax Receipt", done: false },
-                    { label: "Submit Building Permit Application", done: false },
-                    { label: "Schedule Fire Marshal Inspection", done: false },
-                    { label: "Open Business Bank Account", done: false },
-                  ].map((item, i) => (
-                    <div
-                      key={i}
-                      className={`flex items-center gap-3 px-4 py-3 rounded-lg transition-all ${
-                        item.active
-                          ? "bg-accent/10 border border-accent/20"
-                          : item.done
-                          ? "bg-muted/50"
-                          : "bg-background"
-                      }`}
-                    >
-                      <div className={`w-5 h-5 rounded-full border-2 flex items-center justify-center flex-shrink-0 ${
-                        item.done
-                          ? "bg-accent border-accent"
-                          : item.active
-                          ? "border-accent"
-                          : "border-border"
-                      }`}>
-                        {item.done && <CheckCircle2 className="w-3 h-3 text-white" />}
-                      </div>
-                      <span className={`text-sm ${item.done ? "line-through text-muted-foreground" : "text-foreground"}`}>
-                        {item.label}
-                      </span>
+            <div className="absolute -inset-4 -z-10 rounded-[2rem] bg-gradient-to-br from-accent/15 via-transparent to-blue-500/10 blur-2xl" />
+            <Card className="glass-panel overflow-hidden rounded-[1.75rem]" shadow="none">
+              <CardBody className="p-0">
+                <div className="flex items-center justify-between border-b border-border/70 px-5 py-4 sm:px-6">
+                  <div className="flex items-center gap-3">
+                    <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-primary text-primary-foreground">
+                      <Building2 className="h-5 w-5" />
                     </div>
-                  ))}
+                    <div>
+                      <p className="text-sm font-bold text-foreground">Coffee shop launch plan</p>
+                      <p className="text-xs text-muted-foreground">Vero Beach, Florida</p>
+                    </div>
+                  </div>
+                  <Chip
+                    size="sm"
+                    variant="flat"
+                    classNames={{ base: "bg-emerald-500/10 text-emerald-700 dark:text-emerald-400", content: "font-bold" }}
+                  >
+                    In progress
+                  </Chip>
                 </div>
-                <div className="mt-6 pt-4 border-t flex items-center justify-between">
-                  <span className="text-xs text-muted-foreground">3 of 8 complete</span>
-                  <div className="w-32 h-2 rounded-full bg-muted overflow-hidden">
-                    <div className="w-[37%] h-full bg-accent rounded-full" />
+
+                <div className="p-5 sm:p-6">
+                  <div className="mb-5 flex items-end justify-between gap-4">
+                    <div>
+                      <p className="text-xs font-bold uppercase tracking-[0.14em] text-muted-foreground">Launch progress</p>
+                      <p className="mt-1 text-2xl font-extrabold tracking-tight text-foreground">2 of 5 complete</p>
+                    </div>
+                    <span className="text-sm font-bold text-accent">40%</span>
+                  </div>
+                  <Progress
+                    aria-label="Launch plan progress"
+                    value={40}
+                    size="sm"
+                    classNames={{ track: "h-2 bg-muted", indicator: "bg-accent" }}
+                  />
+
+                  <div className="mt-6 space-y-2.5">
+                    {checklist.map((item, index) => (
+                      <div
+                        key={item.label}
+                        className={`items-center gap-3 rounded-xl border px-3.5 py-3 sm:px-4 ${
+                          index === checklist.length - 1 ? "hidden sm:flex" : "flex"
+                        } ${
+                          item.active
+                            ? "border-accent/25 bg-accent/[0.07]"
+                            : "border-transparent bg-muted/60"
+                        }`}
+                      >
+                        <span
+                          className={`flex h-8 w-8 shrink-0 items-center justify-center rounded-lg ${
+                            item.done
+                              ? "bg-emerald-500/10 text-emerald-600 dark:text-emerald-400"
+                              : item.active
+                              ? "bg-accent/20 text-accent"
+                              : "bg-card text-muted-foreground"
+                          }`}
+                        >
+                          {item.done ? <CheckCircle2 className="h-4 w-4" /> : <CircleDashed className="h-4 w-4" />}
+                        </span>
+                        <span className="min-w-0 flex-1">
+                          <span className={`block truncate text-sm font-bold ${item.done ? "text-muted-foreground" : "text-foreground"}`}>
+                            {item.label}
+                          </span>
+                          <span className="block truncate text-xs text-muted-foreground">{item.detail}</span>
+                        </span>
+                        {item.active && <ArrowRight className="h-4 w-4 shrink-0 text-accent" />}
+                      </div>
+                    ))}
                   </div>
                 </div>
-              </div>
-              {/* Floating badge */}
-              <div className="absolute -top-4 -right-4 bg-accent text-white text-xs font-bold px-3 py-1.5 rounded-full shadow-lg">
-                FREE
+              </CardBody>
+            </Card>
+
+            <div className="absolute -bottom-5 -left-5 hidden items-center gap-3 rounded-2xl border border-border/70 bg-card px-4 py-3 shadow-elevated sm:flex">
+              <span className="flex h-9 w-9 items-center justify-center rounded-xl bg-accent/10 text-accent">
+                <Sparkles className="h-4 w-4" />
+              </span>
+              <div>
+                <p className="text-xs font-bold text-foreground">Personalized for you</p>
+                <p className="text-[11px] text-muted-foreground">Based on your business and location</p>
               </div>
             </div>
           </motion.div>
         </div>
+
+        <div className="mt-20 grid divide-y divide-border/70 rounded-2xl border border-border/70 bg-card/70 shadow-soft backdrop-blur sm:grid-cols-3 sm:divide-x sm:divide-y-0 lg:mt-24">
+          {proofPoints.map((item) => (
+            <div key={item.label} className="flex items-baseline gap-3 px-6 py-5 sm:block sm:text-center lg:flex lg:justify-center lg:text-left">
+              <span className="text-2xl font-extrabold tracking-tight text-foreground">{item.value}</span>
+              <span className="text-sm text-muted-foreground">{item.label}</span>
+            </div>
+          ))}
+        </div>
       </div>
     </section>
-  );
-}
-
-function MapPinIcon() {
-  return (
-    <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-      <path strokeLinecap="round" strokeLinejoin="round" d="M15 10.5a3 3 0 11-6 0 3 3 0 016 0z" />
-      <path strokeLinecap="round" strokeLinejoin="round" d="M19.5 10.5c0 7.142-7.5 11.25-7.5 11.25S4.5 17.642 4.5 10.5a7.5 7.5 0 0115 0z" />
-    </svg>
   );
 }

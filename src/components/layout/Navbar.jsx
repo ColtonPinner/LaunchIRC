@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { Button } from "@/components/ui/button";
-import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
-import { Menu, MapPin, Sparkles, LayoutDashboard, LogIn, LogOut, Inbox, Moon, Sun } from "lucide-react";
+import { Sheet, SheetContent, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
+import { Inbox, LayoutDashboard, LogIn, LogOut, MapPin, Menu, Moon, Sparkles, Sun } from "lucide-react";
 import { useAuth } from "@/lib/AuthContext";
 import { useTheme } from "@/lib/ThemeContext";
 
@@ -13,6 +13,9 @@ const baseNavLinks = [
   { label: "Events", path: "/events" },
   { label: "Concierge", path: "/concierge" },
 ];
+
+const isActivePath = (pathname, path) =>
+  path === "/" ? pathname === path : pathname === path || pathname.startsWith(`${path}/`);
 
 export default function Navbar() {
   const [open, setOpen] = useState(false);
@@ -29,7 +32,7 @@ export default function Navbar() {
   const navLinks = isWorkspaceAccount ? baseNavLinks : [...baseNavLinks, { label: "My Portal", path: "/portal" }];
 
   useEffect(() => {
-    const onScroll = () => setScrolled(window.scrollY > 8);
+    const onScroll = () => setScrolled(window.scrollY > 10);
     onScroll();
     window.addEventListener("scroll", onScroll, { passive: true });
     return () => window.removeEventListener("scroll", onScroll);
@@ -37,49 +40,45 @@ export default function Navbar() {
 
   return (
     <nav
-      className={`fixed top-0 left-0 right-0 z-50 bg-background/85 backdrop-blur-xl transition-shadow duration-200 ${
-        scrolled ? "border-b border-border shadow-soft" : "border-b border-transparent"
+      aria-label="Primary navigation"
+      className={`fixed inset-x-0 top-0 z-50 border-b bg-background/90 backdrop-blur-xl transition-all duration-300 ${
+        scrolled ? "border-border/80 shadow-soft" : "border-transparent"
       }`}
     >
       <div className="page-container">
-        <div className="flex items-center justify-between h-16 md:h-20">
-          {/* Logo */}
-          <Link to="/" className="flex items-center gap-2 group">
-            <div className="w-9 h-9 rounded-lg bg-primary flex items-center justify-center transition-transform duration-200 group-hover:scale-105">
-              <MapPin className="w-5 h-5 text-primary-foreground" />
-            </div>
-            <div className="hidden sm:block">
-              <span className="font-heading text-lg font-bold text-foreground leading-none block">
-                Launch IRC
-              </span>
-              <span className="text-[10px] uppercase tracking-[0.2em] text-muted-foreground font-medium">
-                Indian River County
-              </span>
-            </div>
+        <div className="flex h-[4.5rem] items-center justify-between gap-5">
+          <Link to="/" className="group flex shrink-0 items-center gap-3" aria-label="Launch Indian River home">
+            <span className="relative flex h-10 w-10 items-center justify-center rounded-xl bg-primary text-primary-foreground shadow-sm transition-transform duration-200 group-hover:-translate-y-0.5">
+              <MapPin className="h-5 w-5" />
+              <span className="absolute -right-0.5 -top-0.5 h-3 w-3 rounded-full border-2 border-background bg-accent" />
+            </span>
+            <span className="hidden sm:block">
+              <span className="block text-[0.95rem] font-extrabold leading-none tracking-[-0.03em] text-foreground">Launch Indian River</span>
+              <span className="mt-1 block text-[9px] font-bold uppercase tracking-[0.19em] text-muted-foreground">Business launchpad</span>
+            </span>
           </Link>
 
-          {/* Desktop Nav */}
-          <div className="hidden md:flex items-center gap-1">
-            {navLinks.map((link) => (
-              <Link
-                key={link.path}
-                to={link.path}
-                className={`relative px-4 py-2 rounded-lg text-sm font-medium transition-colors duration-200 ${
-                  location.pathname === link.path
-                    ? "text-foreground"
-                    : "text-muted-foreground hover:text-foreground hover:bg-muted"
-                }`}
-              >
-                {link.label}
-                {location.pathname === link.path && (
-                  <span className="absolute inset-x-3 -bottom-0.5 h-0.5 rounded-full bg-accent" />
-                )}
-              </Link>
-            ))}
+          <div className="hidden items-center rounded-xl border border-border/70 bg-muted/60 p-1 lg:flex">
+            {navLinks.map((link) => {
+              const active = isActivePath(location.pathname, link.path);
+              return (
+                <Link
+                  key={link.path}
+                  to={link.path}
+                  aria-current={active ? "page" : undefined}
+                  className={`rounded-lg px-3 py-2 text-sm font-semibold transition-all xl:px-3.5 ${
+                    active
+                      ? "bg-card text-foreground shadow-soft"
+                      : "text-muted-foreground hover:bg-card/60 hover:text-foreground"
+                  }`}
+                >
+                  {link.label}
+                </Link>
+              );
+            })}
           </div>
 
-          {/* CTA */}
-          <div className="hidden md:flex items-center gap-3">
+          <div className="hidden shrink-0 items-center gap-1.5 lg:flex">
             <Button
               variant="ghost"
               size="icon"
@@ -87,93 +86,93 @@ export default function Navbar() {
               title={isDark ? "Switch to light mode" : "Switch to dark mode"}
               aria-label={isDark ? "Switch to light mode" : "Switch to dark mode"}
             >
-              {isDark ? <Sun className="w-4 h-4" /> : <Moon className="w-4 h-4" />}
+              {isDark ? <Sun /> : <Moon />}
             </Button>
+
             {isAuthenticated ? (
               <>
-                <Link to={workspacePath}>
-                  <Button variant="outline" className="gap-2">
-                    {isConsultant || isProvider ? <Inbox className="w-4 h-4" /> : <LayoutDashboard className="w-4 h-4" />}
-                    {workspaceLabel}
-                  </Button>
-                </Link>
-                <Button variant="ghost" size="icon" onClick={() => logout()} title="Log out">
-                  <LogOut className="w-4 h-4" />
+                <Button asChild variant="outline" className="gap-2">
+                  <Link to={workspacePath}>
+                    {isConsultant || isProvider ? <Inbox /> : <LayoutDashboard />}
+                    <span className="hidden xl:inline">{workspaceLabel}</span>
+                  </Link>
+                </Button>
+                <Button variant="ghost" size="icon" onClick={() => logout()} title="Log out" aria-label="Log out">
+                  <LogOut />
                 </Button>
               </>
             ) : (
-              <Link to="/account">
-                <Button variant="ghost" className="gap-2">
-                  <LogIn className="w-4 h-4" />
-                  Log in
-                </Button>
-              </Link>
+              <Button asChild variant="ghost" className="gap-2">
+                <Link to="/account"><LogIn /> Log in</Link>
+              </Button>
             )}
+
             {!isWorkspaceAccount && (
-              <Link to="/survey">
-                <Button className="bg-accent hover:bg-accent/90 text-accent-foreground font-semibold gap-2">
-                  <Sparkles className="w-4 h-4" />
-                  Get Started Free
-                </Button>
-              </Link>
+              <Button asChild className="ml-1 bg-accent text-white shadow-sm hover:bg-accent/90">
+                <Link to="/survey"><Sparkles /> Start free</Link>
+              </Button>
             )}
           </div>
 
-          {/* Mobile Menu */}
           <Sheet open={open} onOpenChange={setOpen}>
-            <SheetTrigger asChild className="md:hidden">
-              <Button variant="ghost" size="icon">
-                <Menu className="w-5 h-5" />
+            <SheetTrigger asChild>
+              <Button variant="outline" size="icon" className="lg:hidden" aria-label="Open navigation menu">
+                <Menu />
               </Button>
             </SheetTrigger>
-            <SheetContent side="right" className="w-80 p-0">
-              <div className="flex flex-col h-full">
-                <div className="p-6 border-b">
-                  <div className="flex items-center gap-2">
-                    <div className="w-9 h-9 rounded-lg bg-primary flex items-center justify-center">
-                      <MapPin className="w-5 h-5 text-primary-foreground" />
-                    </div>
-                    <span className="font-heading text-lg font-bold">Launch IRC</span>
-                  </div>
-                </div>
-                <div className="flex-1 p-4 space-y-1">
-                  {navLinks.map((link) => (
-                    <Link
-                      key={link.path}
-                      to={link.path}
-                      onClick={() => setOpen(false)}
-                      className={`block px-4 py-3 rounded-lg text-sm font-medium transition-colors ${
-                        location.pathname === link.path
-                          ? "bg-primary text-primary-foreground"
-                          : "text-foreground hover:bg-muted"
-                      }`}
-                    >
-                      {link.label}
-                    </Link>
-                  ))}
-                </div>
-                <div className="p-4 border-t">
-                  <Button variant="outline" className="w-full mb-2 gap-2" onClick={toggleTheme}>
-                    {isDark ? <Sun className="w-4 h-4" /> : <Moon className="w-4 h-4" />}
-                    {isDark ? "Light mode" : "Dark mode"}
-                  </Button>
-                  <Link to={isAuthenticated ? workspacePath : "/account"} onClick={() => setOpen(false)}>
-                    <Button variant="outline" className="w-full mb-2 gap-2">
-                      {isAuthenticated ? (isConsultant || isProvider ? <Inbox className="w-4 h-4" /> : <LayoutDashboard className="w-4 h-4" />) : <LogIn className="w-4 h-4" />}
-                      {isAuthenticated ? workspaceLabel : "Account sign in"}
-                    </Button>
+            <SheetContent side="right" className="w-[88vw] max-w-sm border-l-border/70 p-0">
+              <SheetTitle className="sr-only">Navigation menu</SheetTitle>
+              <div className="flex h-full flex-col">
+                <div className="border-b border-border/70 p-6">
+                  <Link to="/" onClick={() => setOpen(false)} className="flex items-center gap-3">
+                    <span className="flex h-10 w-10 items-center justify-center rounded-xl bg-primary text-primary-foreground">
+                      <MapPin className="h-5 w-5" />
+                    </span>
+                    <span>
+                      <span className="block font-extrabold tracking-tight">Launch Indian River</span>
+                      <span className="block text-[10px] uppercase tracking-[0.16em] text-muted-foreground">Business launchpad</span>
+                    </span>
                   </Link>
-                  {!isWorkspaceAccount && (
-                    <Link to="/survey" onClick={() => setOpen(false)}>
-                      <Button className="w-full bg-accent hover:bg-accent/90 text-accent-foreground font-semibold gap-2">
-                        <Sparkles className="w-4 h-4" />
-                        Get Started Free
-                      </Button>
+                </div>
+
+                <div className="flex-1 space-y-1 p-4">
+                  {navLinks.map((link) => {
+                    const active = isActivePath(location.pathname, link.path);
+                    return (
+                      <Link
+                        key={link.path}
+                        to={link.path}
+                        aria-current={active ? "page" : undefined}
+                        onClick={() => setOpen(false)}
+                        className={`block rounded-xl px-4 py-3 text-sm font-semibold transition-colors ${
+                          active ? "bg-primary text-primary-foreground" : "text-foreground hover:bg-muted"
+                        }`}
+                      >
+                        {link.label}
+                      </Link>
+                    );
+                  })}
+                </div>
+
+                <div className="space-y-2 border-t border-border/70 p-4">
+                  <Button variant="outline" className="w-full justify-start gap-2" onClick={toggleTheme}>
+                    {isDark ? <Sun /> : <Moon />}
+                    {isDark ? "Use light mode" : "Use dark mode"}
+                  </Button>
+                  <Button asChild variant="outline" className="w-full justify-start gap-2">
+                    <Link to={isAuthenticated ? workspacePath : "/account"} onClick={() => setOpen(false)}>
+                      {isAuthenticated ? (isWorkspaceAccount ? <Inbox /> : <LayoutDashboard />) : <LogIn />}
+                      {isAuthenticated ? workspaceLabel : "Account sign in"}
                     </Link>
+                  </Button>
+                  {!isWorkspaceAccount && (
+                    <Button asChild className="w-full bg-accent text-white hover:bg-accent/90">
+                      <Link to="/survey" onClick={() => setOpen(false)}><Sparkles /> Start free</Link>
+                    </Button>
                   )}
                   {isAuthenticated && (
-                    <Button variant="ghost" className="w-full mt-2 gap-2" onClick={() => logout()}>
-                      <LogOut className="w-4 h-4" /> Log out
+                    <Button variant="ghost" className="w-full justify-start gap-2" onClick={() => logout()}>
+                      <LogOut /> Log out
                     </Button>
                   )}
                 </div>

@@ -1,80 +1,71 @@
 import React from "react";
-import { motion } from "framer-motion";
-import { ClipboardList, Search, CheckSquare, Rocket } from "lucide-react";
+import { motion, useReducedMotion } from "framer-motion";
+import { CheckSquare2, ClipboardList, Rocket, Route } from "lucide-react";
 
 const steps = [
   {
     icon: ClipboardList,
-    title: "Take the Survey",
-    description: "Answer a few quick questions about your business type, stage, and needs.",
-    color: "bg-primary/10 text-primary",
+    title: "Tell us about your business",
+    description: "Answer a few focused questions about your idea, location, and launch stage.",
   },
   {
-    icon: Search,
-    title: "Get Your Roadmap",
-    description: "Receive a personalized checklist tailored to your specific business in IRC.",
-    color: "bg-accent/10 text-accent",
+    icon: Route,
+    title: "Get a local roadmap",
+    description: "We organize the registrations, zoning, permits, and resources that apply to you.",
   },
   {
-    icon: CheckSquare,
-    title: "Follow the Steps",
-    description: "Work through property, legal, financial, licensing, and compliance — in order.",
-    color: "bg-emerald-500/10 text-emerald-600",
+    icon: CheckSquare2,
+    title: "Work through each step",
+    description: "Track progress in one place with practical instructions and direct local links.",
   },
   {
     icon: Rocket,
-    title: "Open Your Doors",
-    description: "Launch with confidence knowing everything is done right from day one.",
-    color: "bg-violet-500/10 text-violet-600",
+    title: "Open with confidence",
+    description: "Move toward opening day knowing the important local requirements are covered.",
   },
 ];
 
 export default function HowItWorks() {
+  const reduceMotion = useReducedMotion();
+
   return (
-    <section className="py-20 md:py-28 bg-background">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <section className="section-y border-b border-border/70 bg-muted/40">
+      <div className="page-container">
         <motion.div
-          initial={{ opacity: 0, y: 20 }}
+          initial={reduceMotion ? false : { opacity: 0, y: 16 }}
           whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          className="text-center mb-16"
+          viewport={{ once: true, amount: 0.3 }}
+          className="grid gap-5 md:grid-cols-[0.8fr_1.2fr] md:items-end"
         >
-          <h2 className="font-heading text-3xl md:text-4xl font-bold text-foreground mb-4">
-            How It Works
-          </h2>
-          <p className="text-muted-foreground text-lg max-w-2xl mx-auto">
-            Four simple steps from idea to grand opening
+          <div>
+            <p className="eyebrow">A clearer way forward</p>
+            <h2 className="mt-3 text-3xl font-extrabold leading-tight text-foreground sm:text-4xl">From idea to opening day.</h2>
+          </div>
+          <p className="max-w-2xl text-base leading-7 text-muted-foreground md:justify-self-end md:text-lg">
+            Starting a business is complicated. Your roadmap turns dozens of disconnected requirements into four understandable stages.
           </p>
         </motion.div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
-          {steps.map((step, i) => (
-            <motion.div
+        <div className="relative mt-12 grid gap-4 md:grid-cols-2 lg:grid-cols-4">
+          <div className="absolute left-[12.5%] right-[12.5%] top-8 hidden border-t border-dashed border-border lg:block" />
+          {steps.map((step, index) => (
+            <motion.article
               key={step.title}
-              initial={{ opacity: 0, y: 30 }}
+              initial={reduceMotion ? false : { opacity: 0, y: 18 }}
               whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ delay: i * 0.1 }}
-              className="relative"
+              viewport={{ once: true, amount: 0.25 }}
+              transition={{ delay: reduceMotion ? 0 : index * 0.06 }}
+              className="relative rounded-2xl border border-border/75 bg-card p-6 shadow-soft"
             >
-              {i < steps.length - 1 && (
-                <div className="hidden lg:block absolute top-10 left-[60%] w-[80%] border-t-2 border-dashed border-border" />
-              )}
-              <div className="text-center">
-                <div className={`w-20 h-20 rounded-2xl ${step.color} flex items-center justify-center mx-auto mb-6`}>
-                  <step.icon className="w-8 h-8" />
-                </div>
-                <div className="text-xs font-bold text-muted-foreground uppercase tracking-wider mb-2">
-                  Step {i + 1}
-                </div>
-                <h3 className="font-heading text-xl font-semibold text-foreground mb-2">
-                  {step.title}
-                </h3>
-                <p className="text-sm text-muted-foreground leading-relaxed">
-                  {step.description}
-                </p>
+              <div className="relative z-10 flex items-center justify-between">
+                <span className="flex h-11 w-11 items-center justify-center rounded-xl bg-primary text-primary-foreground shadow-sm">
+                  <step.icon className="h-5 w-5" />
+                </span>
+                <span className="font-mono text-xs font-medium text-muted-foreground">0{index + 1}</span>
               </div>
-            </motion.div>
+              <h3 className="mt-6 text-lg font-extrabold tracking-tight text-foreground">{step.title}</h3>
+              <p className="mt-2 text-sm leading-6 text-muted-foreground">{step.description}</p>
+            </motion.article>
           ))}
         </div>
       </div>

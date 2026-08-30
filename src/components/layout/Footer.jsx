@@ -1,86 +1,95 @@
 import React from "react";
 import { Link } from "react-router-dom";
-import { MapPin, Mail, Phone } from "lucide-react";
+import { ArrowRight, Mail, MapPin, Phone } from "lucide-react";
+import { Button } from "@/components/ui/button";
+
+const navigation = [
+  { label: "Business guides", path: "/guides" },
+  { label: "Local directory", path: "/directory" },
+  { label: "Community events", path: "/events" },
+  { label: "Concierge services", path: "/concierge" },
+];
+
+const resources = [
+  { label: "Free launch roadmap", path: "/survey" },
+  { label: "List your business", path: "/directory/join" },
+  { label: "Become a sponsor", path: "/sponsor" },
+  { label: "Account access", path: "/account" },
+];
 
 export default function Footer() {
   return (
-    <footer className="brand-panel border-t border-border">
-      <div className="page-container py-16">
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-10">
-          <div className="md:col-span-1">
-            <div className="flex items-center gap-2 mb-4">
-              <div className="w-9 h-9 rounded-lg bg-accent flex items-center justify-center">
-                <MapPin className="w-5 h-5 text-white" />
-              </div>
-              <span className="font-heading text-xl font-bold">Launch IRC</span>
-            </div>
-            <p className="text-primary-foreground/70 text-sm leading-relaxed">
-              Your complete guide to starting and running a business in Indian River County, Florida.
+    <footer className="bg-slate-950 text-white">
+      <div className="page-container pt-10 sm:pt-14">
+        <div className="flex flex-col gap-6 rounded-3xl border border-white/10 bg-white/[0.055] px-6 py-7 sm:flex-row sm:items-center sm:justify-between sm:px-8">
+          <div>
+            <p className="text-sm font-bold text-orange-400">Ready when you are</p>
+            <h2 className="mt-1 text-2xl font-extrabold tracking-tight text-white sm:text-3xl">Turn your idea into a launch plan.</h2>
+          </div>
+          <Button asChild size="lg" className="shrink-0 bg-accent text-white hover:bg-accent/90">
+            <Link to="/survey">Build my free roadmap <ArrowRight /></Link>
+          </Button>
+        </div>
+
+        <div className="grid gap-10 py-14 md:grid-cols-[1.35fr_0.8fr_0.8fr_1fr]">
+          <div className="max-w-sm">
+            <Link to="/" className="flex items-center gap-3">
+              <span className="flex h-10 w-10 items-center justify-center rounded-xl bg-accent text-white">
+                <MapPin className="h-5 w-5" />
+              </span>
+              <span className="text-lg font-extrabold tracking-tight">Launch Indian River</span>
+            </Link>
+            <p className="mt-4 text-sm leading-6 text-white/60">
+              Clear, local guidance for starting and growing a business in Indian River County, Florida.
             </p>
           </div>
 
-          <div>
-            <h4 className="font-heading font-semibold text-sm uppercase tracking-wider mb-4 text-primary-foreground/90">Navigate</h4>
-            <div className="space-y-3">
-              {[
-                { label: "Home", path: "/" },
-                { label: "Business Guides", path: "/guides" },
-                { label: "Business Directory", path: "/directory" },
-                { label: "Concierge Services", path: "/concierge" },
-              ].map((link) => (
-                <Link key={link.path} to={link.path} className="block text-sm text-primary-foreground/60 hover:text-primary-foreground transition-colors">
-                  {link.label}
-                </Link>
-              ))}
-            </div>
-          </div>
+          <FooterLinks title="Explore" links={navigation} />
+          <FooterLinks title="Resources" links={resources} />
 
           <div>
-            <h4 className="font-heading font-semibold text-sm uppercase tracking-wider mb-4 text-primary-foreground/90">Resources</h4>
-            <div className="space-y-3">
-              {[
-                { label: "Free Checklist", path: "/survey" },
-                { label: "Premium Checklist", path: "/survey" },
-                { label: "List Your Business", path: "/directory/join" },
-                { label: "Become a Sponsor", path: "/sponsor" },
-              ].map((link) => (
-                <Link key={link.label} to={link.path} className="block text-sm text-primary-foreground/60 hover:text-primary-foreground transition-colors">
-                  {link.label}
-                </Link>
-              ))}
-            </div>
-          </div>
-
-          <div>
-            <h4 className="font-heading font-semibold text-sm uppercase tracking-wider mb-4 text-primary-foreground/90">Contact</h4>
-            <div className="space-y-3 text-sm text-primary-foreground/60">
-              <div className="flex items-center gap-2">
-                <Mail className="w-4 h-4" />
-                <span>elliese@launchindianriver.com</span>
-              </div>
-              <div className="flex items-center gap-2">
-                <Phone className="w-4 h-4" />
-                <span>(772) 766-6533</span>
-              </div>
-              <div className="flex items-start gap-2">
-                <MapPin className="w-4 h-4 mt-0.5" />
-                <span>Indian River County, FL</span>
-              </div>
+            <h3 className="text-xs font-bold uppercase tracking-[0.16em] text-white/40">Get in touch</h3>
+            <div className="mt-5 space-y-3 text-sm text-white/60">
+              <a href="mailto:elliese@launchindianriver.com" className="flex items-center gap-2.5 transition-colors hover:text-white">
+                <Mail className="h-4 w-4 text-orange-400" />
+                <span className="break-all">elliese@launchindianriver.com</span>
+              </a>
+              <a href="tel:+17727666533" className="flex items-center gap-2.5 transition-colors hover:text-white">
+                <Phone className="h-4 w-4 text-orange-400" />
+                (772) 766-6533
+              </a>
+              <span className="flex items-center gap-2.5">
+                <MapPin className="h-4 w-4 text-orange-400" />
+                Indian River County, FL
+              </span>
             </div>
           </div>
         </div>
 
-        <div className="mt-12 pt-8 border-t border-primary-foreground/10 flex flex-col sm:flex-row justify-between items-center gap-4">
-          <p className="text-xs text-primary-foreground/40">
-            © {new Date().getFullYear()} Launch Indian River. All rights reserved.
-          </p>
-          <div className="flex gap-6 text-xs text-primary-foreground/40">
-            <Link to="/privacy" className="hover:text-primary-foreground/60 cursor-pointer">Privacy</Link>
-            <Link to="/terms" className="hover:text-primary-foreground/60 cursor-pointer">Terms</Link>
-            <Link to="/disclaimer" className="hover:text-primary-foreground/60 cursor-pointer">Disclaimer</Link>
+        <div className="flex flex-col items-center justify-between gap-4 border-t border-white/10 py-6 text-xs text-white/40 sm:flex-row">
+          <p>© {new Date().getFullYear()} Launch Indian River. All rights reserved.</p>
+          <div className="flex gap-6">
+            <Link to="/privacy" className="transition-colors hover:text-white">Privacy</Link>
+            <Link to="/terms" className="transition-colors hover:text-white">Terms</Link>
+            <Link to="/disclaimer" className="transition-colors hover:text-white">Disclaimer</Link>
           </div>
         </div>
       </div>
     </footer>
+  );
+}
+
+function FooterLinks({ title, links }) {
+  return (
+    <div>
+      <h3 className="text-xs font-bold uppercase tracking-[0.16em] text-white/40">{title}</h3>
+      <div className="mt-5 space-y-3">
+        {links.map((link) => (
+          <Link key={link.label} to={link.path} className="block text-sm text-white/60 transition-colors hover:text-white">
+            {link.label}
+          </Link>
+        ))}
+      </div>
+    </div>
   );
 }
