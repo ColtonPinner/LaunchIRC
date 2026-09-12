@@ -1,6 +1,6 @@
-# Indian River Launchpad
+# B4IRC
 
-Launch IRC provides business launch guidance, local resources, events, and personalized checklists for Indian River County entrepreneurs.
+B4IRC provides business launch guidance, local resources, events, and personalized checklists for Indian River County entrepreneurs.
 
 ## Local Development
 
@@ -33,7 +33,7 @@ The staff member must log out and back in to refresh their token, then open `/st
 
 - `/customer/login` and `/customer/register` are the customer authentication entry points.
 - `/professional/login` is shared by trusted staff and providers; `/professional/register` creates provider accounts.
-- `/portal` lets signed-in customers track Launch IRC consultation requests and messages sent to directory providers.
+- `/portal` lets signed-in customers track B4IRC consultation requests and messages sent to directory providers.
 - `/provider` lets signed-in providers monitor listing approval and manage incoming directory leads.
 - `/directory/join` requires an account so each submitted listing is linked to its provider.
 - Directory visitors can contact an approved provider from the provider's public listing. Signed-in customers can attach a saved survey; all questionnaire answers are then visible only to that listing's provider and trusted staff. The request also appears in the customer's portal.

@@ -1,10 +1,11 @@
 import React from "react";
 import { Link } from "react-router-dom";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { ArrowRight, Building2, CalendarDays, CheckCircle2, ClipboardList, Headphones, Inbox, Loader2, RefreshCw, UserPlus } from "lucide-react";
+import { ArrowRight, Building2, CalendarDays, CheckCircle2, ClipboardList, Headphones, Inbox, Loader2, RefreshCw, UserPlus, XCircle } from "lucide-react";
 import { launchpadClient } from "@/api/launchpadClient";
 import { Button } from "@/components/ui/button";
 import { useAuth } from "@/lib/AuthContext";
+import { useToast } from "@/components/ui/use-toast";
 
 const serviceLabels = {
   full_concierge: "Full concierge",
@@ -32,27 +33,49 @@ const getStatus = (inquiry) => inquiry.status || "new";
 
 export default function ConsultantDashboard() {
   const { user } = useAuth();
+  const { toast } = useToast();
   const queryClient = useQueryClient();
   const isAdmin = user?.role === "admin";
 
   const { data, isLoading, isError, refetch } = useQuery({
     queryKey: ["consultant-dashboard"],
     queryFn: async () => {
-      const [inquiries, pendingListings] = await Promise.all([
+      const [inquiries, pendingListings, acceptedBusinesses] = await Promise.all([
         launchpadClient.entities.ConciergeRequest.list("-created_date"),
         launchpadClient.entities.DirectoryListing.listPending(),
+        launchpadClient.entities.AcceptedBusiness.list(),
       ]);
-      return { inquiries, pendingListings };
+      return { inquiries, pendingListings, acceptedBusinesses };
     },
   });
 
-  const approveMutation = useMutation({
-    mutationFn: (id) => launchpadClient.entities.DirectoryListing.approve(id),
-    onSuccess: () => queryClient.invalidateQueries({ queryKey: ["consultant-dashboard"] }),
+  const acceptMutation = useMutation({
+    mutationFn: (id) => launchpadClient.entities.DirectoryListing.accept(id),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["consultant-dashboard"] });
+      queryClient.invalidateQueries({ queryKey: ["staff-pending-listings"] });
+      toast({
+        title: "Business accepted!",
+        description: "The business listing has been approved and is now live in the public directory.",
+      });
+    },
+  });
+
+  const rejectMutation = useMutation({
+    mutationFn: (id) => launchpadClient.entities.DirectoryListing.reject(id),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["consultant-dashboard"] });
+      queryClient.invalidateQueries({ queryKey: ["staff-pending-listings"] });
+      toast({
+        title: "Business declined",
+        description: "The listing application has been declined.",
+      });
+    },
   });
 
   const inquiries = data?.inquiries || [];
   const pendingListings = data?.pendingListings || [];
+  const acceptedBusinesses = data?.acceptedBusinesses || [];
   const newInquiries = inquiries.filter((inquiry) => getStatus(inquiry) === "new");
   const inProgress = inquiries.filter((inquiry) => ["contacted", "in_progress"].includes(getStatus(inquiry)));
   const closed = inquiries.filter((inquiry) => getStatus(inquiry) === "closed");
@@ -123,8 +146,15 @@ export default function ConsultantDashboard() {
               </Link>
               <Link to="/staff/inquiries" className="border rounded-lg bg-card p-5 flex items-center justify-between gap-4 hover:border-accent transition-colors">
                 <span className="flex items-center gap-3">
-                  <span className="w-10 h-10 rounded-md bg-primary/10 flex items-center justify-center"><Building2 className="w-5 h-5 text-primary" /></span>
+                  <span className="w-10 h-10 rounded-md bg-amber-500/10 flex items-center justify-center"><Building2 className="w-5 h-5 text-amber-600" /></span>
                   <span><strong className="block">Directory review</strong><span className="text-sm text-muted-foreground">{pendingListings.length} pending listings</span></span>
+                </span>
+                <ArrowRight className="w-4 h-4 text-muted-foreground" />
+              </Link>
+              <Link to="/staff/inquiries" className="border rounded-lg bg-card p-5 flex items-center justify-between gap-4 hover:border-accent transition-colors">
+                <span className="flex items-center gap-3">
+                  <span className="w-10 h-10 rounded-md bg-emerald-500/10 flex items-center justify-center"><CheckCircle2 className="w-5 h-5 text-emerald-600" /></span>
+                  <span><strong className="block">Accepted businesses</strong><span className="text-sm text-muted-foreground">{acceptedBusinesses.length} in database</span></span>
                 </span>
                 <ArrowRight className="w-4 h-4 text-muted-foreground" />
               </Link>
@@ -166,14 +196,25 @@ export default function ConsultantDashboard() {
 
                       {listing.email && <p className="text-sm text-muted-foreground">{listing.email}</p>}
 
-                      <Button
-                        size="sm"
-                        className="w-full mt-4 gap-2"
-                        disabled={approveMutation.isPending}
-                        onClick={() => approveMutation.mutate(listing.id)}
-                      >
-                        {approveMutation.isPending ? <Loader2 className="w-4 h-4 animate-spin" /> : <CheckCircle2 className="w-4 h-4" />} Approve business
-                      </Button>
+                      <div className="flex items-center gap-2 mt-4">
+                        <Button
+                          size="sm"
+                          className="flex-1 gap-1.5 bg-emerald-600 hover:bg-emerald-700 text-white font-medium"
+                          disabled={acceptMutation.isPending || rejectMutation.isPending}
+                          onClick={() => acceptMutation.mutate(listing.id)}
+                        >
+                          {acceptMutation.isPending ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <CheckCircle2 className="w-3.5 h-3.5" />} Accept business
+                        </Button>
+                        <Button
+                          size="sm"
+                          variant="outline"
+                          className="gap-1.5 text-destructive hover:bg-destructive/10"
+                          disabled={acceptMutation.isPending || rejectMutation.isPending}
+                          onClick={() => rejectMutation.mutate(listing.id)}
+                        >
+                          {rejectMutation.isPending ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <XCircle className="w-3.5 h-3.5" />} Decline
+                        </Button>
+                      </div>
                     </div>
                   ))}
                 </div>

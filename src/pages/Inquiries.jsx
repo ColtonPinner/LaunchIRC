@@ -1,12 +1,13 @@
 import React, { useEffect, useState } from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { Building2, CalendarDays, CheckCircle2, Inbox, Loader2, Mail, Phone, RefreshCw, Save, UserPlus } from "lucide-react";
+import { Building2, CalendarDays, CheckCircle2, Globe, Inbox, Loader2, Mail, Phone, RefreshCw, Save, Search, UserPlus, XCircle } from "lucide-react";
 import { launchpadClient } from "@/api/launchpadClient";
 import { useAuth } from "@/lib/AuthContext";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
+import { useToast } from "@/components/ui/use-toast";
 
 const statuses = [
   { value: "new", label: "New" },
@@ -60,6 +61,7 @@ export default function Inquiries() {
   const [inviteForm, setInviteForm] = useState({ email: "", fullName: "" });
   const [inviteError, setInviteError] = useState("");
   const [inviteSuccess, setInviteSuccess] = useState("");
+  const [acceptedSearch, setAcceptedSearch] = useState("");
 
   const { data: inquiries = [], isLoading, isError, refetch } = useQuery({
     queryKey: ["staff-inquiries"],
@@ -91,9 +93,37 @@ export default function Inquiries() {
     queryFn: () => launchpadClient.entities.ProviderLead.listForProvider(),
   });
 
-  const approveMutation = useMutation({
-    mutationFn: (id) => launchpadClient.entities.DirectoryListing.approve(id),
-    onSuccess: () => queryClient.invalidateQueries({ queryKey: ["staff-pending-listings"] }),
+  const { data: acceptedBusinesses = [], isLoading: isLoadingAccepted, isError: isAcceptedError, refetch: refetchAccepted } = useQuery({
+    queryKey: ["staff-accepted-businesses"],
+    queryFn: () => launchpadClient.entities.AcceptedBusiness.list(),
+  });
+
+  const { toast } = useToast();
+
+  const acceptMutation = useMutation({
+    mutationFn: (id) => launchpadClient.entities.DirectoryListing.accept(id),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["staff-pending-listings"] });
+      queryClient.invalidateQueries({ queryKey: ["staff-accepted-businesses"] });
+      queryClient.invalidateQueries({ queryKey: ["consultant-dashboard"] });
+      toast({
+        title: "Business accepted!",
+        description: "The business listing is now live in the public directory.",
+      });
+    },
+  });
+
+  const rejectMutation = useMutation({
+    mutationFn: (id) => launchpadClient.entities.DirectoryListing.reject(id),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["staff-pending-listings"] });
+      queryClient.invalidateQueries({ queryKey: ["staff-accepted-businesses"] });
+      queryClient.invalidateQueries({ queryKey: ["consultant-dashboard"] });
+      toast({
+        title: "Business declined",
+        description: "The directory listing has been declined.",
+      });
+    },
   });
 
   const { data: consultants = [], isLoading: isLoadingConsultants, isError: isConsultantsError, refetch: refetchConsultants } = useQuery({
@@ -170,6 +200,13 @@ export default function Inquiries() {
           >
             Provider leads
             {providerLeads.length > 0 && <span className="text-[11px] font-semibold bg-accent/10 text-accent rounded-full px-1.5 py-0.5">{providerLeads.length}</span>}
+          </button>
+          <button
+            onClick={() => setWorkspaceTab("accepted")}
+            className={`px-4 py-2.5 text-sm font-medium border-b-2 -mb-px flex items-center gap-2 ${workspaceTab === "accepted" ? "border-primary text-foreground" : "border-transparent text-muted-foreground hover:text-foreground"}`}
+          >
+            Accepted businesses
+            <span className="text-[11px] font-semibold bg-emerald-100 text-emerald-700 rounded-full px-1.5 py-0.5">{acceptedBusinesses.length}</span>
           </button>
           {canManageTeam && (
             <button
@@ -343,14 +380,25 @@ export default function Inquiries() {
                       {listing.email && <div className="flex items-center gap-2"><Mail className="w-3.5 h-3.5" /> {listing.email}</div>}
                       {listing.phone && <div className="flex items-center gap-2"><Phone className="w-3.5 h-3.5" /> {listing.phone}</div>}
                     </div>
-                    <Button
-                      size="sm"
-                      className="w-full mt-4 gap-2"
-                      disabled={approveMutation.isPending}
-                      onClick={() => approveMutation.mutate(listing.id)}
-                    >
-                      {approveMutation.isPending ? <Loader2 className="w-4 h-4 animate-spin" /> : <CheckCircle2 className="w-4 h-4" />} Approve listing
-                    </Button>
+                    <div className="flex items-center gap-2 mt-4">
+                      <Button
+                        size="sm"
+                        className="flex-1 gap-1.5 bg-emerald-600 hover:bg-emerald-700 text-white font-medium"
+                        disabled={acceptMutation.isPending || rejectMutation.isPending}
+                        onClick={() => acceptMutation.mutate(listing.id)}
+                      >
+                        {acceptMutation.isPending ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <CheckCircle2 className="w-3.5 h-3.5" />} Accept business
+                      </Button>
+                      <Button
+                        size="sm"
+                        variant="outline"
+                        className="gap-1.5 text-destructive hover:bg-destructive/10"
+                        disabled={acceptMutation.isPending || rejectMutation.isPending}
+                        onClick={() => rejectMutation.mutate(listing.id)}
+                      >
+                        {rejectMutation.isPending ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <XCircle className="w-3.5 h-3.5" />} Decline
+                      </Button>
+                    </div>
                   </article>
                 ))}
               </div>
@@ -395,6 +443,109 @@ export default function Inquiries() {
                     <span className="flex items-center gap-1.5 text-xs text-muted-foreground whitespace-nowrap"><CalendarDays className="w-3.5 h-3.5" /> {formatDate(lead.created_date)}</span>
                   </article>
                 ))}
+              </div>
+            )}
+          </>
+        )}
+
+        {workspaceTab === "accepted" && (
+          <>
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
+              <div>
+                <h2 className="font-heading text-xl font-bold">Database of Accepted Businesses</h2>
+                <p className="text-sm text-muted-foreground mt-0.5">Approved business directory entries and local partner records.</p>
+              </div>
+              <div className="relative max-w-xs w-full">
+                <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground" />
+                <Input
+                  placeholder="Search accepted businesses..."
+                  value={acceptedSearch}
+                  onChange={(e) => setAcceptedSearch(e.target.value)}
+                  className="pl-9 h-10"
+                />
+              </div>
+            </div>
+
+            {isLoadingAccepted && (
+              <div className="min-h-72 flex items-center justify-center border rounded-lg bg-card">
+                <Loader2 className="w-6 h-6 animate-spin text-accent" aria-label="Loading accepted businesses" />
+              </div>
+            )}
+
+            {isAcceptedError && (
+              <div className="min-h-72 flex flex-col items-center justify-center text-center border rounded-lg bg-card p-6">
+                <p className="font-semibold">Accepted businesses could not be loaded.</p>
+                <Button variant="outline" onClick={() => refetchAccepted()} className="gap-2 mt-4"><RefreshCw className="w-4 h-4" /> Retry</Button>
+              </div>
+            )}
+
+            {!isLoadingAccepted && !isAcceptedError && acceptedBusinesses.length === 0 && (
+              <div className="min-h-72 flex flex-col items-center justify-center text-center border border-dashed rounded-lg bg-card p-6">
+                <CheckCircle2 className="w-8 h-8 text-accent mb-3" />
+                <h2 className="font-heading text-xl font-bold">No accepted businesses yet</h2>
+                <p className="text-sm text-muted-foreground mt-1">Approve pending directory applications to build the accepted business database.</p>
+              </div>
+            )}
+
+            {!isLoadingAccepted && !isAcceptedError && acceptedBusinesses.length > 0 && (
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                {acceptedBusinesses
+                  .filter((b) => {
+                    if (!acceptedSearch.trim()) return true;
+                    const q = acceptedSearch.toLowerCase();
+                    return (
+                      b.company_name?.toLowerCase().includes(q) ||
+                      b.category?.toLowerCase().includes(q) ||
+                      b.description?.toLowerCase().includes(q) ||
+                      b.email?.toLowerCase().includes(q)
+                    );
+                  })
+                  .map((business) => (
+                    <article key={business.id} className="border rounded-lg bg-card p-5 hover:shadow-sm transition-shadow">
+                      <div className="flex items-start justify-between gap-3 mb-3">
+                        <div className="w-10 h-10 rounded-md bg-emerald-50 border border-emerald-200 flex items-center justify-center">
+                          <Building2 className="w-5 h-5 text-emerald-600" />
+                        </div>
+                        <span className="px-2 py-1 rounded-md border text-[11px] font-semibold uppercase bg-emerald-50 text-emerald-700 border-emerald-200">
+                          Accepted
+                        </span>
+                      </div>
+                      <h3 className="font-semibold text-lg">{business.company_name}</h3>
+                      <p className="text-xs font-medium text-muted-foreground capitalize mt-0.5">
+                        {categoryLabels[business.category] || business.category || "Local Business"}
+                      </p>
+
+                      {business.description && (
+                        <p className="text-sm text-muted-foreground mt-3 line-clamp-3 leading-relaxed">
+                          {business.description}
+                        </p>
+                      )}
+
+                      <div className="space-y-1.5 text-xs text-muted-foreground mt-4 pt-3 border-t">
+                        {business.ein && <div><span className="font-medium text-foreground">EIN:</span> {business.ein}</div>}
+                        {business.email && (
+                          <div className="flex items-center gap-2">
+                            <Mail className="w-3.5 h-3.5" />
+                            <a href={`mailto:${business.email}`} className="hover:underline">{business.email}</a>
+                          </div>
+                        )}
+                        {business.phone && (
+                          <div className="flex items-center gap-2">
+                            <Phone className="w-3.5 h-3.5" />
+                            <a href={`tel:${business.phone}`} className="hover:underline">{business.phone}</a>
+                          </div>
+                        )}
+                        {business.website && (
+                          <div className="flex items-center gap-2">
+                            <Globe className="w-3.5 h-3.5" />
+                            <a href={business.website} target="_blank" rel="noopener noreferrer" className="hover:underline truncate">
+                              {business.website.replace(/^https?:\/\//, "")}
+                            </a>
+                          </div>
+                        )}
+                      </div>
+                    </article>
+                  ))}
               </div>
             )}
           </>

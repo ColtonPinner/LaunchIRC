@@ -194,7 +194,7 @@ export function generateChecklist(survey) {
       ctaButton: {
         label: "Request a Call",
         email: "elliese@launchindianriver.com",
-        subject: "Launch IRC — Property help request",
+        subject: "B4IRC — Property help request",
       },
       category: "property",
     });

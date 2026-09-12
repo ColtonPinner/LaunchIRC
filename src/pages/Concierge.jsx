@@ -52,7 +52,7 @@ export default function Concierge() {
       id: "elliese",
       name: "Elliese Shaughnessy, PE",
       company: "Vitter Engineering Group, LLC",
-      bio: "Elliese Shaughnessy is a Florida Professional Engineer, entrepreneur, and community leader with years of experience navigating zoning, permitting, and business development processes throughout Florida. As the founder of LaunchIRC, she is passionate about helping entrepreneurs turn ideas into successful businesses by providing clear guidance, trusted resources, and local expertise.",
+      bio: "Elliese Shaughnessy is a Florida Professional Engineer, entrepreneur, and community leader with years of experience navigating zoning, permitting, and business development processes throughout Florida. As the founder of B4IRC, she is passionate about helping entrepreneurs turn ideas into successful businesses by providing clear guidance, trusted resources, and local expertise.",
       bullets: [
         "Licensed Professional Engineer",
         "Served on the City of Vero Beach's Planning and Zoning Board for over 5 years",

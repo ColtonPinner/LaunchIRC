@@ -20,7 +20,7 @@ const accountTypes = [
   },
   {
     title: "Consultant",
-    description: "Review Launch IRC consultation requests and manage follow-up.",
+    description: "Review B4IRC consultation requests and manage follow-up.",
     icon: BriefcaseBusiness,
     login: "/consultant/login",
   },
@@ -39,8 +39,8 @@ export default function AccountAccess() {
       <header className="border-b">
         <div className="page-container h-16 flex items-center">
           <Link to="/" className="flex items-center gap-2">
-            <span className="w-9 h-9 rounded-lg bg-primary flex items-center justify-center"><MapPin className="w-5 h-5 text-primary-foreground" /></span>
-            <span className="font-heading font-bold text-lg">Launch IRC</span>
+            <span className="w-9 h-9 rounded-lg bg-gradient-to-br from-primary to-accent flex items-center justify-center text-lg">🚀</span>
+            <span className="font-heading font-bold text-lg">B4IRC</span>
           </Link>
         </div>
       </header>

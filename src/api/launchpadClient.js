@@ -1,6 +1,6 @@
 import { supabase } from '@/utils/supabase';
 
-const PENDING_SURVEY_KEY = 'launch_irc_pending_survey';
+const PENDING_SURVEY_KEY = 'b4irc_pending_survey';
 
 export const pendingSurvey = {
   get() {
@@ -236,9 +236,22 @@ export const launchpadClient = {
         const records = unwrap(
           await getSupabase().from('directory_listings').select('*').order('created_date', { ascending: false }),
         );
-        return records.map(flattenRecord).filter((listing) => !listing.is_approved);
+        return records.map(flattenRecord).filter((listing) => !listing.is_approved && listing.status !== 'accepted');
+      },
+      async listAccepted() {
+        const records = unwrap(
+          await getSupabase().from('directory_listings').select('*').order('created_date', { ascending: false }),
+        );
+        return records.map(flattenRecord).filter((listing) => listing.is_approved || listing.status === 'accepted');
       },
       async approve(id) {
+        try {
+          const { data, error } = await getSupabase().rpc('accept_directory_listing', { p_id: id });
+          if (!error && data) return flattenRecord(data);
+        } catch {
+          // Fall back to direct update if RPC is not installed
+        }
+
         const { data: currentRecord, error: fetchError } = await getSupabase()
           .from('directory_listings')
           .select('*')
@@ -247,7 +260,7 @@ export const launchpadClient = {
 
         if (fetchError) throw fetchError;
 
-        const updatedData = { ...currentRecord.data, is_approved: true };
+        const updatedData = { ...currentRecord.data, is_approved: true, status: 'accepted' };
         const { data, error } = await getSupabase()
           .from('directory_listings')
           .update({ data: updatedData })
@@ -257,6 +270,70 @@ export const launchpadClient = {
 
         if (error) throw error;
         return flattenRecord(data);
+      },
+      async accept(id) {
+        return this.approve(id);
+      },
+      async reject(id) {
+        try {
+          const { data, error } = await getSupabase().rpc('reject_directory_listing', { p_id: id });
+          if (!error && data) return flattenRecord(data);
+        } catch {
+          // Fall back to direct update
+        }
+
+        const { data: currentRecord, error: fetchError } = await getSupabase()
+          .from('directory_listings')
+          .select('*')
+          .eq('id', id)
+          .single();
+
+        if (fetchError) throw fetchError;
+
+        const updatedData = { ...currentRecord.data, is_approved: false, status: 'rejected' };
+        const { data, error } = await getSupabase()
+          .from('directory_listings')
+          .update({ data: updatedData })
+          .eq('id', id)
+          .select('*')
+          .single();
+
+        if (error) throw error;
+        return flattenRecord(data);
+      },
+    },
+    AcceptedBusiness: {
+      async list() {
+        const { data, error } = await getSupabase()
+          .from('accepted_businesses')
+          .select('*')
+          .order('created_date', { ascending: false });
+
+        if (!error && data) return data;
+
+        // Fallback to directory_listings if view isn't available
+        const records = unwrap(
+          await getSupabase().from('directory_listings').select('*').order('created_date', { ascending: false }),
+        );
+        return records
+          .map(flattenRecord)
+          .filter((listing) => listing.is_approved || listing.status === 'accepted');
+      },
+      async filter(category = 'all') {
+        const list = await this.list();
+        if (category === 'all') return list;
+        return list.filter((b) => b.category === category);
+      },
+      async search(term = '') {
+        const list = await this.list();
+        if (!term.trim()) return list;
+        const query = term.toLowerCase();
+        return list.filter(
+          (b) =>
+            b.company_name?.toLowerCase().includes(query) ||
+            b.description?.toLowerCase().includes(query) ||
+            b.category?.toLowerCase().includes(query),
+        );
       },
     },
     Event: createEntity('events', { publicRead: true }),

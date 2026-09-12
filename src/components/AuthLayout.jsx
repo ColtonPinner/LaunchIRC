@@ -6,10 +6,10 @@ export default function AuthLayout({ icon: Icon, title, subtitle, footer, childr
   return (
     <div className="relative min-h-screen flex flex-col items-center justify-center bg-background px-4 py-12">
       <Link to="/" className="relative flex items-center gap-2 mb-10">
-        <span className="w-9 h-9 rounded-lg bg-primary flex items-center justify-center">
-          <MapPin className="w-5 h-5 text-primary-foreground" />
+        <span className="w-9 h-9 rounded-lg bg-gradient-to-br from-primary to-accent flex items-center justify-center text-lg">
+          🚀
         </span>
-        <span className="font-heading font-bold text-lg">Launch IRC</span>
+        <span className="font-heading font-bold text-lg">B4IRC</span>
       </Link>
 
       <div className="relative w-full max-w-md animate-fade-up">

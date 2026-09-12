@@ -36,7 +36,7 @@ export default function ConsultantAuth() {
     <AuthLayout
       icon={BriefcaseBusiness}
       title="Consultant sign in"
-      subtitle="Access the Launch IRC consultation workspace"
+      subtitle="Access the B4IRC consultation workspace"
       footer={
         <>
           Need a different workspace?{" "}
@@ -99,7 +99,7 @@ export default function ConsultantAuth() {
       </form>
 
       <p className="mt-5 pt-5 border-t text-center text-xs text-muted-foreground">
-        Consultant accounts are provisioned by Launch IRC staff and cannot self-register.
+        Consultant accounts are provisioned by B4IRC staff and cannot self-register.
       </p>
     </AuthLayout>
   );

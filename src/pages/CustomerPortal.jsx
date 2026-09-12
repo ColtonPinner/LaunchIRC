@@ -50,7 +50,7 @@ export default function CustomerPortal() {
           <div className="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-5">
             <div>
               <h1 className="font-heading text-3xl md:text-4xl font-bold">Your requests</h1>
-              <p className="text-muted-foreground mt-2">Track conversations with Launch IRC and local businesses.</p>
+              <p className="text-muted-foreground mt-2">Track conversations with B4IRC and local businesses.</p>
             </div>
             <span className="text-sm text-muted-foreground">{user?.email}</span>
           </div>
@@ -60,7 +60,7 @@ export default function CustomerPortal() {
       <main className="page-container py-8 md:py-10">
         <section className="stat-grid mb-9" aria-label="Request summary">
           <div className="p-5"><p className="text-sm text-muted-foreground mb-1">Open requests</p><p className="text-3xl font-bold">{activeCount}</p></div>
-          <div className="p-5"><p className="text-sm text-muted-foreground mb-1">Launch IRC</p><p className="text-3xl font-bold">{consultations.length}</p></div>
+          <div className="p-5"><p className="text-sm text-muted-foreground mb-1">B4IRC</p><p className="text-3xl font-bold">{consultations.length}</p></div>
           <div className="p-5"><p className="text-sm text-muted-foreground mb-1">Local businesses</p><p className="text-3xl font-bold">{providerRequests.length}</p></div>
         </section>
 
@@ -76,7 +76,7 @@ export default function CustomerPortal() {
           <div className="space-y-10">
             <section>
               <div className="flex items-center justify-between gap-4 mb-4">
-                <div><h2 className="font-heading text-2xl font-bold">Launch IRC consultations</h2><p className="text-sm text-muted-foreground mt-1">Requests sent to our concierge team.</p></div>
+                <div><h2 className="font-heading text-2xl font-bold">B4IRC consultations</h2><p className="text-sm text-muted-foreground mt-1">Requests sent to our concierge team.</p></div>
                 <Link to="/concierge#contact"><Button size="sm" className="gap-2"><Plus className="w-4 h-4" /> New request</Button></Link>
               </div>
               {consultations.length ? (

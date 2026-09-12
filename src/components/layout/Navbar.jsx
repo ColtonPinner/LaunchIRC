@@ -48,9 +48,9 @@ export default function Navbar() {
       <div className="page-container">
         <div className="flex h-[4.5rem] items-center justify-between gap-5">
           <Link to="/" className="group flex shrink-0 items-center gap-3" aria-label="Launch Indian River home">
-            <span className="relative flex h-10 w-10 items-center justify-center rounded-xl bg-primary text-primary-foreground shadow-sm transition-transform duration-200 group-hover:-translate-y-0.5">
-              <MapPin className="h-5 w-5" />
-              <span className="absolute -right-0.5 -top-0.5 h-3 w-3 rounded-full border-2 border-background bg-accent" />
+            <span className="relative flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-br from-primary to-accent text-xl shadow-sm transition-transform duration-200 group-hover:-translate-y-0.5">
+              🚀
+              <span className="absolute -right-0.5 -top-0.5 h-3 w-3 rounded-full border-2 border-background bg-emerald-500" />
             </span>
             <span className="hidden sm:block">
               <span className="block text-[0.95rem] font-extrabold leading-none tracking-[-0.03em] text-foreground">Launch Indian River</span>

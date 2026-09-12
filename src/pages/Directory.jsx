@@ -35,7 +35,7 @@ export default function Directory() {
 
   const { data: listings = [], isLoading } = useQuery({
     queryKey: ["directory"],
-    queryFn: () => launchpadClient.entities.DirectoryListing.filter({ is_approved: true }),
+    queryFn: () => launchpadClient.entities.AcceptedBusiness.list(),
   });
 
   const filtered = listings.filter((l) => {

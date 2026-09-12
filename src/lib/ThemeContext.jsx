@@ -1,6 +1,6 @@
 import React, { createContext, useCallback, useContext, useEffect, useState } from "react";
 
-const STORAGE_KEY = "launch_irc_theme";
+const STORAGE_KEY = "b4irc_theme";
 const ThemeContext = createContext(undefined);
 
 const getSystemTheme = () =>

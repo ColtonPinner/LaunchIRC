@@ -1,13 +1,15 @@
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { Building2, CalendarDays, Inbox, Loader2, Mail, Phone, Plus, RefreshCw, UserPlus } from "lucide-react";
+import { Building2, CalendarDays, CheckCircle2, Inbox, Loader2, Mail, Phone, Plus, RefreshCw, UserPlus } from "lucide-react";
 import { launchpadClient } from "@/api/launchpadClient";
 import { Button } from "@/components/ui/button";
 import { useAuth } from "@/lib/AuthContext";
+import { useToast } from "@/components/ui/use-toast";
 
 const leadStatuses = [
   { value: "new", label: "New" },
+  { value: "accepted", label: "Accepted" },
   { value: "contacted", label: "Contacted" },
   { value: "closed", label: "Closed" },
 ];
@@ -75,6 +77,7 @@ export default function ProviderPortal() {
   });
 
   const listings = data?.listings || [];
+  const { toast } = useToast();
   const leads = data?.leads || [];
   const expertRequests = data?.expertRequests || [];
   const filteredLeads = leadFilter === "all" ? leads : leads.filter((lead) => lead.status === leadFilter);
@@ -83,12 +86,24 @@ export default function ProviderPortal() {
 
   const statusMutation = useMutation({
     mutationFn: ({ id, status }) => launchpadClient.entities.ProviderLead.updateStatus(id, status),
-    onSuccess: () => queryClient.invalidateQueries({ queryKey: ["provider-portal", user?.id] }),
+    onSuccess: (_, variables) => {
+      queryClient.invalidateQueries({ queryKey: ["provider-portal", user?.id] });
+      toast({
+        title: `Status updated to ${variables.status}`,
+        description: "The applicant lead status has been updated.",
+      });
+    },
   });
 
   const expertStatusMutation = useMutation({
     mutationFn: ({ id, status }) => launchpadClient.entities.ExpertRequest.updateStatus(id, status),
-    onSuccess: () => queryClient.invalidateQueries({ queryKey: ["provider-portal", user?.id] }),
+    onSuccess: (_, variables) => {
+      queryClient.invalidateQueries({ queryKey: ["provider-portal", user?.id] });
+      toast({
+        title: `Status updated to ${variables.status}`,
+        description: "The survey request status has been updated.",
+      });
+    },
   });
 
   const openExpertRequests = expertRequests.filter((request) => request.status !== "closed");

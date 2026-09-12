@@ -1,9 +1,15 @@
 import React, { useState, useMemo } from "react";
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { launchpadClient } from "@/api/launchpadClient";
 import { motion } from "framer-motion";
 import { format, startOfMonth, endOfMonth, eachDayOfInterval, getDay, isSameDay, isSameMonth, addMonths, subMonths, parseISO } from "date-fns";
-import { ChevronLeft, ChevronRight, MapPin, ExternalLink, Wifi, Tag } from "lucide-react";
+import { ChevronLeft, ChevronRight, MapPin, ExternalLink, Wifi, Tag, Plus, Loader2 } from "lucide-react";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from "@/components/ui/dialog";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Textarea } from "@/components/ui/textarea";
+import { useToast } from "@/components/ui/use-toast";
 
 const EVENT_TYPES = {
   networking: { label: "Networking", color: "bg-blue-100 text-blue-700 border-blue-200" },
@@ -22,9 +28,72 @@ const DOT_COLORS = {
 };
 
 export default function Events() {
+  const { toast } = useToast();
+  const queryClient = useQueryClient();
   const [currentMonth, setCurrentMonth] = useState(new Date());
   const [selectedDate, setSelectedDate] = useState(null);
   const [filterType, setFilterType] = useState("all");
+  const [isAddModalOpen, setIsAddModalOpen] = useState(false);
+  const [formData, setFormData] = useState({
+    title: "",
+    event_type: "networking",
+    date: format(new Date(), "yyyy-MM-dd"),
+    start_time: "09:00 AM",
+    end_time: "11:00 AM",
+    location: "",
+    is_virtual: false,
+    organizer: "",
+    is_free: true,
+    cost: "",
+    description: "",
+    registration_url: "",
+  });
+
+  const createEventMutation = useMutation({
+    mutationFn: (newEvent) => launchpadClient.entities.Event.create(newEvent),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["events"] });
+      toast({
+        title: "Event created!",
+        description: "The business event has been published successfully.",
+      });
+      setIsAddModalOpen(false);
+      setFormData({
+        title: "",
+        event_type: "networking",
+        date: format(new Date(), "yyyy-MM-dd"),
+        start_time: "09:00 AM",
+        end_time: "11:00 AM",
+        location: "",
+        is_virtual: false,
+        organizer: "",
+        is_free: true,
+        cost: "",
+        description: "",
+        registration_url: "",
+      });
+    },
+    onError: (error) => {
+      toast({
+        variant: "destructive",
+        title: "Could not add event",
+        description: error?.message || "Please check your details and try again.",
+      });
+    },
+  });
+
+  const handleAddSubmit = (e) => {
+    e.preventDefault();
+    if (!formData.title.trim() || !formData.date) {
+      toast({
+        variant: "destructive",
+        title: "Required fields missing",
+        description: "Please provide an event title and date.",
+      });
+      return;
+    }
+    createEventMutation.mutate(formData);
+  };
 
   const { data: events = [] } = useQuery({
     queryKey: ["events"],
@@ -55,13 +124,18 @@ export default function Events() {
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
       {/* Header */}
-      <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="mb-10">
-        <h1 className="font-heading text-4xl font-bold text-foreground mb-3">
-          Local Business Events
-        </h1>
-        <p className="text-muted-foreground text-lg max-w-2xl">
-          Networking mixers, SBA workshops, permit clinics, and more — all happening in Indian River County.
-        </p>
+      <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="mb-10 flex flex-col sm:flex-row sm:items-end sm:justify-between gap-4">
+        <div>
+          <h1 className="font-heading text-4xl font-bold text-foreground mb-3">
+            Local Business Events
+          </h1>
+          <p className="text-muted-foreground text-lg max-w-2xl">
+            Networking mixers, SBA workshops, permit clinics, and more — all happening in Indian River County.
+          </p>
+        </div>
+        <Button onClick={() => setIsAddModalOpen(true)} className="gap-2 bg-primary hover:bg-primary/90 text-primary-foreground">
+          <Plus className="w-4 h-4" /> Add Event
+        </Button>
       </motion.div>
 
       {/* Filter Pills */}
@@ -167,6 +241,166 @@ export default function Events() {
           )}
         </div>
       </div>
+
+      {/* Add Event Dialog */}
+      <Dialog open={isAddModalOpen} onOpenChange={setIsAddModalOpen}>
+        <DialogContent className="sm:max-w-xl max-h-[90vh] overflow-y-auto">
+          <DialogHeader>
+            <DialogTitle>Add Local Business Event</DialogTitle>
+            <DialogDescription>
+              Submit a workshop, networking mixer, seminar, or clinic for local entrepreneurs in Indian River County.
+            </DialogDescription>
+          </DialogHeader>
+
+          <form onSubmit={handleAddSubmit} className="space-y-4 py-2">
+            <div className="space-y-2">
+              <Label htmlFor="title">Event Title *</Label>
+              <Input
+                id="title"
+                required
+                placeholder="e.g., Small Business Permit Workshop"
+                value={formData.title}
+                onChange={(e) => setFormData({ ...formData, title: e.target.value })}
+              />
+            </div>
+
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <div className="space-y-2">
+                <Label htmlFor="event_type">Event Type</Label>
+                <select
+                  id="event_type"
+                  className="w-full h-10 px-3 py-2 rounded-md border border-input bg-background text-sm ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+                  value={formData.event_type}
+                  onChange={(e) => setFormData({ ...formData, event_type: e.target.value })}
+                >
+                  {Object.entries(EVENT_TYPES).map(([key, val]) => (
+                    <option key={key} value={key}>{val.label}</option>
+                  ))}
+                </select>
+              </div>
+
+              <div className="space-y-2">
+                <Label htmlFor="date">Event Date *</Label>
+                <Input
+                  id="date"
+                  type="date"
+                  required
+                  value={formData.date}
+                  onChange={(e) => setFormData({ ...formData, date: e.target.value })}
+                />
+              </div>
+            </div>
+
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <div className="space-y-2">
+                <Label htmlFor="start_time">Start Time</Label>
+                <Input
+                  id="start_time"
+                  placeholder="e.g., 09:00 AM"
+                  value={formData.start_time}
+                  onChange={(e) => setFormData({ ...formData, start_time: e.target.value })}
+                />
+              </div>
+
+              <div className="space-y-2">
+                <Label htmlFor="end_time">End Time</Label>
+                <Input
+                  id="end_time"
+                  placeholder="e.g., 11:00 AM"
+                  value={formData.end_time}
+                  onChange={(e) => setFormData({ ...formData, end_time: e.target.value })}
+                />
+              </div>
+            </div>
+
+            <div className="space-y-2">
+              <Label htmlFor="organizer">Organizer / Host</Label>
+              <Input
+                id="organizer"
+                placeholder="e.g., Indian River Chamber of Commerce"
+                value={formData.organizer}
+                onChange={(e) => setFormData({ ...formData, organizer: e.target.value })}
+              />
+            </div>
+
+            <div className="space-y-2">
+              <Label htmlFor="location">Location</Label>
+              <Input
+                id="location"
+                placeholder="e.g., Vero Beach City Hall or 123 Main St"
+                value={formData.location}
+                onChange={(e) => setFormData({ ...formData, location: e.target.value })}
+              />
+            </div>
+
+            <div className="flex items-center gap-6 pt-1">
+              <label className="flex items-center gap-2 text-sm font-medium cursor-pointer">
+                <input
+                  type="checkbox"
+                  className="rounded border-input text-primary focus:ring-primary h-4 w-4"
+                  checked={formData.is_virtual}
+                  onChange={(e) => setFormData({ ...formData, is_virtual: e.target.checked })}
+                />
+                Virtual Event
+              </label>
+
+              <label className="flex items-center gap-2 text-sm font-medium cursor-pointer">
+                <input
+                  type="checkbox"
+                  className="rounded border-input text-primary focus:ring-primary h-4 w-4"
+                  checked={formData.is_free}
+                  onChange={(e) => setFormData({ ...formData, is_free: e.target.checked })}
+                />
+                Free Event
+              </label>
+            </div>
+
+            {!formData.is_free && (
+              <div className="space-y-2">
+                <Label htmlFor="cost">Cost / Price</Label>
+                <Input
+                  id="cost"
+                  placeholder="e.g., $25 or $15 for members"
+                  value={formData.cost}
+                  onChange={(e) => setFormData({ ...formData, cost: e.target.value })}
+                />
+              </div>
+            )}
+
+            <div className="space-y-2">
+              <Label htmlFor="description">Description</Label>
+              <Textarea
+                id="description"
+                rows={3}
+                placeholder="Provide event details, topic overview, and who should attend..."
+                value={formData.description}
+                onChange={(e) => setFormData({ ...formData, description: e.target.value })}
+              />
+            </div>
+
+            <div className="space-y-2">
+              <Label htmlFor="registration_url">Registration Link (URL)</Label>
+              <Input
+                id="registration_url"
+                type="url"
+                placeholder="https://..."
+                value={formData.registration_url}
+                onChange={(e) => setFormData({ ...formData, registration_url: e.target.value })}
+              />
+            </div>
+
+            <DialogFooter className="pt-4">
+              <Button type="button" variant="outline" onClick={() => setIsAddModalOpen(false)}>
+                Cancel
+              </Button>
+              <Button type="submit" disabled={createEventMutation.isPending} className="gap-2">
+                {createEventMutation.isPending && <Loader2 className="w-4 h-4 animate-spin" />}
+                Publish Event
+              </Button>
+            </DialogFooter>
+          </form>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }

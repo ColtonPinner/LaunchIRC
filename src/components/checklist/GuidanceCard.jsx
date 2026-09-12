@@ -46,7 +46,7 @@ export default function GuidanceCard({ item }) {
   const [sent, setSent] = useState(false);
 
   const handleNotify = () => {
-    const subject = item.ctaButton.subject || "Assistance request from Launch IRC";
+    const subject = item.ctaButton.subject || "Assistance request from B4IRC";
     const body = `I would like help with "${item.title}."`;
     window.location.href = `mailto:${item.ctaButton.email}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
     setSent(true);
