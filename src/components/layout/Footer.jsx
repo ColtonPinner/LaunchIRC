@@ -7,6 +7,7 @@ const navigation = [
   { label: "Business guides", path: "/guides" },
   { label: "Local directory", path: "/directory" },
   { label: "Community events", path: "/events" },
+  { label: "The B4 Brief", path: "/the-b4-brief" },
   { label: "Concierge services", path: "/concierge" },
 ];
 

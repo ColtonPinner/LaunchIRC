@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Sheet, SheetContent, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
-import { Inbox, LayoutDashboard, LogIn, LogOut, MapPin, Menu, Moon, Sparkles, Sun } from "lucide-react";
+import { Inbox, LayoutDashboard, LogIn, LogOut, Menu, Moon, Sparkles, Sun } from "lucide-react";
 import { useAuth } from "@/lib/AuthContext";
 import { useTheme } from "@/lib/ThemeContext";
 
@@ -11,6 +11,7 @@ const baseNavLinks = [
   { label: "Guides", path: "/guides" },
   { label: "Directory", path: "/directory" },
   { label: "Events", path: "/events" },
+  { label: "The B4 Brief", path: "/the-b4-brief" },
   { label: "Concierge", path: "/concierge" },
 ];
 
@@ -47,14 +48,14 @@ export default function Navbar() {
     >
       <div className="page-container">
         <div className="flex h-[4.5rem] items-center justify-between gap-5">
-          <Link to="/" className="group flex shrink-0 items-center gap-3" aria-label="Launch Indian River home">
-            <span className="relative flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-br from-primary to-accent text-xl shadow-sm transition-transform duration-200 group-hover:-translate-y-0.5">
-              🚀
-              <span className="absolute -right-0.5 -top-0.5 h-3 w-3 rounded-full border-2 border-background bg-emerald-500" />
-            </span>
-            <span className="hidden sm:block">
-              <span className="block text-[0.95rem] font-extrabold leading-none tracking-[-0.03em] text-foreground">Launch Indian River</span>
-              <span className="mt-1 block text-[9px] font-bold uppercase tracking-[0.19em] text-muted-foreground">Business launchpad</span>
+          <Link to="/" className="group flex shrink-0 items-center" aria-label="Launch Indian River home">
+            <span className="relative flex h-11 w-28 items-center justify-center overflow-hidden rounded-xl transition-transform duration-200 group-hover:-translate-y-0.5">
+              <img
+                src="/b4irc-logo.png"
+                alt="B4IRC logo"
+                className="h-7 w-auto object-contain"
+                style={{ filter: isDark ? "none" : "invert(1)" }}
+              />
             </span>
           </Link>
 
@@ -124,13 +125,14 @@ export default function Navbar() {
               <SheetTitle className="sr-only">Navigation menu</SheetTitle>
               <div className="flex h-full flex-col">
                 <div className="border-b border-border/70 p-6">
-                  <Link to="/" onClick={() => setOpen(false)} className="flex items-center gap-3">
-                    <span className="flex h-10 w-10 items-center justify-center rounded-xl bg-primary text-primary-foreground">
-                      <MapPin className="h-5 w-5" />
-                    </span>
-                    <span>
-                      <span className="block font-extrabold tracking-tight">Launch Indian River</span>
-                      <span className="block text-[10px] uppercase tracking-[0.16em] text-muted-foreground">Business launchpad</span>
+                  <Link to="/" onClick={() => setOpen(false)} className="flex items-center">
+                    <span className="flex h-10 w-24 items-center justify-center overflow-hidden rounded-xl">
+                      <img
+                        src="/b4irc-logo.png"
+                        alt="B4IRC logo"
+                        className="h-6 w-auto object-contain"
+                        style={{ filter: isDark ? "none" : "invert(1)" }}
+                      />
                     </span>
                   </Link>
                 </div>

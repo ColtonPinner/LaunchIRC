@@ -16,6 +16,7 @@ import DirectoryJoin from '@/pages/DirectoryJoin';
 import Concierge from '@/pages/Concierge';
 import Sponsor from '@/pages/Sponsor';
 import Events from '@/pages/Events';
+import TheB4Brief from '@/pages/TheB4Brief';
 import Privacy from '@/pages/Privacy';
 import Terms from '@/pages/Terms';
 import Disclaimer from '@/pages/Disclaimer';
@@ -74,6 +75,7 @@ const AuthenticatedApp = () => {
         <Route path="/concierge" element={<Concierge />} />
         <Route path="/sponsor" element={<Sponsor />} />
         <Route path="/events" element={<Events />} />
+        <Route path="/the-b4-brief" element={<TheB4Brief />} />
         <Route path="/privacy" element={<Privacy />} />
         <Route path="/terms" element={<Terms />} />
         <Route path="/disclaimer" element={<Disclaimer />} />
