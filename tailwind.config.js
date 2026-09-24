@@ -19,13 +19,13 @@ module.exports = {
 			'3xl': '1.75rem'
 		},
 		boxShadow: {
-			sm: 'inset 0 1px 0 hsl(var(--card-foreground) / 0.035)',
-			md: '0 0 28px -12px hsl(var(--glow-blue) / 0.2)',
-			lg: '0 0 34px -12px hsl(var(--glow-coral) / 0.2)',
-			xl: '0 0 40px -14px hsl(var(--glow-blue) / 0.2)',
-			'2xl': '0 0 48px -16px hsl(var(--glow-coral) / 0.2)',
-			soft: 'inset 0 1px 0 hsl(var(--card-foreground) / 0.035)',
-			elevated: 'inset 0 1px 0 hsl(var(--card-foreground) / 0.035), 0 0 34px -12px hsl(var(--glow-blue) / 0.22)'
+			sm: '0 1px 2px 0 hsl(222 47% 11% / 0.05)',
+			md: '0 10px 28px -24px hsl(222 47% 11% / 0.24)',
+			lg: '0 18px 46px -34px hsl(222 47% 11% / 0.3)',
+			xl: '0 22px 54px -38px hsl(222 47% 11% / 0.32)',
+			'2xl': '0 28px 70px -44px hsl(222 47% 11% / 0.36)',
+			soft: '0 10px 30px -26px hsl(222 47% 11% / 0.22)',
+			elevated: '0 18px 46px -34px hsl(222 47% 11% / 0.3)'
 		},
 		colors: {
 			gold: 'hsl(var(--gold))',

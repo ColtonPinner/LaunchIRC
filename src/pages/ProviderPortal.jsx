@@ -69,7 +69,7 @@ export default function ProviderPortal() {
       const [listings, leads, expertRequests] = await Promise.all([
         launchpadClient.entities.DirectoryListing.listMine(user.id),
         launchpadClient.entities.ProviderLead.listForProvider(),
-        launchpadClient.entities.ExpertRequest.list().catch(() => []),
+        launchpadClient.entities.ExpertRequest.list(),
       ]);
       return { listings, leads, expertRequests };
     },
@@ -160,7 +160,7 @@ export default function ProviderPortal() {
               <div className="flex items-center justify-between gap-4 mb-4">
                 <div>
                   <h2 className="font-heading text-2xl font-bold">Survey requests</h2>
-                  <p className="text-sm text-muted-foreground mt-1">People who completed the launch survey and asked to be contacted by a local expert.</p>
+                  <p className="text-sm text-muted-foreground mt-1">People who completed the startup survey and asked to be contacted by a local expert.</p>
                 </div>
                 <span className="flex items-center gap-2 text-sm font-medium text-accent"><Inbox className="w-4 h-4" /> {openExpertRequests.length} open</span>
               </div>

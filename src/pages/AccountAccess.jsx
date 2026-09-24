@@ -6,7 +6,7 @@ import { useAuth } from "@/lib/AuthContext";
 const accountTypes = [
   {
     title: "Start-up",
-    description: "Create a launch plan, track consultations, and manage your start-up goals.",
+    description: "Create a startup plan, track consultations, and manage your start-up goals.",
     icon: UserRound,
     login: "/customer/login",
     register: "/customer/register",

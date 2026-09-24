@@ -26,8 +26,8 @@ const checklist = [
 
 const proofPoints = [
   { value: "6", label: "local guide categories" },
-  { value: "1", label: "personalized launch plan" },
-  { value: "Free", label: "to build your roadmap" },
+  { value: "1", label: "personalized startup plan" },
+  { value: "Free", label: "to build your plan" },
 ];
 
 export default function HeroSection() {
@@ -58,11 +58,11 @@ export default function HeroSection() {
             </Chip>
 
             <h1 className="max-w-3xl text-5xl font-extrabold leading-[0.98] text-foreground sm:text-6xl lg:text-[4.5rem]">
-              Your local roadmap to <span className="text-accent">opening day.</span>
+              Your local startup guide to <span className="text-accent">opening day.</span>
             </h1>
 
             <p className="mt-7 max-w-xl text-lg leading-8 text-muted-foreground sm:text-xl">
-              Turn your business idea into a clear, step-by-step launch plan—with local guidance for zoning, permits, funding, and compliance.
+              Turn your business idea into a clear, step-by-step plan—with local guidance for zoning, permits, funding, and compliance.
             </p>
 
             <div className="mt-9 flex flex-col gap-3 sm:flex-row">
@@ -74,7 +74,7 @@ export default function HeroSection() {
                 endContent={<ArrowRight className="h-4 w-4" />}
                 className="h-12 w-full bg-accent px-6 text-[0.9375rem] font-bold text-accent-foreground shadow-lg shadow-accent/20 transition-transform hover:-translate-y-0.5 sm:w-auto"
               >
-                Build my free roadmap
+                Build my free plan
               </Button>
               <Button
                 as={Link}
@@ -115,7 +115,7 @@ export default function HeroSection() {
                       <Building2 className="h-5 w-5" />
                     </div>
                     <div>
-                      <p className="text-sm font-bold text-foreground">Coffee shop launch plan</p>
+                      <p className="text-sm font-bold text-foreground">Coffee shop startup plan</p>
                       <p className="text-xs text-muted-foreground">Vero Beach, Florida</p>
                     </div>
                   </div>
@@ -131,13 +131,13 @@ export default function HeroSection() {
                 <div className="p-5 sm:p-6">
                   <div className="mb-5 flex items-end justify-between gap-4">
                     <div>
-                      <p className="text-xs font-bold uppercase tracking-[0.14em] text-muted-foreground">Launch progress</p>
+                      <p className="text-xs font-bold uppercase tracking-[0.14em] text-muted-foreground">Startup progress</p>
                       <p className="mt-1 text-2xl font-extrabold tracking-tight text-foreground">2 of 5 complete</p>
                     </div>
                     <span className="text-sm font-bold text-accent">40%</span>
                   </div>
                   <Progress
-                    aria-label="Launch plan progress"
+                    aria-label="Startup plan progress"
                     value={40}
                     size="sm"
                     classNames={{ track: "h-2 bg-muted", indicator: "bg-accent" }}

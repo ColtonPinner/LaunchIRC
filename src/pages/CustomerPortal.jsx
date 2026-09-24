@@ -90,7 +90,7 @@ export default function CustomerPortal() {
                     </article>
                   ))}
                 </div>
-              ) : <EmptyState icon={Headphones} title="No consultation requests" text="Reach out when you need hands-on help with your launch." action="Request consultation" to="/concierge#contact" />}
+              ) : <EmptyState icon={Headphones} title="No consultation requests" text="Reach out when you need hands-on help with your startup." action="Request consultation" to="/concierge#contact" />}
             </section>
 
             <section>

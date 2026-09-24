@@ -81,7 +81,7 @@ export default function ProfessionalAuth({ mode = "login" }) {
       </form>
 
       <div className="mt-5 pt-5 border-t text-center text-sm text-muted-foreground">
-        Looking for your launch plan? <Link to="/customer/login" className="text-primary font-medium hover:underline">Start-up sign in</Link>
+        Looking for your startup plan? <Link to="/customer/login" className="text-primary font-medium hover:underline">Start-up sign in</Link>
       </div>
     </AuthLayout>
   );

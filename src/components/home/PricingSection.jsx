@@ -6,21 +6,21 @@ import { Button } from "@/components/ui/button";
 
 const plans = [
   {
-    name: "Free roadmap",
+    name: "Free plan",
     price: "$0",
     description: "The essential steps for getting your business moving.",
     icon: Sparkles,
     cta: "Start for free",
     ctaLink: "/survey",
     features: [
-      "Personalized launch checklist",
+      "Personalized startup checklist",
       "Core step-by-step guidance",
       "Curated local resource links",
       "Progress tracking",
     ],
   },
   {
-    name: "Premium roadmap",
+    name: "Premium plan",
     price: "$50",
     period: "one-time",
     description: "The complete DIY toolkit with deeper local detail.",
@@ -29,7 +29,7 @@ const plans = [
     ctaLink: "/survey?plan=premium",
     highlighted: true,
     features: [
-      "Everything in the free roadmap",
+      "Everything in the free plan",
       "Detailed how-to instructions",
       "Downloadable templates and forms",
       "Local contacts, timelines, and cost estimates",
@@ -48,7 +48,7 @@ export default function PricingSection() {
           <p className="eyebrow">Simple, transparent options</p>
           <h2 className="mt-3 text-3xl font-extrabold leading-tight text-foreground sm:text-4xl">Start free. Go deeper when you need to.</h2>
           <p className="mt-4 text-base leading-7 text-muted-foreground sm:text-lg">
-            Build your roadmap at no cost, then unlock the complete local toolkit with one payment.
+            Build your plan at no cost, then unlock the complete local toolkit with one payment.
           </p>
         </div>
 

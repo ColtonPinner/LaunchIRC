@@ -37,7 +37,11 @@ import { HeroUIProvider } from '@heroui/system';
 const AccountPage = ({ type, children }) => {
   const { user, isAuthenticated } = useAuth();
   if (!isAuthenticated) return <Navigate to={`/${type}/login`} replace />;
-  return user?.account_type === type ? children : <Navigate to="/account" replace />;
+  // If the signed-in account is a different type (e.g. a start-up account
+  // trying to reach a provider-only page), send them to that workspace's
+  // own login/register instead of bouncing back through /account, which
+  // would just redirect them straight back to their current dashboard.
+  return user?.account_type === type ? children : <Navigate to={`/${type}/login`} replace />;
 };
 
 const AuthenticatedApp = () => {

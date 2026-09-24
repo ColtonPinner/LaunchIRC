@@ -47,7 +47,7 @@ export default function Login() {
     <AuthLayout
       icon={LogIn}
       title="Start-up sign in"
-      subtitle="Access your launch plan and requests"
+      subtitle="Access your startup plan and requests"
       footer={
         <>
           Need a different account?{" "}

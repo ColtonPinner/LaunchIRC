@@ -43,23 +43,23 @@ export default function Navbar() {
     <nav
       aria-label="Primary navigation"
       className={`site-navigation fixed inset-x-0 top-0 z-50 border-b bg-background/90 backdrop-blur-xl transition-all duration-300 ${
-        scrolled ? "border-border/80 shadow-soft" : "border-transparent"
+        scrolled ? "border-border shadow-sm" : "border-transparent"
       }`}
     >
       <div className="page-container">
-        <div className="flex h-[4.5rem] items-center justify-between gap-5">
+        <div className="flex h-20 items-center justify-between gap-5">
           <Link to="/" className="group flex shrink-0 items-center" aria-label="Launch Indian River home">
-            <span className="relative flex h-11 w-28 items-center justify-center overflow-hidden rounded-xl transition-transform duration-200 group-hover:-translate-y-0.5">
+            <span className="relative flex h-12 w-32 items-center justify-center overflow-hidden rounded-xl transition-transform duration-200 group-hover:-translate-y-0.5">
               <img
                 src="/b4irc-logo.png"
                 alt="B4IRC logo"
-                className="h-7 w-auto object-contain"
+                className="h-9 w-auto object-contain"
                 style={{ filter: isDark ? "none" : "invert(1)" }}
               />
             </span>
           </Link>
 
-          <div className="hidden items-center rounded-xl border border-border/70 bg-muted/60 p-1 lg:flex">
+          <div className="hidden items-center rounded-xl border border-border/70 bg-card/80 p-1 lg:flex">
             {navLinks.map((link) => {
               const active = isActivePath(location.pathname, link.path);
               return (
@@ -67,10 +67,10 @@ export default function Navbar() {
                   key={link.path}
                   to={link.path}
                   aria-current={active ? "page" : undefined}
-                  className={`rounded-lg px-3 py-2 text-sm font-semibold transition-all xl:px-3.5 ${
+                  className={`rounded-lg px-3 py-2 text-sm font-medium transition-all xl:px-3.5 ${
                     active
-                      ? "bg-card text-foreground shadow-soft"
-                      : "text-muted-foreground hover:bg-card/60 hover:text-foreground"
+                      ? "bg-primary text-primary-foreground shadow-sm"
+                      : "text-muted-foreground hover:bg-muted hover:text-foreground"
                   }`}
                 >
                   {link.label}
@@ -109,7 +109,7 @@ export default function Navbar() {
             )}
 
             {!isWorkspaceAccount && (
-              <Button asChild className="ml-1 bg-accent text-accent-foreground shadow-sm hover:bg-accent/90">
+              <Button asChild className="ml-1">
                 <Link to="/survey"><Sparkles /> Start free</Link>
               </Button>
             )}
@@ -117,7 +117,7 @@ export default function Navbar() {
 
           <Sheet open={open} onOpenChange={setOpen}>
             <SheetTrigger asChild>
-              <Button variant="outline" size="icon" className="lg:hidden" aria-label="Open navigation menu">
+              <Button variant="ghost" size="icon" className="lg:hidden" aria-label="Open navigation menu">
                 <Menu />
               </Button>
             </SheetTrigger>

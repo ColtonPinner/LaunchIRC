@@ -23,6 +23,9 @@ Deno.serve(async (req) => {
   const supabaseUrl = Deno.env.get("SUPABASE_URL");
   const anonKey = Deno.env.get("SUPABASE_ANON_KEY");
   const serviceRoleKey = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY");
+  if (!supabaseUrl || !anonKey || !serviceRoleKey) {
+    return json({ error: "Function environment is not configured" }, 500);
+  }
 
   // Verify the caller's own identity/role via their JWT; never trust a client-supplied role.
   const callerClient = createClient(supabaseUrl, anonKey, {
@@ -44,6 +47,7 @@ Deno.serve(async (req) => {
   const email = typeof payload?.email === "string" ? payload.email.trim() : "";
   const fullName = typeof payload?.fullName === "string" ? payload.fullName.trim() : "";
   if (!email || !email.includes("@")) return json({ error: "A valid email is required" }, 400);
+  if (!fullName || fullName.length > 120) return json({ error: "A valid full name is required" }, 400);
 
   const adminClient = createClient(supabaseUrl, serviceRoleKey);
 

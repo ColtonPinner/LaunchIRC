@@ -41,12 +41,7 @@ const unwrapAuth = ({ data, error }) => {
   throw error;
 };
 
-const flattenRecord = (record) => ({
-  ...record.data,
-  id: record.id,
-  created_date: record.created_date,
-  updated_date: record.updated_date,
-});
+const flattenRecord = ({ data, ...record }) => ({ ...data, ...record });
 
 const flattenPortalRecord = ({ data, ...record }) => ({ ...data, ...record });
 
@@ -61,8 +56,7 @@ export const resolveAccountType = (user, profile = null) => {
   return 'customer';
 };
 
-const createEntity = (table, { publicRead = false } = {}) => {
-
+const createEntity = (table) => {
   return {
     async create(data) {
       const id = globalThis.crypto.randomUUID();
@@ -172,11 +166,13 @@ export const launchpadClient = {
     async me() {
       const result = unwrap(await getSupabase().auth.getUser());
       if (!result.user) throw new Error('Not authenticated');
-      const { data: profile } = await getSupabase()
-        .from('account_profiles')
-        .select('account_type, full_name, business_name, ein')
-        .eq('id', result.user.id)
-        .maybeSingle();
+      const profile = unwrap(
+        await getSupabase()
+          .from('account_profiles')
+          .select('account_type, full_name, business_name, ein')
+          .eq('id', result.user.id)
+          .maybeSingle(),
+      );
       const accountType = resolveAccountType(result.user, profile);
       return {
         ...result.user,
@@ -194,22 +190,9 @@ export const launchpadClient = {
 
   admin: {
     async inviteConsultant({ email, fullName }) {
-      const { data: sessionData } = await getSupabase().auth.getSession();
-      const token = sessionData.session?.access_token;
-      if (!token) throw new Error('Not authenticated');
-
-      const response = await fetch(`${import.meta.env.VITE_SUPABASE_URL}/functions/v1/create-consultant`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          Authorization: `Bearer ${token}`,
-          apikey: import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY,
-        },
-        body: JSON.stringify({ email, fullName }),
-      });
-      const result = await response.json();
-      if (!response.ok) throw new Error(result.error || 'Could not invite consultant');
-      return result;
+      return unwrap(await getSupabase().functions.invoke('create-consultant', {
+        body: { email, fullName },
+      }));
     },
 
     async listConsultants() {
@@ -221,7 +204,7 @@ export const launchpadClient = {
     BusinessSurvey: businessSurveys,
     ConciergeRequest: createEntity('concierge_requests'),
     DirectoryListing: {
-      ...createEntity('directory_listings', { publicRead: true }),
+      ...createEntity('directory_listings'),
       async listMine(ownerId) {
         const records = unwrap(
           await getSupabase()
@@ -245,79 +228,20 @@ export const launchpadClient = {
         return records.map(flattenRecord).filter((listing) => listing.is_approved || listing.status === 'accepted');
       },
       async approve(id) {
-        try {
-          const { data, error } = await getSupabase().rpc('accept_directory_listing', { p_id: id });
-          if (!error && data) return flattenRecord(data);
-        } catch {
-          // Fall back to direct update if RPC is not installed
-        }
-
-        const { data: currentRecord, error: fetchError } = await getSupabase()
-          .from('directory_listings')
-          .select('*')
-          .eq('id', id)
-          .single();
-
-        if (fetchError) throw fetchError;
-
-        const updatedData = { ...currentRecord.data, is_approved: true, status: 'accepted' };
-        const { data, error } = await getSupabase()
-          .from('directory_listings')
-          .update({ data: updatedData })
-          .eq('id', id)
-          .select('*')
-          .single();
-
-        if (error) throw error;
-        return flattenRecord(data);
+        const record = unwrap(await getSupabase().rpc('accept_directory_listing', { p_id: id }));
+        return flattenRecord(record);
       },
       async accept(id) {
         return this.approve(id);
       },
       async reject(id) {
-        try {
-          const { data, error } = await getSupabase().rpc('reject_directory_listing', { p_id: id });
-          if (!error && data) return flattenRecord(data);
-        } catch {
-          // Fall back to direct update
-        }
-
-        const { data: currentRecord, error: fetchError } = await getSupabase()
-          .from('directory_listings')
-          .select('*')
-          .eq('id', id)
-          .single();
-
-        if (fetchError) throw fetchError;
-
-        const updatedData = { ...currentRecord.data, is_approved: false, status: 'rejected' };
-        const { data, error } = await getSupabase()
-          .from('directory_listings')
-          .update({ data: updatedData })
-          .eq('id', id)
-          .select('*')
-          .single();
-
-        if (error) throw error;
-        return flattenRecord(data);
+        const record = unwrap(await getSupabase().rpc('reject_directory_listing', { p_id: id }));
+        return flattenRecord(record);
       },
     },
     AcceptedBusiness: {
       async list() {
-        const { data, error } = await getSupabase()
-          .from('accepted_businesses')
-          .select('*')
-          .order('created_date', { ascending: false });
-
-        if (!error && data) return data;
-
-        // Fallback to directory_listings if view isn't available
-        const records = unwrap(
-          await getSupabase().from('directory_listings').select('*').order('created_date', { ascending: false }),
-        );
-        return records
-          .map(flattenRecord)
-          .filter((listing) => listing.is_approved || listing.status === 'accepted');
+        return unwrap(await getSupabase().rpc('list_accepted_businesses')) || [];
       },
       async filter(category = 'all') {
         const list = await this.list();
@@ -336,7 +260,7 @@ export const launchpadClient = {
         );
       },
     },
-    Event: createEntity('events', { publicRead: true }),
+    Event: createEntity('events'),
     ProviderLead: {
       async create(listingId, data, surveyId = null) {
         const id = globalThis.crypto.randomUUID();

@@ -42,7 +42,7 @@ export default function Register() {
     <AuthLayout
       icon={UserPlus}
       title="Create a start-up account"
-      subtitle="Build your launch plan and track your start-up journey"
+      subtitle="Build your startup plan and track your start-up journey"
       footer={
         <>
           Already have an account?{" "}

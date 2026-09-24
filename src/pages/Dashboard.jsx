@@ -55,12 +55,12 @@ export default function Dashboard() {
           <div className="flex flex-col md:flex-row md:items-end md:justify-between gap-6">
             <div>
               <p className="eyebrow mb-2">My workspace</p>
-              <h1 className="font-heading text-3xl md:text-4xl font-bold">Business launch dashboard</h1>
+              <h1 className="font-heading text-3xl md:text-4xl font-bold">Business startup dashboard</h1>
               <p className="text-muted-foreground mt-2">{user?.email}</p>
             </div>
             <Link to="/survey">
               <Button className="bg-accent hover:bg-accent/90 text-accent-foreground gap-2">
-                <Plus className="w-4 h-4" /> New launch plan
+                <Plus className="w-4 h-4" /> New startup plan
               </Button>
             </Link>
           </div>
@@ -95,15 +95,15 @@ export default function Dashboard() {
             <span className="flex items-center gap-3"><span className="w-10 h-10 rounded-md bg-accent/10 flex items-center justify-center"><Headphones className="w-5 h-5 text-accent" /></span><span><strong className="block">Customer portal</strong><span className="text-sm text-muted-foreground">Track consultations and business requests</span></span></span>
             <ArrowRight className="w-4 h-4 text-muted-foreground" />
           </Link>
-          <Link to="/provider/register" className="border rounded-lg bg-card p-5 flex items-center justify-between gap-4 hover:border-accent transition-colors">
-            <span className="flex items-center gap-3"><span className="w-10 h-10 rounded-md bg-primary/10 flex items-center justify-center"><Building2 className="w-5 h-5 text-primary" /></span><span><strong className="block">Business portal</strong><span className="text-sm text-muted-foreground">Manage your listing and incoming leads</span></span></span>
+          <Link to="/provider/login" className="border rounded-lg bg-card p-5 flex items-center justify-between gap-4 hover:border-accent transition-colors">
+            <span className="flex items-center gap-3"><span className="w-10 h-10 rounded-md bg-primary/10 flex items-center justify-center"><Building2 className="w-5 h-5 text-primary" /></span><span><strong className="block">Business portal</strong><span className="text-sm text-muted-foreground">Sign in or create a separate business account to manage a listing</span></span></span>
             <ArrowRight className="w-4 h-4 text-muted-foreground" />
           </Link>
         </section>
 
         <div className="flex items-center justify-between gap-4 mb-5">
           <div>
-            <h2 className="font-heading text-2xl font-bold">Your launch plans</h2>
+            <h2 className="font-heading text-2xl font-bold">Your startup plans</h2>
             <p className="text-sm text-muted-foreground mt-1">Resume a checklist or begin a new business journey.</p>
           </div>
         </div>
@@ -129,7 +129,7 @@ export default function Dashboard() {
             <div className="w-11 h-11 rounded-lg bg-accent/10 flex items-center justify-center mb-4">
               <MapPin className="w-5 h-5 text-accent" />
             </div>
-            <h3 className="font-heading text-xl font-bold">Create your first launch plan</h3>
+            <h3 className="font-heading text-xl font-bold">Create your first startup plan</h3>
             <p className="text-sm text-muted-foreground max-w-md mt-2 mb-5">Answer a short set of questions to build a checklist tailored to your business and jurisdiction.</p>
             <Link to="/survey"><Button className="gap-2"><Plus className="w-4 h-4" /> Start a plan</Button></Link>
           </div>
@@ -144,8 +144,8 @@ export default function Dashboard() {
                     <div className="flex items-center gap-2 mb-2">
                       <span className="text-xs font-semibold uppercase tracking-wider text-accent">{plan.plan_type || "free"} plan</span>
                     </div>
-                    <h3 className="font-heading text-xl font-bold truncate">{plan.business_name || plan.business_type?.replaceAll("_", " ") || "Business launch plan"}</h3>
-                    <p className="text-sm text-muted-foreground mt-1">{stageLabels[plan.business_stage] || "Launch planning"}</p>
+                    <h3 className="font-heading text-xl font-bold truncate">{plan.business_name || plan.business_type?.replaceAll("_", " ") || "Business startup plan"}</h3>
+                    <p className="text-sm text-muted-foreground mt-1">{stageLabels[plan.business_stage] || "Startup planning"}</p>
                   </div>
                   <div className="flex items-center gap-1.5 text-xs text-muted-foreground whitespace-nowrap">
                     <CalendarDays className="w-3.5 h-3.5" /> {formatDate(plan.updated_date)}
