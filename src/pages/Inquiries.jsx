@@ -1,9 +1,20 @@
 import React, { useEffect, useState } from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { Building2, CalendarDays, CheckCircle2, Globe, Inbox, Loader2, Mail, Phone, RefreshCw, Save, Search, UserPlus, XCircle } from "lucide-react";
+import { Building2, CalendarDays, CheckCircle2, Globe, Inbox, Loader2, Mail, Phone, RefreshCw, Save, Search, Trash2, UserPlus, XCircle } from "lucide-react";
 import { launchpadClient } from "@/api/launchpadClient";
 import { useAuth } from "@/lib/AuthContext";
 import { Button } from "@/components/ui/button";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
@@ -122,6 +133,27 @@ export default function Inquiries() {
       toast({
         title: "Business declined",
         description: "The directory listing has been declined.",
+      });
+    },
+  });
+
+  const removeBusinessMutation = useMutation({
+    mutationFn: (id) => launchpadClient.entities.DirectoryListing.remove(id),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["staff-accepted-businesses"] });
+      queryClient.invalidateQueries({ queryKey: ["staff-pending-listings"] });
+      queryClient.invalidateQueries({ queryKey: ["consultant-dashboard"] });
+      queryClient.invalidateQueries({ queryKey: ["directory"] });
+      toast({
+        title: "Business removed",
+        description: "The business has been removed from the directory.",
+      });
+    },
+    onError: (error) => {
+      toast({
+        variant: "destructive",
+        title: "Could not remove business",
+        description: error.message || "Please try again.",
       });
     },
   });
@@ -544,6 +576,37 @@ export default function Inquiries() {
                           </div>
                         )}
                       </div>
+                      <AlertDialog>
+                        <AlertDialogTrigger asChild>
+                          <Button
+                            type="button"
+                            variant="outline"
+                            size="sm"
+                            className="w-full gap-2 mt-4 text-destructive hover:bg-destructive/10"
+                            disabled={removeBusinessMutation.isPending}
+                          >
+                            <Trash2 className="w-3.5 h-3.5" />
+                            Remove business
+                          </Button>
+                        </AlertDialogTrigger>
+                        <AlertDialogContent>
+                          <AlertDialogHeader>
+                            <AlertDialogTitle>Remove {business.company_name}?</AlertDialogTitle>
+                            <AlertDialogDescription>
+                              This permanently removes the business from the public directory and cannot be undone.
+                            </AlertDialogDescription>
+                          </AlertDialogHeader>
+                          <AlertDialogFooter>
+                            <AlertDialogCancel>Cancel</AlertDialogCancel>
+                            <AlertDialogAction
+                              className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+                              onClick={() => removeBusinessMutation.mutate(business.id)}
+                            >
+                              Remove business
+                            </AlertDialogAction>
+                          </AlertDialogFooter>
+                        </AlertDialogContent>
+                      </AlertDialog>
                     </article>
                   ))}
               </div>

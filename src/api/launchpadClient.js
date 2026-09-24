@@ -239,6 +239,9 @@ export const launchpadClient = {
         const record = unwrap(await getSupabase().rpc('reject_directory_listing', { p_id: id }));
         return flattenRecord(record);
       },
+      async remove(id) {
+        return unwrap(await getSupabase().rpc('remove_directory_listing', { p_id: id }));
+      },
     },
     AcceptedBusiness: {
       async list() {
