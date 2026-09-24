@@ -216,10 +216,11 @@ export const launchpadClient = {
         return records.map(flattenRecord);
       },
       async listPending() {
-        const records = unwrap(
-          await getSupabase().from('directory_listings').select('*').order('created_date', { ascending: false }),
-        );
-        return records.map(flattenRecord).filter((listing) => !listing.is_approved && listing.status !== 'accepted');
+        const records = unwrap(await getSupabase().rpc('list_pending_directory_listings'));
+        if (!Array.isArray(records)) {
+          throw new Error(records?.error || 'Could not load pending directory listings');
+        }
+        return records.map(flattenRecord);
       },
       async listAccepted() {
         const records = unwrap(
