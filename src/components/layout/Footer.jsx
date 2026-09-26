@@ -54,6 +54,7 @@ export default function Footer() {
         </div>
 
         <div className="flex flex-col items-center justify-between gap-4 border-t border-border py-6 text-xs text-muted-foreground sm:flex-row">
+          <p>Made with ❤️ in Vero Beach, Florida</p>
           <p>© {new Date().getFullYear()} Launch Indian River. All rights reserved.</p>
           <div className="flex gap-6">
             <Link to="/privacy" className="transition-colors hover:text-foreground">Privacy</Link>
