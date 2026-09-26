@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { Link, useSearchParams } from "react-router-dom";
 import { Building2, Loader2, Lock, Mail, UserRound } from "lucide-react";
-import { launchpadClient } from "@/api/launchpadClient";
+import { canAccessAccountType, launchpadClient } from "@/api/launchpadClient";
 import AuthLayout from "@/components/AuthLayout";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -40,7 +40,7 @@ export default function ProfessionalAuth({ mode = "login" }) {
 
       await launchpadClient.auth.loginViaEmailPassword(form.email, form.password);
       const user = await launchpadClient.auth.me();
-      if (user.account_type !== "provider") {
+      if (!canAccessAccountType(user, "provider")) {
         await launchpadClient.auth.logout();
         throw new Error("This is not a provider account. Choose the correct account type.");
       }

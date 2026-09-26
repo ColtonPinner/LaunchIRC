@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { Link, useSearchParams } from "react-router-dom";
-import { launchpadClient, pendingSurvey } from "@/api/launchpadClient";
+import { canAccessAccountType, launchpadClient, pendingSurvey } from "@/api/launchpadClient";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -23,7 +23,7 @@ export default function Login() {
     try {
       await launchpadClient.auth.loginViaEmailPassword(email, password);
       const user = await launchpadClient.auth.me();
-      if (user.account_type !== "customer") {
+      if (!canAccessAccountType(user, "customer")) {
         await launchpadClient.auth.logout();
         throw new Error("This is not a customer account. Choose the correct account type.");
       }

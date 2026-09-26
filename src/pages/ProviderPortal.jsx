@@ -67,7 +67,7 @@ export default function ProviderPortal() {
     queryKey: ["provider-portal", user?.id],
     queryFn: async () => {
       const [listings, leads, expertRequests] = await Promise.all([
-        launchpadClient.entities.DirectoryListing.listMine(user.id),
+        launchpadClient.entities.DirectoryListing.listMine(user.id, user.account_type === "consultant"),
         launchpadClient.entities.ProviderLead.listForProvider(),
         launchpadClient.entities.ExpertRequest.list(),
       ]);

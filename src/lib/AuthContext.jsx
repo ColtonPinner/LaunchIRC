@@ -1,5 +1,5 @@
 import React, { createContext, useCallback, useState, useContext, useEffect } from 'react';
-import { launchpadClient, pendingSurvey } from '@/api/launchpadClient';
+import { canAccessAccountType, launchpadClient, pendingSurvey } from '@/api/launchpadClient';
 
 const AuthContext = createContext();
 
@@ -17,7 +17,7 @@ export const AuthProvider = ({ children }) => {
     try {
       const currentUser = await launchpadClient.auth.me();
       const pending = pendingSurvey.get();
-      if (pending && currentUser.account_type === 'customer') {
+      if (pending && canAccessAccountType(currentUser, 'customer')) {
         try {
           await launchpadClient.entities.BusinessSurvey.create(pending);
           pendingSurvey.clear();

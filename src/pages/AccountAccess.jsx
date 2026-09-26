@@ -8,6 +8,7 @@ const accountTypes = [
     title: "Start-up",
     description: "Create a startup plan, track consultations, and manage your start-up goals.",
     icon: UserRound,
+    workspace: "/dashboard",
     login: "/customer/login",
     register: "/customer/register",
   },
@@ -15,6 +16,7 @@ const accountTypes = [
     title: "Business",
     description: "Join the directory, manage your listing, and respond to customer inquiries.",
     icon: Building2,
+    workspace: "/provider",
     login: "/provider/login",
     register: "/provider/register",
   },
@@ -22,6 +24,7 @@ const accountTypes = [
     title: "Consultant",
     description: "Review B4IRC consultation requests and manage follow-up.",
     icon: BriefcaseBusiness,
+    workspace: "/consultant",
     login: "/consultant/login",
   },
 ];
@@ -29,7 +32,7 @@ const accountTypes = [
 export default function AccountAccess() {
   const { user, isAuthenticated } = useAuth();
 
-  if (isAuthenticated) {
+  if (isAuthenticated && user?.account_type !== "consultant") {
     const workspace = user?.account_type === "consultant" ? "/consultant" : user?.account_type === "provider" ? "/provider" : "/dashboard";
     return <Navigate to={workspace} replace />;
   }
@@ -60,10 +63,10 @@ export default function AccountAccess() {
                 <h2 className="font-heading text-xl font-bold">{account.title}</h2>
                 <p className="text-sm text-muted-foreground leading-6 mt-2">{account.description}</p>
                 <div className="mt-auto pt-7 space-y-2">
-                  <Link to={account.login} className="h-10 px-4 rounded-md bg-primary text-primary-foreground text-sm font-medium flex items-center justify-between transition-colors hover:bg-primary/90">
-                    Sign in <ArrowRight className="w-4 h-4" />
+                  <Link to={isAuthenticated ? account.workspace : account.login} className="h-10 px-4 rounded-md bg-primary text-primary-foreground text-sm font-medium flex items-center justify-between transition-colors hover:bg-primary/90">
+                    {isAuthenticated ? "Open workspace" : "Sign in"} <ArrowRight className="w-4 h-4" />
                   </Link>
-                  {account.register && (
+                  {!isAuthenticated && account.register && (
                     <Link to={account.register} className="h-10 px-4 rounded-md border text-sm font-medium flex items-center justify-center hover:bg-muted">
                       Create account
                     </Link>

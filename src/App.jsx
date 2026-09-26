@@ -4,6 +4,7 @@ import { queryClientInstance } from '@/lib/query-client'
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import PageNotFound from './lib/PageNotFound';
 import { AuthProvider, useAuth } from '@/lib/AuthContext';
+import { canAccessAccountType } from '@/api/launchpadClient';
 import { ThemeProvider } from '@/lib/ThemeContext';
 import ScrollToTop from './components/ScrollToTop';
 import AppLayout from '@/components/layout/AppLayout';
@@ -37,11 +38,12 @@ import { HeroUIProvider } from '@heroui/system';
 const AccountPage = ({ type, children }) => {
   const { user, isAuthenticated } = useAuth();
   if (!isAuthenticated) return <Navigate to={`/${type}/login`} replace />;
+  const canAccess = canAccessAccountType(user, type);
   // If the signed-in account is a different type (e.g. a start-up account
   // trying to reach a provider-only page), send them to that workspace's
   // own login/register instead of bouncing back through /account, which
   // would just redirect them straight back to their current dashboard.
-  return user?.account_type === type ? children : <Navigate to={`/${type}/login`} replace />;
+  return canAccess ? children : <Navigate to={`/${type}/login`} replace />;
 };
 
 const AuthenticatedApp = () => {

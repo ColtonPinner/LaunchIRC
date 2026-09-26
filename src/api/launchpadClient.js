@@ -56,6 +56,9 @@ export const resolveAccountType = (user, profile = null) => {
   return 'customer';
 };
 
+export const canAccessAccountType = (user, accountType) =>
+  user?.account_type === accountType || user?.account_type === 'consultant';
+
 const createEntity = (table) => {
   return {
     async create(data) {
@@ -205,14 +208,13 @@ export const launchpadClient = {
     ConciergeRequest: createEntity('concierge_requests'),
     DirectoryListing: {
       ...createEntity('directory_listings'),
-      async listMine(ownerId) {
-        const records = unwrap(
-          await getSupabase()
-            .from('directory_listings')
-            .select('*')
-            .eq('owner_id', ownerId)
-            .order('updated_date', { ascending: false }),
-        );
+      async listMine(ownerId, includeAll = false) {
+        let query = getSupabase()
+          .from('directory_listings')
+          .select('*')
+          .order('updated_date', { ascending: false });
+        if (!includeAll) query = query.eq('owner_id', ownerId);
+        const records = unwrap(await query);
         return records.map(flattenRecord);
       },
       async listPending() {

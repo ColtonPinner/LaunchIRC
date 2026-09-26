@@ -28,8 +28,8 @@ export default function Navbar() {
   const isConsultant = user?.account_type === "consultant";
   const isProvider = user?.account_type === "provider";
   const isWorkspaceAccount = isConsultant || isProvider;
-  const workspacePath = isConsultant ? "/consultant" : isProvider ? "/provider" : "/dashboard";
-  const workspaceLabel = isConsultant ? "Consultant dashboard" : isProvider ? "Business portal" : "Dashboard";
+  const workspacePath = isConsultant ? "/account" : isProvider ? "/provider" : "/dashboard";
+  const workspaceLabel = isConsultant ? "Switch workspace" : isProvider ? "Business portal" : "Dashboard";
   const navLinks = isWorkspaceAccount ? baseNavLinks : [...baseNavLinks, { label: "My Portal", path: "/portal" }];
 
   useEffect(() => {
