@@ -117,6 +117,7 @@ export default function Inquiries() {
       queryClient.invalidateQueries({ queryKey: ["staff-pending-listings"] });
       queryClient.invalidateQueries({ queryKey: ["staff-accepted-businesses"] });
       queryClient.invalidateQueries({ queryKey: ["consultant-dashboard"] });
+      queryClient.invalidateQueries({ queryKey: ["provider-portal"] });
       toast({
         title: "Business accepted!",
         description: "The business listing is now live in the public directory.",
@@ -130,6 +131,7 @@ export default function Inquiries() {
       queryClient.invalidateQueries({ queryKey: ["staff-pending-listings"] });
       queryClient.invalidateQueries({ queryKey: ["staff-accepted-businesses"] });
       queryClient.invalidateQueries({ queryKey: ["consultant-dashboard"] });
+      queryClient.invalidateQueries({ queryKey: ["provider-portal"] });
       toast({
         title: "Business declined",
         description: "The directory listing has been declined.",

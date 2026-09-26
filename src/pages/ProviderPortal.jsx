@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { Building2, CalendarDays, CheckCircle2, Inbox, Loader2, Mail, Phone, Plus, RefreshCw, UserPlus } from "lucide-react";
+import { Building2, CalendarDays, CheckCircle2, Inbox, Loader2, Mail, Phone, Plus, RefreshCw, UserPlus, XCircle } from "lucide-react";
 import { launchpadClient } from "@/api/launchpadClient";
 import { Button } from "@/components/ui/button";
 import { useAuth } from "@/lib/AuthContext";
@@ -12,6 +12,14 @@ const leadStatuses = [
   { value: "accepted", label: "Accepted" },
   { value: "contacted", label: "Contacted" },
   { value: "closed", label: "Closed" },
+];
+
+const expertRequestStatuses = [
+  { value: "new", label: "New" },
+  { value: "accepted", label: "Accept" },
+  { value: "contacted", label: "Contacted" },
+  { value: "closed", label: "Complete" },
+  { value: "declined", label: "Decline" },
 ];
 
 const surveyFields = [
@@ -56,6 +64,28 @@ const formatDate = (value) => new Intl.DateTimeFormat("en-US", {
   day: "numeric",
   year: "numeric",
 }).format(new Date(value));
+
+const getListingStatus = (listing) => {
+  if (listing.status === "rejected") {
+    return {
+      label: "Declined",
+      className: "bg-red-50 text-red-700 border-red-200",
+      icon: XCircle,
+    };
+  }
+  if (listing.is_approved || listing.status === "accepted") {
+    return {
+      label: "Live",
+      className: "bg-emerald-50 text-emerald-700 border-emerald-200",
+      icon: CheckCircle2,
+    };
+  }
+  return {
+    label: "In review",
+    className: "bg-amber-50 text-amber-700 border-amber-200",
+    icon: Loader2,
+  };
+};
 
 export default function ProviderPortal() {
   const { user } = useAuth();
@@ -104,9 +134,16 @@ export default function ProviderPortal() {
         description: "The survey request status has been updated.",
       });
     },
+    onError: (error) => {
+      toast({
+        variant: "destructive",
+        title: "Could not update survey request",
+        description: error.message || "Please try again.",
+      });
+    },
   });
 
-  const openExpertRequests = expertRequests.filter((request) => request.status !== "closed");
+  const openExpertRequests = expertRequests.filter((request) => !["closed", "declined"].includes(request.status));
 
   const newCount = leads.filter((lead) => lead.status === "new").length;
 
@@ -139,17 +176,30 @@ export default function ProviderPortal() {
               </div>
               {listings.length ? (
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                  {listings.map((listing) => (
-                    <article key={listing.id} className="surface-interactive p-5">
-                      <div className="flex items-start justify-between gap-3">
-                        <div className="w-10 h-10 rounded-md bg-primary/10 flex items-center justify-center"><Building2 className="w-5 h-5 text-primary" /></div>
-                        <span className={`px-2 py-1 rounded-md border text-[11px] font-semibold uppercase ${listing.is_approved ? "bg-emerald-50 text-emerald-700 border-emerald-200" : "bg-amber-50 text-amber-700 border-amber-200"}`}>{listing.is_approved ? "Live" : "In review"}</span>
-                      </div>
-                      <h3 className="font-semibold mt-4">{listing.company_name}</h3>
-                      <p className="text-sm text-muted-foreground mt-1 capitalize">{listing.category?.replaceAll("_", " ")}</p>
-                      {listing.is_approved && <Link to={`/directory#${listing.company_name.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-+|-+$/g, "")}`} className="text-sm text-accent font-medium inline-block mt-4 hover:underline">View public listing</Link>}
-                    </article>
-                  ))}
+                  {listings.map((listing) => {
+                    const status = getListingStatus(listing);
+                    const StatusIcon = status.icon;
+                    const isLive = status.label === "Live";
+                    return (
+                      <article key={listing.id} className="surface-interactive p-5">
+                        <div className="flex items-start justify-between gap-3">
+                          <div className="w-10 h-10 rounded-md bg-primary/10 flex items-center justify-center"><Building2 className="w-5 h-5 text-primary" /></div>
+                          <span className={`flex items-center gap-1 px-2 py-1 rounded-md border text-[11px] font-semibold uppercase ${status.className}`}>
+                            <StatusIcon className={`w-3 h-3 ${status.label === "In review" ? "animate-spin" : ""}`} />
+                            {status.label}
+                          </span>
+                        </div>
+                        <h3 className="font-semibold mt-4">{listing.company_name}</h3>
+                        <p className="text-sm text-muted-foreground mt-1 capitalize">{listing.category?.replaceAll("_", " ")}</p>
+                        {status.label === "Declined" && (
+                          <p className="text-sm text-red-700 mt-4">
+                            This directory application was declined and is not visible publicly.
+                          </p>
+                        )}
+                        {isLive && <Link to={`/directory#${listing.company_name.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-+|-+$/g, "")}`} className="text-sm text-accent font-medium inline-block mt-4 hover:underline">View public listing</Link>}
+                      </article>
+                    );
+                  })}
                 </div>
               ) : (
                 <div className="border border-dashed rounded-lg p-7 text-center"><Building2 className="w-7 h-7 text-muted-foreground mx-auto mb-3" /><h3 className="font-semibold">No business listing yet</h3><p className="text-sm text-muted-foreground mt-1 mb-4">Apply to appear in the local business directory.</p><Link to="/directory/join"><Button size="sm">Apply to join</Button></Link></div>
@@ -188,7 +238,7 @@ export default function ProviderPortal() {
                       </dl>
 
                       <div className="flex flex-wrap gap-2 mt-4 pt-4 border-t">
-                        {leadStatuses.map((status) => (
+                        {expertRequestStatuses.map((status) => (
                           <button
                             key={status.value}
                             disabled={expertStatusMutation.isPending}

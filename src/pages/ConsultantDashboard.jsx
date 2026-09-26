@@ -54,6 +54,7 @@ export default function ConsultantDashboard() {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["consultant-dashboard"] });
       queryClient.invalidateQueries({ queryKey: ["staff-pending-listings"] });
+      queryClient.invalidateQueries({ queryKey: ["provider-portal"] });
       toast({
         title: "Business accepted!",
         description: "The business listing has been approved and is now live in the public directory.",
@@ -66,6 +67,7 @@ export default function ConsultantDashboard() {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["consultant-dashboard"] });
       queryClient.invalidateQueries({ queryKey: ["staff-pending-listings"] });
+      queryClient.invalidateQueries({ queryKey: ["provider-portal"] });
       toast({
         title: "Business declined",
         description: "The listing application has been declined.",

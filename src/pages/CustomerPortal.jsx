@@ -8,6 +8,7 @@ import { useAuth } from "@/lib/AuthContext";
 
 const statusDetails = {
   new: { label: "Received", className: "bg-blue-50 text-blue-700 border-blue-200" },
+  accepted: { label: "Accepted", className: "bg-indigo-50 text-indigo-700 border-indigo-200" },
   contacted: { label: "Contacted", className: "bg-amber-50 text-amber-700 border-amber-200" },
   in_progress: { label: "In progress", className: "bg-orange-50 text-orange-700 border-orange-200" },
   closed: { label: "Complete", className: "bg-emerald-50 text-emerald-700 border-emerald-200" },
