@@ -14,6 +14,7 @@ lerna-debug.log*
 
 node_modules
 node_modules.fileprovider-backup
+.yarn/install-state.gz
 dist
 dist-ssr
 *.local
